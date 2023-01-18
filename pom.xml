@@ -14,6 +14,12 @@
 	<name>gromed</name>
 	<description>Backend RestApi for the gromed project</description>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<jettyVersion>9.4.3.v20170317</jettyVersion>
+		<jettyServletVersion>9.4.3.v20170317</jettyServletVersion>
+		<sonar.host.url>http://im2ag-sonar.u-ga.fr:9000</sonar.host.url>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
