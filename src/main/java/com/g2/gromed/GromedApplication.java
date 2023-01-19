@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Gromed API", version = "0.1", description = "L'api de gromed contenant tout les endpoints et les définitions des schémas"))
 public class GromedApplication {
 
