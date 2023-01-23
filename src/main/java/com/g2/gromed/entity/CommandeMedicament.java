@@ -10,6 +10,7 @@ import lombok.Setter;
 @Table(name = "CommandeMedicament")
 public class CommandeMedicament {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commandeMedicamentId;
 	private int quantite;
 	@ManyToOne
@@ -17,6 +18,6 @@ public class CommandeMedicament {
 	private Commande commande;
 	
 	@OneToOne
-	@JoinColumn(name = "codeCIS", referencedColumnName = "codeCIS")
-	private Medicament medicament;
+	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
+	private Presentation presentation;
 }

@@ -12,7 +12,10 @@ import java.util.List;
 @Table(name = "Livraison")
 public class Livraison {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long livraisonId;
+	@Column(name = "date_livraison", columnDefinition = "DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private TIMESTAMP dateLivraison;
 	@OneToOne
 	private Commande commande;

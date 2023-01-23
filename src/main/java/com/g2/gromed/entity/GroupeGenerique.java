@@ -10,11 +10,14 @@ import lombok.Setter;
 @Table(name = "GroupeGenerique")
 public class GroupeGenerique {
 	@Id
-	private String idGroupeGenerique;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long idGroupeGenerique;
+	private String identifiantGroupeGenerique;
 	@OneToOne
 	@JoinColumn(name = "codeCIS",unique = true)
 	private Medicament medicament;
 	private String typeGenerique;
 	private String numeroTri;
+	@Column(length = 1024)
 	private String libelle;
 }

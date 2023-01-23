@@ -11,11 +11,15 @@ import lombok.Setter;
 public class Presentation {
 	@Id
 	private String codeCIP7;
+	@Column(length = 1024)
 	private String denomination;
 	private String statusAdministratif;
 	private String etatCommercialisation;
+	@Column(nullable = true)
 	private double tauxRemboursement;
+	@Column(length = 2048)
 	private String indicationRemboursement;
+	@Column(nullable = true)
 	private double prix;
 	private int stock;
 	

@@ -13,7 +13,10 @@ import java.util.List;
 @Table(name = "Commande")
 public class Commande {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long numeroCommande;
+	@Column(name = "date_commande", columnDefinition = "DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private TIMESTAMP dateCommande;
 	private double total;
 	private String facture;

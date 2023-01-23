@@ -10,6 +10,7 @@ import lombok.Setter;
 @Table(name = "CommandeType")
 public class CommandeType {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commandeTypeId;
 	private String name;
 	

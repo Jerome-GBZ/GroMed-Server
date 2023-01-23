@@ -9,19 +9,23 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@IdClass(CompositionId.class)
 @Table(name = "Composition")
 public class Composition {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long idComposition;
 	private String codeSubstance;
+	@Column(length = 1024)
 	private String denominationSubstance;
+	@Column(length = 1024)
 	private String designationElementPharmaceutique;
-	@Id
 	private String dosage;
+	@Column(length = 1024)
 	private String referenceDosage;
+	@Column(length = 1024)
 	private String natureComposant;
-	@ManyToMany
-	@JoinTable(name = "MedicamentComposition", joinColumns = {@JoinColumn(name = "codeSubstance"),@JoinColumn(name = "dosage")}, inverseJoinColumns = @JoinColumn(name = "codeCIS"))
-	private List<Medicament> medicaments;
+	@ManyToOne
+	@JoinColumn(name = "codeCIS" , referencedColumnName = "codeCIS")
+	private Medicament medicament;
 }

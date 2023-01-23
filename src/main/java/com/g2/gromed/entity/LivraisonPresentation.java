@@ -10,6 +10,7 @@ import lombok.Setter;
 @Table(name = "LivraisonPresentation")
 public class LivraisonPresentation {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long livraisonPresentationId;
 	private int quantite;
 	
@@ -18,6 +19,6 @@ public class LivraisonPresentation {
 	private Livraison livraison;
 	
 	@OneToOne
-	@JoinColumn(name = "codeCIS", referencedColumnName = "codeCIS")
-	private Medicament medicament;
+	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
+	private Presentation presentation;
 }

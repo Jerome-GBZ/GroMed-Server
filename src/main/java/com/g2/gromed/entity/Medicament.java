@@ -17,6 +17,8 @@ public class Medicament {
 	private String formePharmaceutique;
 	private String voiesAdministratifAMM;
 	private String typeProcedureAMM;
+	@Column(name = "dateamm", columnDefinition = "DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private TIMESTAMP dateAMM;
 	private String etatCommercialisation;
 	private String statusBDM;
@@ -24,8 +26,13 @@ public class Medicament {
 	private String titulaire;
 	private String surveillanceRenforcee;
 	private String denomination;
-	@ManyToMany(mappedBy = "medicaments")
+	@OneToMany(mappedBy = "medicament")
 	private List<Composition> compositions;
 	@OneToMany(mappedBy = "medicament")
 	private List<Presentation> presentations;
+	@OneToMany(mappedBy = "medicament")
+	private List<ConditionDelivrance> conditionDelivrances;
+	@OneToMany(mappedBy = "medicament")
+	private List<InfoImportante> infoImportantes;
+
 }

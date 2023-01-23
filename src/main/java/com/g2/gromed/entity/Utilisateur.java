@@ -17,6 +17,8 @@ public class Utilisateur {
 	private String nom;
 	private String prenom;
 	private String motDePasse;
+	@Column(name = "date_naissance", columnDefinition = "DATE")
+	@Temporal(TemporalType.TIMESTAMP)
 	private TIMESTAMP dateNaissance;
 	private String adresse;
 	private String codePostal;
