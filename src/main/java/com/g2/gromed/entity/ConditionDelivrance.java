@@ -14,9 +14,6 @@ public class ConditionDelivrance {
 	private Long idConditionDelivrance;
 	@Column(length = 1024)
 	private String condition;
-	@ManyToOne
-	@JoinColumn(name = "codeCIS" , referencedColumnName = "codeCIS")
-	private Medicament medicament;
 	
 	
 	

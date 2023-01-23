@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface PresentationRepository extends JpaRepository<Presentation, Long> {
+public interface PresentationRepository extends JpaRepository<Presentation, String> {
 	
-	
-	Page<Presentation> findAllPresentation(Pageable pagination);
+	Presentation findByCodeCIP7(String codeCIP7);
+	@Query("SELECT P FROM Presentation P where P.codeCIP7 = '3014421'")
+	Presentation findAllPresentation();
 	
 }

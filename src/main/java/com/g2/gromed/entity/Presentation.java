@@ -1,13 +1,15 @@
 package com.g2.gromed.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Presentation")
 public class Presentation {
 	@Id
@@ -17,11 +19,11 @@ public class Presentation {
 	private String statusAdministratif;
 	private String etatCommercialisation;
 	@Column(nullable = true)
-	private double tauxRemboursement;
+	private Double tauxRemboursement;
 	@Column(length = 2048)
 	private String indicationRemboursement;
 	@Column(nullable = true)
-	private double prix;
+	private Double prix;
 	private int stock;
 	
 	@ManyToOne

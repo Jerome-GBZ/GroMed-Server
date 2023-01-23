@@ -20,12 +20,12 @@ public class PresentationController {
 	
 	@ApiOperation(value = "Get all presentations")
 	@GetMapping("/all")
-	public Page<Presentation> getAllPresentations() {
+	public Presentation getAllPresentations() {
 		return presentationService.getAllPresentations(PageRequest.of(0,10));
 	}
 	@ApiOperation(value = "Get all presentations")
 	@GetMapping("/all2")
-	public Page<Presentation> getAllPresentations2() {
+	public Presentation getAllPresentations2() {
 		return presentationService.getAllPresentations2(PageRequest.of(0,10));
 	}
 }

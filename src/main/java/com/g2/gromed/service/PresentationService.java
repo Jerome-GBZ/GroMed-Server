@@ -14,10 +14,10 @@ public class PresentationService {
 	@Autowired
 	private PresentationRepository presentationRepository;
 	
-	public Page<Presentation> getAllPresentations(Pageable pagination) {
-		return presentationRepository.findAll(pagination);
+	public Presentation getAllPresentations(Pageable pagination) {
+		return presentationRepository.findAllPresentation();
 	}
-	public Page<Presentation> getAllPresentations2(Pageable pagination) {
-		return presentationRepository.findAllPresentation(pagination);
+	public Presentation getAllPresentations2(Pageable pagination) {
+		return presentationRepository.findByCodeCIP7("3014421");
 	}
 }

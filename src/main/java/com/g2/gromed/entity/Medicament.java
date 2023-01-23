@@ -1,14 +1,20 @@
 package com.g2.gromed.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import oracle.sql.TIMESTAMP;
+
+import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "Medicament")
 public class Medicament {
 	
@@ -18,21 +24,22 @@ public class Medicament {
 	private String voiesAdministratifAMM;
 	private String typeProcedureAMM;
 	@Column(name = "dateamm", columnDefinition = "DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private TIMESTAMP dateAMM;
+	@Temporal(TemporalType.DATE)
+	private Date dateAMM;
 	private String etatCommercialisation;
 	private String statusBDM;
 	private String numeroAutorisationEuropeenne;
 	private String titulaire;
 	private String surveillanceRenforcee;
 	private String denomination;
-	@OneToMany(mappedBy = "medicament")
+	@OneToMany()
+	@JoinColumn(name = "codeCIS")
 	private List<Composition> compositions;
-	@OneToMany(mappedBy = "medicament")
-	private List<Presentation> presentations;
-	@OneToMany(mappedBy = "medicament")
+	@JoinColumn(name = "codeCIS")
+	@OneToMany()
 	private List<ConditionDelivrance> conditionDelivrances;
-	@OneToMany(mappedBy = "medicament")
+	@JoinColumn(name = "codeCIS")
+	@OneToMany()
 	private List<InfoImportante> infoImportantes;
 
 }
