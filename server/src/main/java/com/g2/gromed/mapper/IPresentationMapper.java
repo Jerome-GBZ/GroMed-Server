@@ -1,6 +1,6 @@
 package com.g2.gromed.mapper;
 
-import com.g2.gromed.dto.PresentationCardDTO;
+import com.g2.gromed.model.dto.PresentationCardDTO;
 import com.g2.gromed.entity.Presentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
