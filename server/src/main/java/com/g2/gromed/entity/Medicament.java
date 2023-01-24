@@ -51,6 +51,7 @@ public class Medicament {
 	@JoinColumn(name = "codeCIS")
 	@OneToMany()
 	private List<InfoImportante> infoImportantes;
+
 	@JoinColumn(name = "codeCIS")
 	@OneToMany()
 	private List<GroupeGenerique> groupeGeneriques;
