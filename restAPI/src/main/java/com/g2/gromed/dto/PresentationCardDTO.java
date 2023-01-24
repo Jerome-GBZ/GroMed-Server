@@ -2,10 +2,12 @@ package com.g2.gromed.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Schema(name = "PresentationCardModel", description = "DTO représentant une présentation")
 public class PresentationCardDTO {
 	@Schema(description = "Code CIS du médicament", example = "1234567")
