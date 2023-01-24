@@ -22,11 +22,6 @@ public class PresentationService {
 	private IPresentationMapper presentationMapper;
 	public Page<PresentationCardDTO> getAllPresentations() {
 		Page<Presentation> presentations = presentationComposant.getAllPresentations();
-		return new PageImpl<>(presentations.getContent()
-				.stream()
-				.map(presentationMapper::presentationToPresentationCardDTO)
-				.collect(Collectors.toList()),
-				PageRequest.of(0,10),
-				presentations.getTotalElements());
+		return presentations.map(presentationMapper::presentationToPresentationCardDTO);
 	}
 }
