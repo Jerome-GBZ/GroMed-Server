@@ -18,13 +18,13 @@ public class PresentationController implements IPresentationEndpoint {
 	private PresentationService presentationService;
 	
 	@Override
-	public ResponseEntity<Page<PresentationCardDTO>> getAllPresentations(@RequestParam() Pagination pagination){
+	public ResponseEntity<Page<PresentationCardDTO>> getLesPresentations(@RequestParam() Pagination pagination){
 		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination);
 		return page != null ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
 	}
 	
 	@Override
-	public ResponseEntity<PresentationDetailDTO> getPresentationDetail(String codeCIP7) {
+	public ResponseEntity<PresentationDetailDTO> getDetailPresentation(String codeCIP7) {
 		PresentationDetailDTO presentation = presentationService.getPresentationByCodeCIP7(codeCIP7);
 		return presentation != null ? ResponseEntity.ok(presentation) : ResponseEntity.notFound().build();
 	}

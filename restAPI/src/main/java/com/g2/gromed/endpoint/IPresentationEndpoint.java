@@ -28,7 +28,7 @@ public interface IPresentationEndpoint {
 	@ApiResponse(responseCode = "404", description = "Médicament non trouvé",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = PresentationCardDTO.class)))
     @GetMapping("/all")
-    ResponseEntity<Page<PresentationCardDTO>> getAllPresentations(@RequestParam() Pagination pagination);
+    ResponseEntity<Page<PresentationCardDTO>> getLesPresentations(@RequestParam() Pagination pagination);
 	
 	
 	@ApiOperation(value = "Récupère les informations détallées d'une présentation d'un médicament",
@@ -40,5 +40,5 @@ public interface IPresentationEndpoint {
 	@ApiResponse(responseCode = "404", description = "Médicament non trouvé",
 			content = @Content(mediaType = "application/json"))
 	@GetMapping("/detail")
-	ResponseEntity<PresentationDetailDTO> getPresentationDetail(@RequestParam() String codeCIP7);
+	ResponseEntity<PresentationDetailDTO> getDetailPresentation(@RequestParam() String codeCIP7);
 }

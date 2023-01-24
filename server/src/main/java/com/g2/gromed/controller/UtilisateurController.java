@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UtilisateurController implements IUtilisateurEndpoint {
 	private UtilisateurService utilisateurService;
 	@Override
-	public ResponseEntity<UtilisateurDTO> connection(String email, String motDePasse) {
+	public ResponseEntity<UtilisateurDTO> getConnection(String email, String motDePasse) {
 		UtilisateurDTO utilisateur = utilisateurService.connectionUtilisateur(email, motDePasse);
 		return utilisateur ==null ? ResponseEntity.notFound().build() : ResponseEntity.ok(utilisateur) ;
 	}

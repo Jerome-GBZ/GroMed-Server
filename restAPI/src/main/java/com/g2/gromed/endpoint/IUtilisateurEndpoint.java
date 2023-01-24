@@ -25,5 +25,5 @@ public interface IUtilisateurEndpoint {
 	@ApiResponse(responseCode = "404", description = "Médicament non trouvé",
 			content = @Content(mediaType = "application/json"))
 	@GetMapping("/connection")
-	ResponseEntity<UtilisateurDTO> connection(@RequestParam() String email, @RequestParam() String motDePasse);
+	ResponseEntity<UtilisateurDTO> getConnection(@RequestParam() String email, @RequestParam() String motDePasse);
 }
