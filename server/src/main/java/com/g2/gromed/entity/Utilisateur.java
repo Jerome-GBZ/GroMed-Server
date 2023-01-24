@@ -3,7 +3,8 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import oracle.sql.TIMESTAMP;
+
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -11,15 +12,17 @@ import java.util.List;
 @Entity
 @Table(name = "Utilisateur")
 public class Utilisateur {
-	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(unique = true)
 	private String email;
 	private String nom;
 	private String prenom;
 	private String motDePasse;
 	@Column(name = "date_naissance", columnDefinition = "DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private TIMESTAMP dateNaissance;
+	@Temporal(TemporalType.DATE)
+	private Date dateNaissance;
 	private String adresse;
 	private String codePostal;
 	private String ville;

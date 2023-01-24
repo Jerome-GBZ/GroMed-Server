@@ -1,4 +1,4 @@
-package com.g2.gromed.model;
+package com.g2.gromed.model.dto.presentation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
