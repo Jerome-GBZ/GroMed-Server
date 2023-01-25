@@ -11,6 +11,7 @@ import lombok.Setter;
 public class CommandeType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "commande_type_id")
 	private Long commandeTypeId;
 
 	private String name;
