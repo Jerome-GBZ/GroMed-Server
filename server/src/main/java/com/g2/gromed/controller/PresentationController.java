@@ -8,6 +8,7 @@ import com.g2.gromed.service.PresentationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class PresentationController implements IPresentationEndpoint {
 	private PresentationService presentationService;
 	
 	@Override
-	public ResponseEntity<Page<PresentationCardDTO>> getLesPresentations(@RequestParam() Pagination pagination){
+	public ResponseEntity<Page<PresentationCardDTO>> getLesPresentations(@ModelAttribute("pagination") Pagination pagination){
 		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination);
 		return page != null ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
 	}

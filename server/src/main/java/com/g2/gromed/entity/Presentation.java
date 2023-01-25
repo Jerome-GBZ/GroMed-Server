@@ -12,6 +12,9 @@ import lombok.*;
 public class Presentation {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long presentationId;
+	@Column(unique = true)
 	private String codeCIP7;
 
 	@Column(length = 1024)
