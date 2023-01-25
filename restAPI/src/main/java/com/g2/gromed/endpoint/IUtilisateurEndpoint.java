@@ -25,5 +25,5 @@ public interface IUtilisateurEndpoint {
 	@ApiResponse(responseCode = "404", description = "Identifiant incorrect",
 			content = @Content(mediaType = "application/json"))
 	@GetMapping("/connection")
-	ResponseEntity<UtilisateurDTO> getConnection(@RequestParam() String email, @RequestParam() String motDePasse);
+	ResponseEntity<UtilisateurDTO> authenticate(@RequestParam() String email, @RequestParam() String motDePasse);
 }

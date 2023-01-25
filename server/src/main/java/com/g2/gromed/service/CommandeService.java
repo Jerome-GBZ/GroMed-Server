@@ -6,7 +6,6 @@ import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.Commande;
 import com.g2.gromed.entity.CommandeMedicament;
 import com.g2.gromed.entity.Presentation;
-import com.g2.gromed.entity.Utilisateur;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +18,14 @@ public class CommandeService {
 	
 	private PresentationComposant presentationComposant;
 	
-	public void insertMedicamentDansPanier(Long idUtilisateur, String codeCIP7, int quantite) {
+	public void addMedicamentToCart(Long idUtilisateur, String codeCIP7, int quantite) {
 		if(!utilisateurComposant.existById(idUtilisateur)){
 			return;
 		}
-		Commande commande = commandeComposant.getPanierEnCours(idUtilisateur);
+		Commande commande = commandeComposant.getCart(idUtilisateur);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
 		Long id = null;
-		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getPresentationId());
+		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getCodeCIP7());
 		if(commandeMedicament == null){
 			CommandeMedicament newMedicament = new CommandeMedicament();
 			newMedicament.setQuantite(quantite);

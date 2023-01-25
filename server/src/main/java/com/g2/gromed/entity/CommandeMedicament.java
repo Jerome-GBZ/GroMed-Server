@@ -7,17 +7,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "CommandeMedicament")
+@Table(name = "COMMANDE_MEDICAMENT")
 public class CommandeMedicament {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commandeMedicamentId;
+
 	private int quantite;
+
 	@ManyToOne
-	@JoinColumn(name = "numeroCommande")
+	@JoinColumn(name = "numero_commande")
 	private Commande commande;
 	
 	@OneToOne
-	@JoinColumn(name = "presentationId", referencedColumnName = "presentationId")
+	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
 	private Presentation presentation;
 }

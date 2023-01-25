@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class UtilisateurComposant {
 	private IUtilisateurRepository utilisateurRepository;
 	
-	public Utilisateur connectionUtilisateur(String email, String motDePasse){
+	public Utilisateur authenticate(String email, String motDePasse){
 		return utilisateurRepository.findFirstByEmailAndMotDePasse(email, motDePasse);
 	}
 	
