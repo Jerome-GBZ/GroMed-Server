@@ -18,15 +18,27 @@ public class CommandeComposant {
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
 	
 	public Commande getCart(Long idUtilisateur) {
-		return commandeRepository.findFirstByUtilisateurAndStatus(idUtilisateur, StatusCommande.PANIER);
+		return commandeRepository.findFirstByUtilisateurIdAndStatus(idUtilisateur, StatusCommande.PANIER);
 	}
 	
 	public CommandeMedicament findFirstByNumeroCommandeAndCodeCIP7(Long numeroCommande, String codeCIP7) {
-		return commandeMedicamentRepository.findFirstByCommandeAndPresentation(numeroCommande, codeCIP7);
+		return commandeMedicamentRepository.findFirstByCommandeNumeroCommandeAndPresentationCodeCIP7(numeroCommande, codeCIP7);
 	}
 	
 	
-	public Long save(CommandeMedicament commandeMedicament) {
+	public Long addToCart(CommandeMedicament commandeMedicament) {
 		return commandeMedicamentRepository.save(commandeMedicament).getCommandeMedicamentId();
+	}
+	
+	public int countCartPresentation(Long numeroCommande) {
+		return commandeMedicamentRepository.countByCommandeNumeroCommande(numeroCommande);
+	}
+	
+	public Commande createNewCommande(Commande commande) {
+		return commandeRepository.save(commande);
+	}
+	
+	public void removeFromCart(CommandeMedicament commandePresentation) {
+		commandeMedicamentRepository.delete(commandePresentation);
 	}
 }

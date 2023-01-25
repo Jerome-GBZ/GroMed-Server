@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import oracle.sql.TIMESTAMP;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,7 +21,7 @@ public class Commande {
 
 	@Column(name = "date_commande", columnDefinition = "DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private TIMESTAMP dateCommande;
+	private Date dateCommande;
 
 	private double total;
 

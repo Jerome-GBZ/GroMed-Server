@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/utilisateur")
@@ -24,6 +21,6 @@ public interface IUtilisateurEndpoint {
 			content = @Content(mediaType = "application/json"))
 	@ApiResponse(responseCode = "404", description = "Identifiant incorrect",
 			content = @Content(mediaType = "application/json"))
-	@GetMapping("/connection")
+	@PostMapping("/connection")
 	ResponseEntity<UtilisateurDTO> authenticate(@RequestParam() String email, @RequestParam() String motDePasse);
 }

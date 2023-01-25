@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface IInfoImportanteMapper {
 	
 	@Mapping(target="message",source="infoImportante.message")
+	@Mapping(target="lien",source="infoImportante.lien")
 	InfoImportanteDTO toInfoImportanteDTO(InfoImportante infoImportante);
 }
