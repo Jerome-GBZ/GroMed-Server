@@ -22,17 +22,17 @@ public class PresentationService {
 	private IPresentationMapper presentationMapper;
 	private IInfoImportanteMapper infoImportanteMapper;
 	public Page<PresentationCardDTO> getAllPresentations( Pagination pagination) {
-		Page<Presentation> presentations = presentationComposant.getAllPresentations( pagination);
-		return presentations.map(presentationMapper::presentationToPresentationCardDTO);
+		Page<Presentation> presentations = presentationComposant.getPresentations(pagination);
+		return presentations.map(presentationMapper::toPresentationCardDTO);
 	}
-	public PresentationDetailDTO getPresentationByCodeCIP7(String codeCIP7) {
+	public PresentationDetailDTO getDetailPresentation(String codeCIP7) {
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
-		PresentationDetailDTO detail = presentationMapper.presentationToPresentationDetailDTO(presentation);
+		PresentationDetailDTO detail = presentationMapper.toPresentationDetailDTO(presentation);
 		detail.setInformationsImportantes(presentation
 				.getMedicament()
 				.getInfoImportantes()
 				.stream()
-				.map(infoImportanteMapper::infoImportanteToInfoImportanteDTO)
+				.map(infoImportanteMapper::toInfoImportanteDTO)
 				.collect(Collectors.toList()));
 		return detail;
 	}

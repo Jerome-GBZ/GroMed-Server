@@ -2,12 +2,9 @@ package com.g2.gromed.composant;
 
 import com.g2.gromed.entity.Commande;
 import com.g2.gromed.entity.CommandeMedicament;
-import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.entity.StatusCommande;
 import com.g2.gromed.repository.ICommandeMedicamentRepository;
 import com.g2.gromed.repository.ICommandeRepository;
-import com.g2.gromed.repository.ICommandeTypeRepository;
-import com.g2.gromed.repository.IPresentationRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
@@ -20,12 +17,12 @@ public class CommandeComposant {
 	
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
 	
-	public Commande getPanierEnCours(Long idUtilisateur) {
+	public Commande getCart(Long idUtilisateur) {
 		return commandeRepository.findFirstByUtilisateurAndStatus(idUtilisateur, StatusCommande.PANIER);
 	}
 	
-	public CommandeMedicament findFirstByNumeroCommandeAndCodeCIP7(Long numeroCommande, Long idPresentation) {
-		return commandeMedicamentRepository.findFirstByCommandeAndPresentation(numeroCommande, idPresentation);
+	public CommandeMedicament findFirstByNumeroCommandeAndCodeCIP7(Long numeroCommande, String codeCIP7) {
+		return commandeMedicamentRepository.findFirstByCommandeAndPresentation(numeroCommande, codeCIP7);
 	}
 	
 	

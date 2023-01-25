@@ -9,12 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "Presentation")
+@Table(name = "PRESENTATION")
 public class Presentation {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long presentationId;
 	@Column(unique = true)
 	private String codeCIP7;
 

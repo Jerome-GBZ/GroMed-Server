@@ -15,7 +15,7 @@ public interface IPresentationMapper {
 	@Mapping(target="titre",source="presentation.medicament.denomination")
 	@Mapping(target="description",source="presentation.denomination")
 	@Mapping(target="format",source="presentation.medicament.formePharmaceutique")
-	PresentationCardDTO presentationToPresentationCardDTO(Presentation presentation);
+	PresentationCardDTO toPresentationCardDTO(Presentation presentation);
 	
 	@Mapping(target="codeCIS",source="presentation.medicament.codeCIS")
 	@Mapping(target="codeCIP7",source="presentation.codeCIP7")
@@ -27,5 +27,5 @@ public interface IPresentationMapper {
 	@Mapping(target="formePharmaceutique",source="presentation.medicament.formePharmaceutique")
 	@Mapping(target="titulaire",source="presentation.medicament.titulaire")
 	@Mapping(target="tauxRemboursement",source="presentation.tauxRemboursement")
-	PresentationDetailDTO presentationToPresentationDetailDTO(Presentation presentation);
+	PresentationDetailDTO toPresentationDetailDTO(Presentation presentation);
 }
