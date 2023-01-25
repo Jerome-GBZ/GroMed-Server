@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Schema(name = "Filtre", description = "filtre pour la recherche de présentation")
+@Schema(name = "Filtres", description = "filtres pour la recherche de présentations")
 public class FiltreDTO {
 
     @Schema(description = "Liste de tous les titulaires de médicaments", example = "[{titulaire: 'Sanofi']")

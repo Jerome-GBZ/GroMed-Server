@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/filtre")
 public interface IFiltreEndpoint {
 
-    @ApiOperation(value = "Récupère tout les filtres pour un médicament")
+    @ApiOperation(value = "Récupère tous les filtres pour les présentations")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Erreur serveur")
-    @ApiResponse(responseCode = "404", description = "Filtres introuvable")
+    @ApiResponse(responseCode = "404", description = "Filtres introuvables")
     @PostMapping(value = "/all", produces = "application/json")
     ResponseEntity<FiltreDTO> getFiltres();
 }
