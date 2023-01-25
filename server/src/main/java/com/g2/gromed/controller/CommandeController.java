@@ -21,7 +21,7 @@ public class CommandeController implements ICommandeEndpoint {
 	
 	@Override
 	public ResponseEntity<Integer> deletePresentationToCart(Long idUtilisateur, String codeCIP7) {
-		Integer cartItemCount = commandeService.deletePresentationToCart(idUtilisateur, codeCIP7);
+		Integer cartItemCount = commandeService.deletePresentationFromCart(idUtilisateur, codeCIP7);
 		return cartItemCount!= null ? ResponseEntity.ok(cartItemCount) : ResponseEntity.notFound().build();
 	}
 	
