@@ -37,7 +37,7 @@ class PresentationComposantTest {
 
         presentationRepository.saveAll(presentations);
 
-        Page<Presentation> result = presentationComposant.getAllPresentations(new Pagination(0, 2));
+        Page<Presentation> result = presentationComposant.getPresentations(new Pagination(0, 2));
         Assertions.assertEquals(2, result.getContent().size());
         Assertions.assertEquals("CIP7-1", result.getContent().get(0).getCodeCIP7());
         Assertions.assertEquals("CIS-1", result.getContent().get(0).getMedicament().getCodeCIS());

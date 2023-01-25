@@ -14,8 +14,8 @@ public class UtilisateurService {
 	private UtilisateurComposant utilisateurComposant;
 	private IUtilisateurMapper utilisateurMapper;
 	
-	public UtilisateurDTO connectionUtilisateur(String email, String motDePasse){
-		Utilisateur utilisateur = utilisateurComposant.connectionUtilisateur(email, motDePasse);
-		return utilisateurMapper.utilisateurToUtilisateurDTO(utilisateur);
+	public UtilisateurDTO authenticate(String email, String motDePasse){
+		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
+		return utilisateurMapper.toUtilisateurDTO(utilisateur);
 	}
 }

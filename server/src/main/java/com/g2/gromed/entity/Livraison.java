@@ -9,16 +9,19 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "Livraison")
+@Table(name = "LIVRAISON")
 public class Livraison {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long livraisonId;
+
 	@Column(name = "date_livraison", columnDefinition = "DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private TIMESTAMP dateLivraison;
+
 	@OneToOne
 	private Commande commande;
+
 	@OneToMany(mappedBy = "livraison")
 	private List<LivraisonPresentation> livraisonPresentations;
 }
