@@ -8,6 +8,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "Presentation")
 public class Presentation {
 
@@ -33,7 +34,7 @@ public class Presentation {
 
 	private int stock;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "codeCIS" , referencedColumnName = "codeCIS")
 	private Medicament medicament;
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class PresentationComposant {
 	private IPresentationRepository presentationRepository;
 	
-	public Page<Presentation> getAllPresentations( Pagination pagination){
+	public Page<Presentation> getAllPresentations(Pagination pagination){
 		return presentationRepository.findAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
 	}
 	
