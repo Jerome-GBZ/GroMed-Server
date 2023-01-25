@@ -49,7 +49,7 @@ public class Medicament {
 	private List<ConditionDelivrance> conditionDelivrances;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<InfoImportante> infoImportantes;
 
 	@JoinColumn(name = "codeCIS")

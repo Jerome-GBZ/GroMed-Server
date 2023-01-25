@@ -32,7 +32,7 @@ public class Presentation {
 
 	private int stock;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "codeCIS" , referencedColumnName = "codeCIS")
 	private Medicament medicament;
 }

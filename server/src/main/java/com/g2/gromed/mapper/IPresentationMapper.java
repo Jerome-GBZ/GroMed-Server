@@ -1,10 +1,13 @@
 package com.g2.gromed.mapper;
 
+import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper()
 public interface IPresentationMapper {
@@ -27,5 +30,6 @@ public interface IPresentationMapper {
 	@Mapping(target="formePharmaceutique",source="presentation.medicament.formePharmaceutique")
 	@Mapping(target="titulaire",source="presentation.medicament.titulaire")
 	@Mapping(target="tauxRemboursement",source="presentation.tauxRemboursement")
-	PresentationDetailDTO toPresentationDetailDTO(Presentation presentation);
+	@Mapping(target="informationsImportantes", source = "infoImportanteDTOList")
+	PresentationDetailDTO toPresentationDetailDTO(Presentation presentation, List<InfoImportanteDTO> infoImportanteDTOList);
 }
