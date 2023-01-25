@@ -1,9 +1,8 @@
 package com.g2.gromed.composant;
 
 import com.g2.gromed.entity.Presentation;
-import com.g2.gromed.model.Filtre;
-import com.g2.gromed.model.Pagination;
-import com.g2.gromed.repository.PresentationRepository;
+import com.g2.gromed.model.dto.presentation.Pagination;
+import com.g2.gromed.repository.IPresentationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,9 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class PresentationComposant {
-	private PresentationRepository presentationRepository;
+	private IPresentationRepository presentationRepository;
 	
 	public Page<Presentation> getAllPresentations( Pagination pagination){
 		return presentationRepository.findAll(PageRequest.of(pagination.getPage(), pagination.getSize()));
+	}
+	
+	public Presentation getPresentationByCodeCIP7(String codeCIP7){
+		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
 }

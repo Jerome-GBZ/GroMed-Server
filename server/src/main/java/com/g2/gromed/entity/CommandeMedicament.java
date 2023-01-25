@@ -18,6 +18,6 @@ public class CommandeMedicament {
 	private Commande commande;
 	
 	@OneToOne
-	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
+	@JoinColumn(name = "presentationId", referencedColumnName = "presentationId")
 	private Presentation presentation;
 }
