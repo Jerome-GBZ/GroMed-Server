@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 	
 	Utilisateur findFirstByEmailAndMotDePasse(String email, String motDePasse);
+	
+	Utilisateur findFirstById(Long idUtilisateur);
 }

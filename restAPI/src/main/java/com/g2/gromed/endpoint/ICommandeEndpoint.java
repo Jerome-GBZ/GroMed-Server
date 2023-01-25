@@ -25,7 +25,7 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "404", description = "Commande ou présentation non trouvé",
 			content = @Content(mediaType = "application/json"))
 	@PostMapping("/add")
-	ResponseEntity<List<PresentationPanierDTO>> addPresentationAuPanier(@RequestParam("idUtilisateur") Long idUtilisateur, @RequestParam("idPresentation") Long idPresentation, @RequestParam("quantite") int quantite);
+	ResponseEntity<Integer> addPresentationToCart(@RequestParam("idUtilisateur") Long idUtilisateur, @RequestParam("codeCIP7") String codeCIP7, @RequestParam("quantite") int quantite);
 	
 	@ApiOperation(value = "Supprimer un produit du panier",
 			response = PresentationCardDTO.class)
@@ -36,7 +36,7 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "404", description = "Commande ou présentation non trouvé dans la commande",
 			content = @Content(mediaType = "application/json"))
 	@DeleteMapping("/delete")
-	ResponseEntity<List<PresentationPanierDTO>> deletePresentationDuPanier(@RequestParam("idUtilisateur") Long idUtilisateur,@RequestParam("idPresentation") Long idPresentation);
+	ResponseEntity<Integer> deletePresentationToCart(@RequestParam("idUtilisateur") Long idUtilisateur,@RequestParam("codeCIP7") String codeCIP7);
 	
 	@ApiOperation(value = "Récupérer le panier de l'utilisateur",
 			response = PresentationCardDTO.class)
@@ -47,6 +47,6 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "404", description = "Commande de l'utilisateur non trouvé",
 			content = @Content(mediaType = "application/json"))
 	@GetMapping("/panier")
-	ResponseEntity<List<PresentationPanierDTO>> getPanierUtilisateur(@RequestParam("idUtilisateur") Long idUtilisateur);
+	ResponseEntity<List<PresentationPanierDTO>> getUserCart(@RequestParam("idUtilisateur") Long idUtilisateur);
 	
 }

@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ICommandeMedicamentRepository extends JpaRepository<CommandeMedicament, Long> {
 	
-	CommandeMedicament findFirstByCommandeAndPresentation(Long numeroCommande, String codeCIP7);
+	CommandeMedicament findFirstByCommandeNumeroCommandeAndPresentationCodeCIP7(Long numeroCommande, String codeCIP7);
+	
+	int countByCommandeNumeroCommande(Long numeroCommande);
 }

@@ -23,7 +23,7 @@ public interface IPresentationMapper {
 	@Mapping(target="description",source="presentation.denomination")
 	@Mapping(target="prix",source="presentation.prix")
 	@Mapping(target="stock",source="presentation.stock")
-	@Mapping(target="estGenerique",expression = "java(presentation.getMedicament().getGroupeGeneriques().isEmpty())")
+	@Mapping(target="estGenerique",expression = "java(!presentation.getMedicament().getGroupeGeneriques().isEmpty())")
 	@Mapping(target="formePharmaceutique",source="presentation.medicament.formePharmaceutique")
 	@Mapping(target="titulaire",source="presentation.medicament.titulaire")
 	@Mapping(target="tauxRemboursement",source="presentation.tauxRemboursement")
