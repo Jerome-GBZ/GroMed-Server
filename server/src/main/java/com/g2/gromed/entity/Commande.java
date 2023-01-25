@@ -26,7 +26,7 @@ public class Commande {
 	private StatusCommande status;
 	
 	@ManyToOne
-	@JoinColumn(name = "email")
+	@JoinColumn(name = "id")
 	private Utilisateur utilisateur;
 	@OneToOne
 	@JoinColumn(name = "commandeTypeId", referencedColumnName = "commandeTypeId")

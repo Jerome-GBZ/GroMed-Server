@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface IPresentationRepository extends JpaRepository<Presentation, String> {
+public interface IPresentationRepository extends JpaRepository<Presentation, Long> {
 	Presentation findFirstByCodeCIP7(String codeCIP7);
 	
 }

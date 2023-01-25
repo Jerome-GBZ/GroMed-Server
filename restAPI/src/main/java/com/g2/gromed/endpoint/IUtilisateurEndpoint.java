@@ -22,7 +22,7 @@ public interface IUtilisateurEndpoint {
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = UtilisateurDTO.class)))
 	@ApiResponse(responseCode = "500", description = "Erreur serveur",
 			content = @Content(mediaType = "application/json"))
-	@ApiResponse(responseCode = "404", description = "Médicament non trouvé",
+	@ApiResponse(responseCode = "404", description = "Identifiant incorrect",
 			content = @Content(mediaType = "application/json"))
 	@GetMapping("/connection")
 	ResponseEntity<UtilisateurDTO> getConnection(@RequestParam() String email, @RequestParam() String motDePasse);

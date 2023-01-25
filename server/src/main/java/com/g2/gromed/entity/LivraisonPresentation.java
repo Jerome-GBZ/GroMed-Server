@@ -19,6 +19,6 @@ public class LivraisonPresentation {
 	private Livraison livraison;
 	
 	@OneToOne
-	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
+	@JoinColumn(name = "presentationId", referencedColumnName = "presentationId")
 	private Presentation presentation;
 }

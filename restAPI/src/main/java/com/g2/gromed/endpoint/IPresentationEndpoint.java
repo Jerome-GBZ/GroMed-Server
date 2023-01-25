@@ -24,9 +24,9 @@ public interface IPresentationEndpoint {
 	@ApiResponse(responseCode = "200", description = "OK",
 			content = @Content(mediaType = "application/json", schema = @Schema(implementation = PresentationCardDTO.class)))
 	@ApiResponse(responseCode = "500", description = "Erreur serveur",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = PresentationCardDTO.class)))
+			content = @Content(mediaType = "application/json"))
 	@ApiResponse(responseCode = "404", description = "Médicament non trouvé",
-			content = @Content(mediaType = "application/json", schema = @Schema(implementation = PresentationCardDTO.class)))
+			content = @Content(mediaType = "application/json"))
     @GetMapping("/all")
     ResponseEntity<Page<PresentationCardDTO>> getLesPresentations(@RequestParam() Pagination pagination);
 	
