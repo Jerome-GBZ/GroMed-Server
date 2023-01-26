@@ -1,12 +1,15 @@
 package com.g2.gromed.service;
 
 import com.g2.gromed.composant.CommandeComposant;
+import com.g2.gromed.composant.LivraisonComposant;
 import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.mapper.*;
+import com.g2.gromed.mapper.*;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
+import com.g2.gromed.model.dto.commande.LivraisonDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
@@ -24,12 +27,17 @@ public class CommandeService {
 	private IInfoImportanteMapper infoImportanteMapper;
 	private IUtilisateurMapper utilisateurMapper;
 	private IConditionDelivranceMapper conditionDelivranceMapper;
+	
+	private ILivraisonMapper livraisonMapper;
+	
 	private CommandeComposant commandeComposant;
 
 	private UtilisateurComposant utilisateurComposant;
 
 	private PresentationComposant presentationComposant;
-
+	
+	private LivraisonComposant livraisonComposant;
+	
 	public UtilisateurDTO addPresentationToCart(String email, String codeCIP7, int quantite) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
@@ -111,4 +119,47 @@ public class CommandeService {
 
 		return new AlerteIndisponibilitePresentationDTO(alertesIndisponibilites);
     }
+	
+	public LivraisonDTO validateCart(String email) {
+		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
+		AtomicBoolean inOneTime = new AtomicBoolean(true);
+		Commande commande = commandeComposant.getCart(email);
+		if(commande == null){
+			return null;
+		}
+		commande.setStatus(StatusCommande.EN_COURS);
+		List<CommandeMedicament> listCommandeMedicament = commande.getCommandeMedicaments();
+		if(listCommandeMedicament.isEmpty()){
+			return null;
+		}
+		Livraison livraison = new Livraison();
+		livraison.setCommande(commande);
+		livraison.setDateLivraison(new Date());
+		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
+		listCommandeMedicament.forEach(cm -> {
+			Presentation presentation = cm.getPresentation();
+			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
+			livraisonPresentation.setPresentation(presentation);
+			int stock = presentation.getStock();
+			presentation.setStock(stock - cm.getQuantite());
+			if(presentation.getStock()<0){
+				inOneTime.set(false);
+				livraisonPresentation.setQuantite(stock);
+			}else{
+				livraisonPresentation.setQuantite(cm.getQuantite());
+			}
+			livraisonPresentations.add(livraisonPresentation);
+			presentationComposant.savePresentation(presentation);
+		});
+		livraison.setLivraisonPresentations(livraisonPresentations);
+		livraison = livraisonComposant.saveLivraison(livraison);
+		commande.getLivraisons().add(livraison);
+		commandeComposant.validateCart(commande);
+		Commande newCommande = new Commande();
+		newCommande.setUtilisateur(utilisateur);
+		newCommande.setStatus(StatusCommande.PANIER);
+		newCommande.setDateCommande(new Date());
+		commandeComposant.createNewCommande(newCommande);
+		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
+	}
 }
