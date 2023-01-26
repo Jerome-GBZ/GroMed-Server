@@ -25,10 +25,10 @@ public class InsertData {
 	private IPresentationRepository presentationRepository;
 	@Autowired
 	private IEtablissementRepository etablissementRepository;
-	List<Medicament> medicamentsEntityList = new ArrayList<>();
 	
-	@PersistenceContext
-	EntityManager entityManager ;
+	@Autowired
+	private IUtilisateurRepository utilisateurRepository;
+	List<Medicament> medicamentsEntityList = new ArrayList<>();
 	public void transformData() throws ParseException {
 		// File paths for the input filesserver/src/main/resources/csv/CIS_bdpm.txt
 		String[] filePaths = {"server/src/main/resources/csv/CIS_bdpm.txt", "server/src/main/resources/csv/CIS_CIP_bdpm.txt", "server/src/main/resources/csv/CIS_COMPO_bdpm.txt", "server/src/main/resources/csv/CIS_GENER_bdpm.txt", "server/src/main/resources/csv/CIS_CPD_bdpm.txt", "server/src/main/resources/csv/CIS_INFO_bdpm.txt"};
@@ -238,7 +238,7 @@ public class InsertData {
 	presentationRepository.saveAll(presentationsEntityList);
 	log.info("Presentations saved");
 	List<String[]> data = new ArrayList<>();
-	try(BufferedReader br = new BufferedReader(new FileReader("src/etalab_formatted.csv"))) {
+	try(BufferedReader br = new BufferedReader(new FileReader("server/src/main/resources/csv/etalab_formatted.csv"))) {
 		String line;
 		while ((line = br.readLine()) != null) {
 			// Use the delimiter to split the line into an array of fields
@@ -247,19 +247,12 @@ public class InsertData {
 			// Add the array of fields to the data list
 			data.add(fields);
 		}
-	} catch(
-	Exception e)
-	
-	{
+	} catch(Exception e) {
 		e.printStackTrace();
 	}
-		data.remove(0);
+	data.remove(0);
 	int i = 0;
-		while(data.size()>i &&!data.get(i)[8].
-	
-	equals("") &&data.get(i)[8]!=null)
-	
-	{
+	while(data.size()>i &&!data.get(i)[8].equals("") &&data.get(i)[8]!=null) {
 		i++;
 	}
 	List<Etablissement> etablissementsEntityList = new ArrayList<>();
@@ -272,30 +265,39 @@ public class InsertData {
 		String ville = etablissment[8].substring(etablissment[8].indexOf(" ") + 1);
 		Etablissement etablissement = new Etablissement();
 		etablissement.setEtalab(etablissment[0]);
-		etablissement.setFiness(Long.decode(etablissment[1]));
-		etablissement.setAdresse(etablissment[3] + " " + etablissment[4] + " " + etablissment[5]);
-		etablissement.setCategorie(etablissment[10]);
-		etablissement.setCodePostal(codePostal);
-		etablissement.setDepartement(etablissment[6]);
-		etablissement.setNom(etablissment[2]);
-		etablissement.setRegion(etablissment[7]);
-		etablissement.setTelephone(etablissment[9]);
-		etablissement.setVille(ville);
-		etablissementsEntityList.add(etablissement);
+		try {
+			etablissement.setFiness(Long.decode(etablissment[1]));
+			etablissement.setAdresse(etablissment[3] + " " + etablissment[4] + " " + etablissment[5]);
+			etablissement.setCategorie(etablissment[10]);
+			etablissement.setCodePostal(codePostal);
+			etablissement.setDepartement(etablissment[6]);
+			etablissement.setNom(etablissment[2]);
+			etablissement.setRegion(etablissment[7]);
+			etablissement.setTelephone(etablissment[9]);
+			etablissement.setVille(ville);
+			etablissementsEntityList.add(etablissement);
+			k++;
+		}catch (Exception e) {
+		}
 	}
-	log.info("Etablissements created");
+	log.info("Etablissements created : "+k);
 	etablissementRepository.saveAll(etablissementsEntityList);
 	log.info("Etablissements saved");
-		/*try (BufferedReader br = new BufferedReader(new FileReader("src/USER.sql"))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				finalFile.write(line+"\n");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("generating script over");*/
+	List<Utilisateur> utilisateurEntityList = new ArrayList<>();
+	for(int m=0;m<10;m++) {
+		Utilisateur utilisateur = new Utilisateur();
+		utilisateur.setNom("nom"+m);
+		utilisateur.setPrenom("prenom"+m);
+		utilisateur.setAdresse("adresse"+m);
+		utilisateur.setTelephone("telephone"+m);
+		utilisateur.setEmail("mail"+m);
+		utilisateur.setMotDePasse("motDePasse"+m);
+		utilisateur.setEtablissement(etablissementsEntityList.get(m*9000));
+		utilisateurEntityList.add(utilisateur);
+	}
+	log.info("Utilisateurs created");
+	utilisateurRepository.saveAll(utilisateurEntityList);
+	log.info("Utilisateurs saved");
 	
 }
 	
@@ -320,4 +322,5 @@ public class InsertData {
 			allData.add(dataArray);
 		}
 	}
+	
 }
