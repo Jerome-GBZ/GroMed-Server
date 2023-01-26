@@ -28,7 +28,7 @@ public class CommandeController implements ICommandeEndpoint {
 	
 	@Override
 	public ResponseEntity<List<PresentationPanierDTO>> getUserCart(String email) {
-		List<PresentationPanierDTO> cartItemCount = commandeService.getCart(email);
-		return cartItemCount!= null ? ResponseEntity.ok(cartItemCount) : ResponseEntity.notFound().build();
+		List<PresentationPanierDTO> panier = commandeService.getCart(email);
+		return !panier.isEmpty() ? ResponseEntity.ok(panier) : ResponseEntity.notFound().build();
 	}
 }
