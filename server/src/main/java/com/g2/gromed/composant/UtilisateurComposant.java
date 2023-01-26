@@ -13,9 +13,6 @@ public class UtilisateurComposant {
 	public Utilisateur authenticate(String email, String motDePasse){
 		return utilisateurRepository.findFirstByEmailAndMotDePasse(email, motDePasse);
 	}
-	public Utilisateur getUserById(Long idUtilisateur) {
-		return utilisateurRepository.findFirstById(idUtilisateur);
-	}
 
 	public Utilisateur getUserByEmail(String email) {
 		return utilisateurRepository.findFirstByEmail(email);

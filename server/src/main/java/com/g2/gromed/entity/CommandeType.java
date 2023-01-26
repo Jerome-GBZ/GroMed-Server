@@ -21,6 +21,6 @@ public class CommandeType {
 	private Commande commande;
 	
 	@ManyToOne
-	@JoinColumn(name = "email")
+	@JoinColumn(name = "email",referencedColumnName = "email")
 	private Utilisateur utilisateur;
 }
