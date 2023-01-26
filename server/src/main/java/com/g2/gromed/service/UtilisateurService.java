@@ -8,10 +8,12 @@ import com.g2.gromed.entity.Utilisateur;
 import com.g2.gromed.mapper.IUtilisateurMapper;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Log
 @Service
 @AllArgsConstructor
 public class UtilisateurService {
@@ -23,7 +25,6 @@ public class UtilisateurService {
 	public UtilisateurDTO authenticate(String email, String motDePasse) {
 		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
 		Commande commande = commandeComposant.getCart(email);
-
 		if(commande == null) {
 			commande = new Commande();
 			commande.setUtilisateur(utilisateur);
