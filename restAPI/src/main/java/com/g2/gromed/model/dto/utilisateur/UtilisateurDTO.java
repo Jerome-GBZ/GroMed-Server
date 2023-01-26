@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 @Schema(description = "Donnée utilisateur renvoyé a la connection" ,name = "UtilisateurModel")
 public class UtilisateurDTO {
-
+	@Schema(description = "Email de l'utilisateur" ,example = "john.doe@gmail.com")
+	private String email;
 	@Schema(description = "Nom de l'utilisateur" ,example = "Doe")
 	private String nom;
 	@Schema(description = "Prénom de l'utilisateur" ,example = "John")

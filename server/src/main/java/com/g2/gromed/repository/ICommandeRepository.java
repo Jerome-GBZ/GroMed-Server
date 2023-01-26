@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ICommandeRepository extends JpaRepository<Commande, Long> {
-	
-	Commande findFirstByUtilisateurIdAndStatus(Long idUtilisateur, StatusCommande panier);
+
+	Commande findFirstByUtilisateurEmailAndStatus(String email, StatusCommande panier);
 }

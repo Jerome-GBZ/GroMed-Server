@@ -16,5 +16,9 @@ public class UtilisateurComposant {
 	public Utilisateur getUserById(Long idUtilisateur) {
 		return utilisateurRepository.findFirstById(idUtilisateur);
 	}
-	
+
+	public Utilisateur getUserByEmail(String email) {
+		return utilisateurRepository.findFirstByEmail(email);
+	}
+
 }
