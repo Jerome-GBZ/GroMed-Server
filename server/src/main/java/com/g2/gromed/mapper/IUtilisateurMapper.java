@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper()
 public interface IUtilisateurMapper {
+
 	@Mapping(target="email",source="utilisateur.email")
 	@Mapping(target="nom",source="utilisateur.nom")
 	@Mapping(target="prenom",source="utilisateur.prenom")
