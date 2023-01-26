@@ -25,7 +25,7 @@ public class UtilisateurService {
 	public UtilisateurDTO authenticate(String email, String motDePasse) {
 		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
 		Commande commande = commandeComposant.getCart(email);
-		log.info("commande : "+(commande==null));
+
 		if(commande == null) {
 			commande = new Commande();
 			commande.setUtilisateur(utilisateur);
