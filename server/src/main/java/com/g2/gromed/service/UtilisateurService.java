@@ -25,14 +25,12 @@ public class UtilisateurService {
 	public UtilisateurDTO authenticate(String email, String motDePasse) {
 		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
 		Commande commande = commandeComposant.getCart(email);
-		log.info("commande : "+(commande==null));
 		if(commande == null) {
 			commande = new Commande();
 			commande.setUtilisateur(utilisateur);
 			commande.setStatus(StatusCommande.PANIER);
 			commande.setDateCommande(new Date());
 			commande = commandeComposant.createNewCommande(commande);
-			log.info("commande created : "+commande.getNumeroCommande());
 		}
 
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
