@@ -17,6 +17,7 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,16 +84,16 @@ public class CommandeService {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Commande commande = commandeComposant.getCart(email);
 		if(utilisateur == null || commande == null){
-			return null;
+			return Collections.emptyList();
 		}
 		List<CommandeMedicament> panier = commande.getCommandeMedicaments();
 		return panier
 				.stream()
 				.map(cm -> {
-					List<InfoImportanteDTO> infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).collect(Collectors.toList());
-					List<ConditionPrescriptionDTO> conditionPrescriptions = cm.getPresentation().getMedicament().getConditionDelivrances().stream().map(conditionDelivranceMapper::conditionDelivranceToConditionPrescriptionDTO).collect(Collectors.toList());
+					List<InfoImportanteDTO> infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).toList();
+					List<ConditionPrescriptionDTO> conditionPrescriptions = cm.getPresentation().getMedicament().getConditionDelivrances().stream().map(conditionDelivranceMapper::conditionDelivranceToConditionPrescriptionDTO).toList();
 					return commandeMapper.commandeMedicamentToPresentationPanierDTO(cm,infoImportantes,conditionPrescriptions);
 				})
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

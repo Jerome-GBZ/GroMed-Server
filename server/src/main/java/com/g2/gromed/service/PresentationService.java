@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -33,7 +32,7 @@ public class PresentationService {
 		List<InfoImportanteDTO> infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()
 				.stream()
 				.map(infoImportanteMapper::toInfoImportanteDTO)
-				.collect(Collectors.toList());
+				.toList();
 
 		return presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
 	}

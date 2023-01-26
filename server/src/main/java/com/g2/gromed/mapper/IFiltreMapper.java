@@ -1,8 +1,6 @@
 package com.g2.gromed.mapper;
 
-import com.g2.gromed.entity.Utilisateur;
 import com.g2.gromed.model.dto.filtre.FiltreDTO;
-import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
