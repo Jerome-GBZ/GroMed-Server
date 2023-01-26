@@ -2,9 +2,11 @@ package com.g2.gromed.composant;
 
 import com.g2.gromed.entity.Commande;
 import com.g2.gromed.entity.CommandeMedicament;
+import com.g2.gromed.entity.Livraison;
 import com.g2.gromed.entity.StatusCommande;
 import com.g2.gromed.repository.ICommandeMedicamentRepository;
 import com.g2.gromed.repository.ICommandeRepository;
+import com.g2.gromed.repository.ILivraisonRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ public class CommandeComposant {
 	private ICommandeRepository commandeRepository;
 	
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
+	
+	private ILivraisonRepository livraisonRepository;
 	
 	public Commande getCart(String email) {
 	return commandeRepository.findFirstByStatusAndUtilisateurEmail(StatusCommande.PANIER,email);
@@ -39,5 +43,13 @@ public class CommandeComposant {
 	
 	public void removeFromCart(CommandeMedicament commandePresentation) {
 		commandeMedicamentRepository.delete(commandePresentation);
+	}
+	
+	public Livraison createLivraison(Livraison livraison) {
+		return livraisonRepository.save(livraison);
+	}
+	
+	public Commande validateCart(Commande commande) {
+		return commandeRepository.save(commande);
 	}
 }

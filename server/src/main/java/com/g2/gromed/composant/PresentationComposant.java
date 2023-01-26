@@ -19,4 +19,8 @@ public class PresentationComposant {
 	public Presentation getPresentationByCodeCIP7(String codeCIP7){
 		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
+	
+	public Presentation savePresentation(Presentation presentation){
+		return presentationRepository.save(presentation);
+	}
 }
