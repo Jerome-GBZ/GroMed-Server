@@ -11,8 +11,6 @@ import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.Pagination;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
-import lombok.extern.java.Log;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = GromedApplication.class)
-@Log
+@SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
 class PresentationServiceTest {
 
     @MockBean
@@ -39,7 +37,6 @@ class PresentationServiceTest {
     IInfoImportanteMapper infoImportanteMapper;
     @Autowired
     PresentationService presentationService;
-
 
     @Test
     void getAllPresentations() {
@@ -58,11 +55,9 @@ class PresentationServiceTest {
 
         Page<PresentationCardDTO> resultPagePresentationCardDTO = presentationService.getAllPresentations(pagination);
 
-        Assertions.assertEquals(expectedPagePresentationCardDTO.getContent().size(), resultPagePresentationCardDTO.getContent().size());
-        Assertions.assertEquals(expectedPagePresentationCardDTO.getContent().get(0).getCodeCIP7(), resultPagePresentationCardDTO.getContent().get(0).getCodeCIP7());
-        Assertions.assertEquals(expectedPagePresentationCardDTO.getContent().get(0).isEstGenerique(), resultPagePresentationCardDTO.getContent().get(0).isEstGenerique());
-        Assertions.assertEquals(expectedPagePresentationCardDTO.getContent().get(0).getContientInformation(), resultPagePresentationCardDTO.getContent().get(0).getContientInformation());
+        assertThat(resultPagePresentationCardDTO).usingRecursiveComparison().isEqualTo(expectedPagePresentationCardDTO);
     }
+
 
     @Test
     void getDetailPresentation() {
@@ -75,11 +70,7 @@ class PresentationServiceTest {
         PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
 
-        Assertions.assertEquals(expectedPresentationDetailDTO.getCodeCIP7(), resultPresentationDetailDTO.getCodeCIP7());
-        Assertions.assertEquals(expectedPresentationDetailDTO.getInformationsImportantes().size(), resultPresentationDetailDTO.getInformationsImportantes().size());
-        Assertions.assertEquals(2, resultPresentationDetailDTO.getInformationsImportantes().size());
-        Assertions.assertEquals(expectedPresentationDetailDTO.getInformationsImportantes().get(1).getMessage(), resultPresentationDetailDTO.getInformationsImportantes().get(1).getMessage());
-        Assertions.assertEquals("message 1", resultPresentationDetailDTO.getInformationsImportantes().get(1).getMessage());
+        assertThat(resultPresentationDetailDTO).usingRecursiveComparison().isEqualTo(expectedPresentationDetailDTO);
     }
 
 }
