@@ -32,13 +32,13 @@ public class CommandeService {
 	
 	private PresentationComposant presentationComposant;
 	
-	public Integer addPresentationToCart(Long idUtilisateur, String codeCIP7, int quantite) {
-		Utilisateur utilisateur = utilisateurComposant.getUserById(idUtilisateur);
+	public Integer addPresentationToCart(String email, String codeCIP7, int quantite) {
+		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
 		if(presentation == null || utilisateur == null || quantite <= 0){
 			return null;
 		}
-		Commande commande = commandeComposant.getCart(idUtilisateur);
+		Commande commande = commandeComposant.getCart(email);
 		if(commande == null){
 			commande = new Commande();
 			commande.setUtilisateur(utilisateur);
@@ -65,10 +65,10 @@ public class CommandeService {
 		return commandeComposant.countCartPresentation(commande.getNumeroCommande());
 	}
 	
-	public Integer deletePresentationFromCart(Long idUtilisateur, String codeCIP7 ) {
-		Utilisateur utilisateur = utilisateurComposant.getUserById(idUtilisateur);
+	public Integer deletePresentationFromCart(String email, String codeCIP7 ) {
+		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
-		Commande commande = commandeComposant.getCart(idUtilisateur);
+		Commande commande = commandeComposant.getCart(email);
 		if(presentation == null || utilisateur == null || commande == null){
 			return null;
 		}
@@ -76,9 +76,9 @@ public class CommandeService {
 		return commandeComposant.countCartPresentation(commande.getNumeroCommande());
 	}
 	
-	public List<PresentationPanierDTO> getCart(Long idUtilisateur) {
-		Utilisateur utilisateur = utilisateurComposant.getUserById(idUtilisateur);
-		Commande commande = commandeComposant.getCart(idUtilisateur);
+	public List<PresentationPanierDTO> getCart(String email) {
+		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
+		Commande commande = commandeComposant.getCart(email);
 		if(utilisateur == null || commande == null){
 			return null;
 		}

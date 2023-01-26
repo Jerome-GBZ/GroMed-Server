@@ -14,20 +14,20 @@ import java.util.List;
 public class CommandeController implements ICommandeEndpoint {
 	private CommandeService commandeService;
 	@Override
-	public ResponseEntity<Integer> addPresentationToCart(Long idUtilisateur, String codeCIP7, int quantite) {
-		Integer cartItemCount = commandeService.addPresentationToCart(idUtilisateur, codeCIP7, quantite);
+	public ResponseEntity<Integer> addPresentationToCart(String email, String codeCIP7, int quantite) {
+		Integer cartItemCount = commandeService.addPresentationToCart(email, codeCIP7, quantite);
 		return cartItemCount!= null ? ResponseEntity.ok(cartItemCount) : ResponseEntity.notFound().build();
 	}
 	
 	@Override
-	public ResponseEntity<Integer> deletePresentationToCart(Long idUtilisateur, String codeCIP7) {
-		Integer cartItemCount = commandeService.deletePresentationFromCart(idUtilisateur, codeCIP7);
+	public ResponseEntity<Integer> deletePresentationToCart(String email, String codeCIP7) {
+		Integer cartItemCount = commandeService.deletePresentationFromCart(email, codeCIP7);
 		return cartItemCount!= null ? ResponseEntity.ok(cartItemCount) : ResponseEntity.notFound().build();
 	}
 	
 	@Override
-	public ResponseEntity<List<PresentationPanierDTO>> getUserCart(Long idUtilisateur) {
-		List<PresentationPanierDTO> cartItemCount = commandeService.getCart(idUtilisateur);
+	public ResponseEntity<List<PresentationPanierDTO>> getUserCart(String email) {
+		List<PresentationPanierDTO> cartItemCount = commandeService.getCart(email);
 		return cartItemCount!= null ? ResponseEntity.ok(cartItemCount) : ResponseEntity.notFound().build();
 	}
 }
