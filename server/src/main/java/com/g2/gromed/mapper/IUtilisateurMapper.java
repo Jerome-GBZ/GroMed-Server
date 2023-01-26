@@ -12,5 +12,6 @@ public interface IUtilisateurMapper {
 	@Mapping(target="nom",source="utilisateur.nom")
 	@Mapping(target="prenom",source="utilisateur.prenom")
 	@Mapping(target="nomEtablissement",source="utilisateur.etablissement.nom")
-	UtilisateurDTO toUtilisateurDTO(Utilisateur utilisateur);
+	@Mapping(target="nbMedicamentsPanier",source="nbMedicamentsPanier")
+	UtilisateurDTO toUtilisateurDTO(Utilisateur utilisateur,int nbMedicamentsPanier);
 }

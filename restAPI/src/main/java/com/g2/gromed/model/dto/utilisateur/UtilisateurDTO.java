@@ -16,6 +16,6 @@ public class UtilisateurDTO {
 	private String prenom;
 	@Schema(description = "Nom de l'établissement de l'utilisateur" ,example = "Hopital de la Croix Rouge")
 	private String nomEtablissement;
-	@Schema(description = "Nombre de médicaments dans le panier" ,example = "10")
-	private String nbMedicamentsPanier;
+	@Schema(description = "Nombre de médicaments dans le panier" ,example = "1")
+	private int nbMedicamentsPanier;
 }
