@@ -21,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class PresentationControllerTest {
 
     @Autowired
@@ -44,7 +46,7 @@ class PresentationControllerTest {
     private IPresentationRepository presentationRepository;
 
     @Test
-    void getPresentations() {
+    void getPresentations200() {
         final HttpHeaders headers = new HttpHeaders();
         final Map<String, Integer> urlParam = new HashMap<>();
         urlParam.put("page", 0);
@@ -74,7 +76,27 @@ class PresentationControllerTest {
     }
 
     @Test
-    void getDetailPresentation() {
+    void getPresentations404() {
+        final HttpHeaders headers = new HttpHeaders();
+        final Map<String, Integer> urlParam = new HashMap<>();
+        urlParam.put("page", 0);
+        urlParam.put("size", 1);
+
+        final ResponseEntity<Page<PresentationCardDTO>> response = testRestTemplate.exchange(
+                "/presentation/all?page={page}&size={size}",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                },
+                urlParam);
+
+        final ResponseEntity<Page<PresentationCardDTO>> expected = ResponseEntity.notFound().build();
+
+        assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
+    }
+
+    @Test
+    void getDetailPresentation200() {
         final HttpHeaders headers = new HttpHeaders();
         final Map<String, String> urlParam = new HashMap<>();
         urlParam.put("codeCIP7", "CIP7-1");
@@ -98,6 +120,24 @@ class PresentationControllerTest {
 
         final ResponseEntity<PresentationDetailDTO> expected = ResponseEntity.ok(presentationDetailDTO);
 
+        assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
+    }
+
+    @Test
+    void getDetailPresentation404() {
+        final HttpHeaders headers = new HttpHeaders();
+        final Map<String, String> urlParam = new HashMap<>();
+        urlParam.put("codeCIP7", "CIP7-1");
+
+        final ResponseEntity<PresentationDetailDTO> response = testRestTemplate.exchange(
+                "/presentation/detail?codeCIP7={codeCIP7}",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                },
+                urlParam);
+
+        final ResponseEntity<PresentationDetailDTO> expected = ResponseEntity.notFound().build();
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
     }
 }

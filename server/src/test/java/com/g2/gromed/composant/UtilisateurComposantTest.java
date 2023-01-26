@@ -4,7 +4,6 @@ import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.entity.Utilisateur;
 import com.g2.gromed.repository.IUtilisateurRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +26,6 @@ public class UtilisateurComposantTest {
 		utilisateur = utilisateurRepository.save(utilisateur);
 		
 		Utilisateur resultUtilisateur = utilisateurComposant.authenticate(utilisateur.getEmail(), utilisateur.getMotDePasse());
-		assertThat(resultUtilisateur).usingRecursiveComparison().ignoringFields("commandes","commandeTypes").isEqualTo(utilisateur);
+		assertThat(resultUtilisateur).usingRecursiveComparison().ignoringFields("commandes","commandeTypes", "$$_hibernate_attributeInterceptor", "$$_hibernate_collectionTracker", "$$_hibernate_tracker").isEqualTo(utilisateur);
 	}
 }
