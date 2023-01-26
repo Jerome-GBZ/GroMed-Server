@@ -18,7 +18,7 @@ public class CommandeComposant {
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
 	
 	public Commande getCart(String email) {
-		return commandeRepository.findFirstByUtilisateurEmailAndStatus(email, StatusCommande.PANIER);
+		return commandeRepository.findFirstByStatusAndUtilisateurEmail(StatusCommande.PANIER,email);
 	}
 	
 	public CommandeMedicament findFirstByNumeroCommandeAndCodeCIP7(Long numeroCommande, String codeCIP7) {
