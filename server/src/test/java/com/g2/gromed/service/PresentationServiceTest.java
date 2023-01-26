@@ -8,15 +8,17 @@ import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
-import com.g2.gromed.model.dto.presentation.Pagination;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,6 @@ class PresentationServiceTest {
 
     @MockBean
     PresentationComposant presentationComposant;
-
     @Autowired
     IPresentationMapper presentationMapper;
     @Autowired
@@ -45,7 +46,7 @@ class PresentationServiceTest {
         presentationList.add(presentation);
 
         Page<Presentation> mockPage = new PageImpl<>(presentationList);
-        Pagination pagination = new Pagination(0, 2);
+        Pageable pagination = PageRequest.of(0, 2);
         when(presentationComposant.getPresentations(pagination)).thenReturn(mockPage);
 
         PresentationCardDTO presentationCardDTO = presentationMapper.toPresentationCardDTO(presentation);
@@ -57,7 +58,6 @@ class PresentationServiceTest {
 
         assertThat(resultPagePresentationCardDTO).usingRecursiveComparison().isEqualTo(expectedPagePresentationCardDTO);
     }
-
 
     @Test
     void getDetailPresentation() {
@@ -73,4 +73,12 @@ class PresentationServiceTest {
         assertThat(resultPresentationDetailDTO).usingRecursiveComparison().isEqualTo(expectedPresentationDetailDTO);
     }
 
+    @Test
+    void getDetailPresentationNotFound() {
+        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        when(presentationComposant.getPresentationByCodeCIP7(presentation.getCodeCIP7())).thenReturn(null);
+
+        PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
+        Assertions.assertNull(resultPresentationDetailDTO);
+    }
 }
