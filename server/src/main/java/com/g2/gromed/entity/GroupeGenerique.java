@@ -18,7 +18,7 @@ public class GroupeGenerique {
 	private String identifiantGroupeGenerique;
 
 	@OneToOne
-	@JoinColumn(name = "codeCIS",unique = true)
+	@JoinColumn(name = "codeCIS")
 	private Medicament medicament;
 
 	private String typeGenerique;

@@ -40,12 +40,12 @@ public class Medicament {
 
 	private String denomination;
 
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "codeCIS")
 	private List<Composition> compositions;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<ConditionDelivrance> conditionDelivrances;
 
 	@JoinColumn(name = "codeCIS")
@@ -53,7 +53,7 @@ public class Medicament {
 	private List<InfoImportante> infoImportantes;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<GroupeGenerique> groupeGeneriques;
 
 }

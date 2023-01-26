@@ -1,10 +1,7 @@
 package com.g2.gromed.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @Table(name = "UTILISATEUR")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Utilisateur {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +39,7 @@ public class Utilisateur {
 
 	private String telephone;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumns(value = {@JoinColumn(name = "finess", referencedColumnName = "finess"), @JoinColumn(name = "etalab", referencedColumnName = "etalab")})
 	private Etablissement etablissement;
 	

@@ -2,6 +2,8 @@ package com.g2.gromed;
 
 import com.g2.gromed.entity.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -136,6 +138,47 @@ public abstract class TestUtils {
         }
         return conditionDelivrances;
     }
-
+    
+    public static List<Etablissement> getEtablissementList(int nb) {
+        List<Etablissement> etablissements = new ArrayList<>();
+        for (int i = 0; i < nb; i++) {
+            etablissements.add(Etablissement.builder()
+                    .etalab(String.format("etalab%d", i))
+                    .finess((long) i)
+                    .codePostal(String.format("code postal %d", i))
+                    .region(String.format("code region %d", i))
+                    .adresse(String.format("adresse %d", i))
+                    .categorie(String.format("categorie %d", i))
+                    .departement(String.format("departement %d", i))
+                    .nom(String.format("nom %d", i))
+                    .telephone(String.format("telephone %d", i))
+                    .ville(String.format("ville %d", i))
+                    .build());
+        }
+        return etablissements;
+    }
+    public static List<Utilisateur> getUtilisateurList(int nb) throws ParseException {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+        Date date = new Date();
+        SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
+        String stringDate= DateFor.format(date);
+        for (int i = 0; i < nb; i++) {
+            utilisateurs.add(Utilisateur.builder()
+                    .id((long) i)
+                    .nom(String.format("nom %d", i))
+                    .prenom(String.format("prenom %d", i))
+                    .email(String.format("email %d", i))
+                    .adresse(String.format("adresse %d", i))
+                    .motDePasse(String.format("mot de passe %d", i))
+                    .dateNaissance(DateFor.parse(DateFor.format(new Date())))
+                    .ville(String.format("ville %d", i))
+                    .telephone(String.format("telephone %d", i))
+                    .codePostal(String.format("code postal %d", i))
+                    .etablissement(getEtablissementList(1).get(0))
+                    .build());
+        }
+        return utilisateurs;
+    }
+    
 
 }

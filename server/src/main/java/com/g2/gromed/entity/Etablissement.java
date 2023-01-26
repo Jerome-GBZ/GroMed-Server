@@ -1,10 +1,7 @@
 package com.g2.gromed.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @Table(name = "ETABLISSEMENT")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Etablissement {
 
 	@Id
@@ -38,7 +36,5 @@ public class Etablissement {
 	private String region;
 
 	private String categorie;
-
-	@OneToMany(mappedBy = "etablissement")
-	private List<Utilisateur> utilisateurs;
+	
 }
