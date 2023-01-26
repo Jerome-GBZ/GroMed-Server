@@ -5,11 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IUtilisateurRepository extends JpaRepository<Utilisateur, Long> {
+public interface IUtilisateurRepository extends JpaRepository<Utilisateur, String> {
 	
 	Utilisateur findFirstByEmailAndMotDePasse(String email, String motDePasse);
-	
-	Utilisateur findFirstById(Long idUtilisateur);
 
     Utilisateur findFirstByEmail(String email);
 }

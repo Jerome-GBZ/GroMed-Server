@@ -14,10 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Utilisateur {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
+	@Id
 	@Column(unique = true)
 	private String email;
 
