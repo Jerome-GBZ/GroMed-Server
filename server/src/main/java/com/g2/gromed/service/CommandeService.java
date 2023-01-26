@@ -7,9 +7,11 @@ import com.g2.gromed.entity.*;
 import com.g2.gromed.mapper.ICommandeMapper;
 import com.g2.gromed.mapper.IConditionDelivranceMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
+import com.g2.gromed.mapper.IUtilisateurMapper;
 import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class CommandeService {
 	private ICommandeMapper commandeMapper;
 	private IInfoImportanteMapper infoImportanteMapper;
+	private IUtilisateurMapper utilisateurMapper;
 	private IConditionDelivranceMapper conditionDelivranceMapper;
 	private CommandeComposant commandeComposant;
 	
@@ -32,7 +35,7 @@ public class CommandeService {
 	
 	private PresentationComposant presentationComposant;
 	
-	public Integer addPresentationToCart(String email, String codeCIP7, int quantite) {
+	public UtilisateurDTO addPresentationToCart(String email, String codeCIP7, int quantite) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
 		if(presentation == null || utilisateur == null || quantite <= 0){
@@ -62,10 +65,10 @@ public class CommandeService {
 			commandeMedicament.setQuantite(commandeMedicament.getQuantite() + quantite);
 			commandeComposant.addToCart(commandeMedicament);
 		}
-		return commandeComposant.countCartPresentation(commande.getNumeroCommande());
+		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
 	
-	public Integer deletePresentationFromCart(String email, String codeCIP7 ) {
+	public UtilisateurDTO deletePresentationFromCart(String email, String codeCIP7 ) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
 		Commande commande = commandeComposant.getCart(email);
@@ -73,7 +76,7 @@ public class CommandeService {
 			return null;
 		}
 		commandeComposant.removeFromCart(commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7));
-		return commandeComposant.countCartPresentation(commande.getNumeroCommande());
+		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
 	
 	public List<PresentationPanierDTO> getCart(String email) {

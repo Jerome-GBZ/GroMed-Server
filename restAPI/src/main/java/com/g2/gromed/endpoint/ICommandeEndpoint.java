@@ -1,6 +1,7 @@
 package com.g2.gromed.endpoint;
 
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
 	@ApiResponse(responseCode = "404", description = "Commande ou présentation non trouvé")
 	@PostMapping(value = "/add", produces = "application/json")
-	ResponseEntity<Integer> addPresentationToCart(@RequestParam("email") String email, @RequestParam("codeCIP7") String codeCIP7, @RequestParam("quantite") int quantite);
+	ResponseEntity<UtilisateurDTO> addPresentationToCart(@RequestParam("email") String email, @RequestParam("codeCIP7") String codeCIP7, @RequestParam("quantite") int quantite);
 	
 	@ApiOperation(value = "Supprimer un produit du panier")
 	@ApiResponse(responseCode = "200", description = "OK")
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
 	@ApiResponse(responseCode = "404", description = "Commande ou présentation non trouvé dans la commande")
 	@DeleteMapping(value = "/delete", produces = "application/json")
-	ResponseEntity<Integer> deletePresentationToCart(@RequestParam("email") String email,@RequestParam("codeCIP7") String codeCIP7);
+	ResponseEntity<UtilisateurDTO> deletePresentationToCart(@RequestParam("email") String email,@RequestParam("codeCIP7") String codeCIP7);
 	
 	@ApiOperation(value = "Récupérer le panier de l'utilisateur")
 	@ApiResponse(responseCode = "200", description = "OK")
