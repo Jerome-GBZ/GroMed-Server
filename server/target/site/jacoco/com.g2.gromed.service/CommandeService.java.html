@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandeService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.service</a> &gt; <span class="el_source">CommandeService.java</span></div><h1>CommandeService.java</h1><pre class="source lang-java linenums">package com.g2.gromed.service;
+
+import com.g2.gromed.composant.CommandeComposant;
+import com.g2.gromed.composant.LivraisonComposant;
+import com.g2.gromed.composant.PresentationComposant;
+import com.g2.gromed.composant.UtilisateurComposant;
+import com.g2.gromed.entity.*;
+import com.g2.gromed.mapper.*;
+import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
+import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
+import com.g2.gromed.model.dto.commande.LivraisonDTO;
+import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+<span class="fc" id="L22">@Log</span>
+@Service
+<span class="fc" id="L24">@AllArgsConstructor</span>
+public class CommandeService {
+	private ICommandeMapper commandeMapper;
+	private IInfoImportanteMapper infoImportanteMapper;
+	private IUtilisateurMapper utilisateurMapper;
+	private IConditionDelivranceMapper conditionDelivranceMapper;
+	
+	private ILivraisonMapper livraisonMapper;
+	
+	private CommandeComposant commandeComposant;
+
+	private UtilisateurComposant utilisateurComposant;
+
+	private PresentationComposant presentationComposant;
+	
+	private LivraisonComposant livraisonComposant;
+	
+	public UtilisateurDTO addPresentationToCart(String email, String codeCIP7, int quantite) {
+<span class="nc" id="L42">		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);</span>
+<span class="nc" id="L43">		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);</span>
+<span class="nc bnc" id="L44" title="All 6 branches missed.">		if(presentation == null || utilisateur == null || quantite &lt;= 0){</span>
+<span class="nc" id="L45">			return null;</span>
+		}
+<span class="nc" id="L47">		Commande commande = commandeComposant.getCart(email);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		if(commande == null){</span>
+<span class="nc" id="L49">			commande = createNewCartForUser(utilisateur);</span>
+<span class="nc" id="L50">			log.info(&quot;Commande created: &quot; + commande.getNumeroCommande());</span>
+		}else{
+<span class="nc" id="L52">			log.info(&quot;Commande found: &quot; + commande.getNumeroCommande());</span>
+		}
+
+<span class="nc" id="L55">		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7);</span>
+<span class="nc" id="L56">		log.info(&quot;CommandeMedicament found: &quot; + commandeMedicament);</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		if(commandeMedicament == null){</span>
+<span class="nc" id="L58">			CommandeMedicament newMedicament = new CommandeMedicament();</span>
+<span class="nc" id="L59">			newMedicament.setQuantite(quantite);</span>
+<span class="nc" id="L60">			newMedicament.setCommande(commande);</span>
+<span class="nc" id="L61">			newMedicament.setPresentation(presentation);</span>
+<span class="nc" id="L62">			commandeComposant.addToCart(newMedicament);</span>
+<span class="nc" id="L63">		}else{</span>
+<span class="nc" id="L64">			commandeMedicament.setQuantite(commandeMedicament.getQuantite() + quantite);</span>
+<span class="nc" id="L65">			commandeComposant.addToCart(commandeMedicament);</span>
+		}
+<span class="nc" id="L67">		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));</span>
+	}
+
+	public UtilisateurDTO deletePresentationFromCart(String email, String codeCIP7 ) {
+<span class="nc" id="L71">		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);</span>
+<span class="nc" id="L72">		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);</span>
+<span class="nc" id="L73">		Commande commande = commandeComposant.getCart(email);</span>
+<span class="nc bnc" id="L74" title="All 6 branches missed.">		if(presentation == null || utilisateur == null || commande == null){</span>
+<span class="nc" id="L75">			return null;</span>
+		}
+<span class="nc" id="L77">		commandeComposant.removeFromCart(commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7));</span>
+<span class="nc" id="L78">		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));</span>
+	}
+
+	public List&lt;PresentationPanierDTO&gt; getCart(String email) {
+<span class="nc" id="L82">		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);</span>
+<span class="nc" id="L83">		Commande commande = commandeComposant.getCart(email);</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">		if(utilisateur == null || commande == null){</span>
+<span class="nc" id="L85">			return Collections.emptyList();</span>
+		}
+<span class="nc" id="L87">		List&lt;CommandeMedicament&gt; panier = commande.getCommandeMedicaments();</span>
+<span class="nc" id="L88">		return panier</span>
+<span class="nc" id="L89">				.stream()</span>
+<span class="nc" id="L90">				.map(cm -&gt; {</span>
+<span class="nc" id="L91">					List&lt;InfoImportanteDTO&gt; infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).toList();</span>
+<span class="nc" id="L92">					List&lt;ConditionPrescriptionDTO&gt; conditionPrescriptions = cm.getPresentation().getMedicament().getConditionDelivrances().stream().map(conditionDelivranceMapper::conditionDelivranceToConditionPrescriptionDTO).toList();</span>
+<span class="nc" id="L93">					return commandeMapper.commandeMedicamentToPresentationPanierDTO(cm,infoImportantes,conditionPrescriptions);</span>
+				})
+<span class="nc" id="L95">				.toList();</span>
+	}
+
+    public AlerteIndisponibilitePresentationDTO getUnavailablePresentations(String email) {
+<span class="fc" id="L99">		Commande commande = commandeComposant.getCart(email);</span>
+<span class="fc bfc" id="L100" title="All 4 branches covered.">		if(null == commande || commande.getCommandeMedicaments().isEmpty()){</span>
+<span class="fc" id="L101">			return null;</span>
+		}
+
+<span class="fc" id="L104">		List&lt;CommandeMedicament&gt; commandeMedicaments = commande.getCommandeMedicaments();</span>
+<span class="fc" id="L105">		Map&lt;String, Integer&gt; alertesIndisponibilites = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L106">		commandeMedicaments.forEach(commandeMedicament -&gt; {</span>
+<span class="fc" id="L107">			String codeCIP7 = commandeMedicament.getPresentation().getCodeCIP7();</span>
+<span class="fc" id="L108">			Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);</span>
+<span class="fc" id="L109">			int stock = presentation.getStock();</span>
+<span class="fc" id="L110">			int quantite = commandeMedicament.getQuantite();</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">			if(quantite &gt; stock){</span>
+<span class="fc" id="L112">				alertesIndisponibilites.put(codeCIP7, stock);</span>
+			}
+<span class="fc" id="L114">		});</span>
+
+<span class="fc" id="L116">		return new AlerteIndisponibilitePresentationDTO(alertesIndisponibilites);</span>
+    }
+	
+	public LivraisonDTO validateCart(String email) {
+<span class="nc" id="L120">		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);</span>
+<span class="nc" id="L121">		AtomicBoolean inOneTime = new AtomicBoolean(true);</span>
+<span class="nc" id="L122">		Commande commande = commandeComposant.getCart(email);</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">		if(commande == null){</span>
+<span class="nc" id="L124">			return null;</span>
+		}
+		
+<span class="nc" id="L127">		commande.setStatus(StatusCommande.EN_COURS);</span>
+<span class="nc" id="L128">		List&lt;CommandeMedicament&gt; listCommandeMedicament = commande.getCommandeMedicaments();</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">		if(listCommandeMedicament.isEmpty()){</span>
+<span class="nc" id="L130">			return null;</span>
+		}
+		
+<span class="nc" id="L133">		Livraison livraison = new Livraison();</span>
+<span class="nc" id="L134">		livraison.setCommande(commande);</span>
+<span class="nc" id="L135">		livraison.setDateLivraison(new Date());</span>
+		
+<span class="nc" id="L137">		List&lt;LivraisonPresentation&gt; livraisonPresentations =createLivraisonMedicamentsEntity(inOneTime, listCommandeMedicament);</span>
+		
+<span class="nc" id="L139">		livraison.setLivraisonPresentations(livraisonPresentations);</span>
+<span class="nc" id="L140">		livraison = livraisonComposant.saveLivraison(livraison);</span>
+<span class="nc" id="L141">		commande.getLivraisons().add(livraison);</span>
+<span class="nc" id="L142">		commandeComposant.validateCart(commande);</span>
+<span class="nc" id="L143">		createNewCartForUser(utilisateur);</span>
+		
+<span class="nc" id="L145">		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());</span>
+	}
+	
+	private Commande createNewCartForUser(Utilisateur utilisateur) {
+<span class="nc" id="L149">		Commande newCommande = new Commande();</span>
+<span class="nc" id="L150">		newCommande.setUtilisateur(utilisateur);</span>
+<span class="nc" id="L151">		newCommande.setStatus(StatusCommande.PANIER);</span>
+<span class="nc" id="L152">		newCommande.setDateCommande(new Date());</span>
+<span class="nc" id="L153">		return commandeComposant.createNewCommande(newCommande);</span>
+	}
+	
+	private List&lt;LivraisonPresentation&gt; createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List&lt;CommandeMedicament&gt; listCommandeMedicament) {
+<span class="nc" id="L157">		List&lt;LivraisonPresentation&gt; livraisonPresentations = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L158">		listCommandeMedicament.forEach(cm -&gt; {</span>
+<span class="nc" id="L159">			Presentation presentation = cm.getPresentation();</span>
+<span class="nc" id="L160">			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();</span>
+<span class="nc" id="L161">			livraisonPresentation.setPresentation(presentation);</span>
+<span class="nc" id="L162">			int stock = presentation.getStock();</span>
+<span class="nc" id="L163">			presentation.setStock(stock - cm.getQuantite());</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">			if(presentation.getStock()&lt;0){</span>
+<span class="nc" id="L165">				inOneTime.set(false);</span>
+<span class="nc" id="L166">				livraisonPresentation.setQuantite(stock);</span>
+			}else{
+<span class="nc" id="L168">				livraisonPresentation.setQuantite(cm.getQuantite());</span>
+			}
+<span class="nc" id="L170">			livraisonPresentations.add(livraisonPresentation);</span>
+<span class="nc" id="L171">			presentationComposant.savePresentation(presentation);</span>
+<span class="nc" id="L172">		});</span>
+<span class="nc" id="L173">		return livraisonPresentations;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

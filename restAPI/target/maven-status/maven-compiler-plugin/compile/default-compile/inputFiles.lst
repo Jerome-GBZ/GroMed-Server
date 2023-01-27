@@ -1,0 +1,14 @@
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\endpoint\IUtilisateurEndpoint.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\commande\ConditionPrescriptionDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\filtre\FiltreDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\presentation\Pagination.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\presentation\PresentationDetailDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\commande\LivraisonDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\endpoint\ICommandeEndpoint.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\endpoint\IPresentationEndpoint.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\presentation\PresentationCardDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\endpoint\IFiltreEndpoint.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\presentation\InfoImportanteDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\utilisateur\UtilisateurDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\commande\PresentationPanierDTO.java
+C:\Users\tomfr\M1 MIAGE\GroMed-Server\restAPI\src\main\java\com\g2\gromed\model\dto\commande\AlerteIndisponibilitePresentationDTO.java

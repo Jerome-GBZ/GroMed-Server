@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IInfoImportanteMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.mapper</a> &gt; <span class="el_source">IInfoImportanteMapperImpl.java</span></div><h1>IInfoImportanteMapperImpl.java</h1><pre class="source lang-java linenums">package com.g2.gromed.mapper;
+
+import com.g2.gromed.entity.InfoImportante;
+import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2023-01-27T11:30:59+0100&quot;,
+    comments = &quot;version: 1.5.3.Final, compiler: javac, environment: Java 18.0.2.1 (Oracle Corporation)&quot;
+)
+@Component
+<span class="fc" id="L14">public class IInfoImportanteMapperImpl implements IInfoImportanteMapper {</span>
+
+    @Override
+    public InfoImportanteDTO toInfoImportanteDTO(InfoImportante infoImportante) {
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">        if ( infoImportante == null ) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="fc" id="L22">        InfoImportanteDTO infoImportanteDTO = new InfoImportanteDTO();</span>
+
+<span class="fc" id="L24">        infoImportanteDTO.setMessage( infoImportante.getMessage() );</span>
+<span class="fc" id="L25">        infoImportanteDTO.setLien( infoImportante.getLien() );</span>
+
+<span class="fc" id="L27">        return infoImportanteDTO;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IFiltreMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.mapper</a> &gt; <span class="el_source">IFiltreMapperImpl.java</span></div><h1>IFiltreMapperImpl.java</h1><pre class="source lang-java linenums">package com.g2.gromed.mapper;
+
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2023-01-27T11:30:59+0100&quot;,
+    comments = &quot;version: 1.5.3.Final, compiler: javac, environment: Java 18.0.2.1 (Oracle Corporation)&quot;
+)
+@Component
+<span class="fc" id="L15">public class IFiltreMapperImpl implements IFiltreMapper {</span>
+
+    @Override
+    public FiltreDTO toFiltreDTO(List&lt;String&gt; fTitulaires, List&lt;String&gt; fCompositions) {
+<span class="nc bnc" id="L19" title="All 4 branches missed.">        if ( fTitulaires == null &amp;&amp; fCompositions == null ) {</span>
+<span class="nc" id="L20">            return null;</span>
+        }
+
+<span class="nc" id="L23">        FiltreDTO filtreDTO = new FiltreDTO();</span>
+
+<span class="nc" id="L25">        List&lt;String&gt; list = fTitulaires;</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L27">            filtreDTO.setTitulaires( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+<span class="nc" id="L29">        List&lt;String&gt; list1 = fCompositions;</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if ( list1 != null ) {</span>
+<span class="nc" id="L31">            filtreDTO.setSubstancesDenomitations( new ArrayList&lt;String&gt;( list1 ) );</span>
+        }
+
+<span class="nc" id="L34">        return filtreDTO;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

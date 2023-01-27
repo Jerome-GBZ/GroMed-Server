@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Medicament.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.entity</a> &gt; <span class="el_source">Medicament.java</span></div><h1>Medicament.java</h1><pre class="source lang-java linenums">package com.g2.gromed.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Date;
+import java.util.List;
+
+@Getter
+<span class="nc" id="L10">@Setter</span>
+@Entity
+<span class="fc" id="L12">@AllArgsConstructor</span>
+<span class="fc" id="L13">@NoArgsConstructor</span>
+<span class="pc" id="L14">@Builder</span>
+@Table(name = &quot;MEDICAMENT&quot;)
+public class Medicament {
+	
+	@Id
+<span class="fc" id="L19">	private String codeCIS;</span>
+
+<span class="fc" id="L21">	private String formePharmaceutique;</span>
+
+<span class="nc" id="L23">	private String voiesAdministratifAMM;</span>
+
+<span class="nc" id="L25">	private String typeProcedureAMM;</span>
+
+	@Column(name = &quot;dateamm&quot;, columnDefinition = &quot;DATE&quot;)
+	@Temporal(TemporalType.DATE)
+<span class="nc" id="L29">	private Date dateAMM;</span>
+
+<span class="nc" id="L31">	private String etatCommercialisation;</span>
+
+<span class="nc" id="L33">	private String statusBDM;</span>
+
+<span class="nc" id="L35">	private String numeroAutorisationEuropeenne;</span>
+
+<span class="fc" id="L37">	private String titulaire;</span>
+
+<span class="nc" id="L39">	private String surveillanceRenforcee;</span>
+
+<span class="fc" id="L41">	private String denomination;</span>
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = &quot;codeCIS&quot;)
+<span class="nc" id="L45">	private List&lt;Composition&gt; compositions;</span>
+
+	@JoinColumn(name = &quot;codeCIS&quot;)
+	@OneToMany(cascade = CascadeType.ALL)
+<span class="nc" id="L49">	private List&lt;ConditionDelivrance&gt; conditionDelivrances;</span>
+
+	@JoinColumn(name = &quot;codeCIS&quot;)
+	@OneToMany(cascade = CascadeType.ALL)
+<span class="fc" id="L53">	private List&lt;InfoImportante&gt; infoImportantes;</span>
+
+	@JoinColumn(name = &quot;codeCIS&quot;)
+	@OneToMany(cascade = CascadeType.ALL)
+<span class="fc" id="L57">	private List&lt;GroupeGenerique&gt; groupeGeneriques;</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

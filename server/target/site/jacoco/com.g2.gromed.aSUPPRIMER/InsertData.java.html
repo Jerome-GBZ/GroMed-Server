@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.aSUPPRIMER</a> &gt; <span class="el_source">InsertData.java</span></div><h1>InsertData.java</h1><pre class="source lang-java linenums">package com.g2.gromed.aSUPPRIMER;
+
+import com.g2.gromed.entity.*;
+import com.g2.gromed.repository.*;
+import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+<span class="fc" id="L17">@Log</span>
+@Service
+<span class="fc" id="L19">public class InsertData {</span>
+	@Autowired
+	private IMedicamentRepository medicamentRepository;
+	@Autowired
+	private IPresentationRepository presentationRepository;
+	@Autowired
+	private IEtablissementRepository etablissementRepository;
+	
+	@Autowired
+	private IUtilisateurRepository utilisateurRepository;
+<span class="fc" id="L29">	List&lt;Medicament&gt; medicamentsEntityList = new ArrayList&lt;&gt;();</span>
+	public void transformData() throws ParseException {
+		// File paths for the input filesserver/src/main/resources/csv/CIS_bdpm.txt
+<span class="nc" id="L32">		String[] filePaths = {&quot;server/src/main/resources/csv/CIS_bdpm.txt&quot;, &quot;server/src/main/resources/csv/CIS_CIP_bdpm.txt&quot;, &quot;server/src/main/resources/csv/CIS_COMPO_bdpm.txt&quot;, &quot;server/src/main/resources/csv/CIS_GENER_bdpm.txt&quot;, &quot;server/src/main/resources/csv/CIS_CPD_bdpm.txt&quot;, &quot;server/src/main/resources/csv/CIS_INFO_bdpm.txt&quot;};</span>
+<span class="nc" id="L33">		SimpleDateFormat formatter = new SimpleDateFormat(&quot;dd-MM-yyyy&quot;, Locale.FRANCE);</span>
+		// Delimiter used in TSV files
+<span class="nc" id="L35">		String delimiter = &quot;\t&quot;;</span>
+<span class="nc" id="L36">		int[] keyIndexes = {0, 0, 0, 2, 0, 0};</span>
+		// Array to hold the extracted data
+<span class="nc" id="L38">		ArrayList&lt;String[][]&gt; allData = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc" id="L40">		ReadFile(filePaths, delimiter, allData);</span>
+		
+		//Set of keys in the first array
+<span class="nc" id="L43">		HashSet&lt;String&gt; keys = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">		for (String[] fields : allData.get(0)) {</span>
+<span class="nc" id="L45">			keys.add(fields[0]);</span>
+		}
+		
+		// Iterate over the last 3 files
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		for (int i = 1; i &lt; allData.size(); i++) {</span>
+<span class="nc" id="L50">			String[][] data = allData.get(i);</span>
+<span class="nc" id="L51">			List&lt;String[]&gt; newData = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">			for (String[] fields : data) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				if (keys.contains(fields[keyIndexes[i]])) {</span>
+<span class="nc" id="L54">					newData.add(fields);</span>
+				}
+			}
+			//Convert List&lt;String[]&gt; to String[][]
+<span class="nc" id="L58">			String[][] newDataArray = newData.toArray(new String[newData.size()][]);</span>
+<span class="nc" id="L59">			allData.set(i, newDataArray);</span>
+			
+			//Write the new data array to file
+<span class="nc" id="L62">			try (FileWriter fw = new FileWriter(filePaths[i], StandardCharsets.UTF_8)) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">				for (String[] fields : newDataArray) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">					for (int j = 0; j &lt; fields.length; j++) {</span>
+<span class="nc" id="L65">						fw.write(fields[j]);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">						if (j &lt; fields.length - 1) {</span>
+<span class="nc" id="L67">							fw.write(delimiter);</span>
+						}
+					}
+<span class="nc" id="L70">					fw.write(&quot;\n&quot;);</span>
+				}
+<span class="nc" id="L72">			} catch (Exception e) {</span>
+<span class="nc" id="L73">				e.printStackTrace();</span>
+<span class="nc" id="L74">			}</span>
+			
+		}
+<span class="nc" id="L77">		ArrayList&lt;String[][]&gt; allData2 = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L78">		ReadFile(filePaths, delimiter, allData2);</span>
+		
+<span class="nc" id="L80">		String[][] medicaments = allData2.get(0);</span>
+<span class="nc" id="L81">		String[][] presentations = allData2.get(1);</span>
+<span class="nc" id="L82">		String[][] compositions = allData.get(2);</span>
+<span class="nc" id="L83">		String[][] groupeGeneriques = allData2.get(3);</span>
+<span class="nc" id="L84">		String[][] conditionDelivrances = allData.get(4);</span>
+<span class="nc" id="L85">		String[][] infoImportantes = allData.get(5);</span>
+		
+<span class="nc" id="L87">		Map&lt;String, List&lt;String[]&gt;&gt; compositionsByCodeCIS = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">		for (String[] fields : compositions) {</span>
+			//populate medicament fields from fields array
+			//...
+<span class="nc bnc" id="L91" title="All 2 branches missed.">			if (!compositionsByCodeCIS.containsKey(fields[0])) {</span>
+<span class="nc" id="L92">				compositionsByCodeCIS.put(fields[0], new ArrayList&lt;&gt;());</span>
+			}
+<span class="nc" id="L94">			compositionsByCodeCIS.get(fields[0]).add(fields);</span>
+		}
+<span class="nc" id="L96">		Map&lt;String, List&lt;String[]&gt;&gt; groupeGeneriquesByCodeCIS = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		for (String[] fields : groupeGeneriques) {</span>
+			//populate medicament fields from fields array
+			//...
+<span class="nc bnc" id="L100" title="All 2 branches missed.">			if (!groupeGeneriquesByCodeCIS.containsKey(fields[2])) {</span>
+<span class="nc" id="L101">				groupeGeneriquesByCodeCIS.put(fields[2], new ArrayList&lt;&gt;());</span>
+			}
+<span class="nc" id="L103">			groupeGeneriquesByCodeCIS.get(fields[2]).add(fields);</span>
+		}
+<span class="nc" id="L105">		Map&lt;String, List&lt;String[]&gt;&gt; conditionDelivrancesByCodeCIS = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		for (String[] fields : conditionDelivrances) {</span>
+			//populate medicament fields from fields array
+			//...
+<span class="nc bnc" id="L109" title="All 2 branches missed.">			if (!conditionDelivrancesByCodeCIS.containsKey(fields[0])) {</span>
+<span class="nc" id="L110">				conditionDelivrancesByCodeCIS.put(fields[0], new ArrayList&lt;&gt;());</span>
+			}
+<span class="nc" id="L112">			conditionDelivrancesByCodeCIS.get(fields[0]).add(fields);</span>
+		}
+<span class="nc" id="L114">		Map&lt;String, List&lt;String[]&gt;&gt; infoImportantesByCodeCIS = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">		for (String[] fields : infoImportantes) {</span>
+			//populate medicament fields from fields array
+			//...
+<span class="nc bnc" id="L118" title="All 2 branches missed.">			if (!infoImportantesByCodeCIS.containsKey(fields[0])) {</span>
+<span class="nc" id="L119">				infoImportantesByCodeCIS.put(fields[0], new ArrayList&lt;&gt;());</span>
+			}
+<span class="nc" id="L121">			infoImportantesByCodeCIS.get(fields[0]).add(fields);</span>
+		}
+<span class="nc" id="L123">		log.info(&quot;tri terminé&quot;);</span>
+<span class="nc" id="L124">		int j = 0;</span>
+<span class="nc" id="L125">		int batchSize = 100;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">		for (String[] fields : medicaments) {</span>
+<span class="nc" id="L127">			Medicament medicament = new Medicament();</span>
+<span class="nc" id="L128">			medicament.setCodeCIS(fields[0].replace(&quot;\uFEFF&quot;, &quot;&quot;));</span>
+<span class="nc" id="L129">			medicament.setDenomination(fields[1]);</span>
+<span class="nc" id="L130">			medicament.setFormePharmaceutique(fields[2]);</span>
+<span class="nc" id="L131">			medicament.setVoiesAdministratifAMM(fields[3]);</span>
+<span class="nc" id="L132">			medicament.setStatusBDM(fields[8]);</span>
+<span class="nc" id="L133">			medicament.setEtatCommercialisation(fields[6]);</span>
+<span class="nc" id="L134">			medicament.setDateAMM(new Date(fields[7]));</span>
+<span class="nc" id="L135">			medicament.setNumeroAutorisationEuropeenne(fields[9]);</span>
+<span class="nc" id="L136">			medicament.setTitulaire(fields[10]);</span>
+<span class="nc" id="L137">			medicament.setSurveillanceRenforcee(fields[11]);</span>
+<span class="nc" id="L138">			medicament.setTypeProcedureAMM(fields[4]);</span>
+			
+<span class="nc" id="L140">			List&lt;String[]&gt; groupeGeneriquesMedicament = groupeGeneriquesByCodeCIS.get(fields[0]);</span>
+<span class="nc" id="L141">			List&lt;GroupeGenerique&gt; groupeGeneriquesEntity = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">			if (groupeGeneriquesMedicament != null) {</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">				for (String[] groupeGenerique : groupeGeneriquesMedicament) {</span>
+<span class="nc" id="L144">					GroupeGenerique groupe = new GroupeGenerique();</span>
+<span class="nc" id="L145">					groupe.setIdentifiantGroupeGenerique(groupeGenerique[0]);</span>
+<span class="nc" id="L146">					groupe.setLibelle(groupeGenerique[1]);</span>
+<span class="nc" id="L147">					groupe.setNumeroTri(groupeGenerique[4]);</span>
+<span class="nc" id="L148">					groupe.setTypeGenerique(groupeGenerique[3]);</span>
+<span class="nc" id="L149">					groupeGeneriquesEntity.add(groupe);</span>
+<span class="nc" id="L150">				}</span>
+<span class="nc" id="L151">				medicament.setGroupeGeneriques(groupeGeneriquesEntity);</span>
+			}
+			//Same for InfoImportante
+<span class="nc" id="L154">			List&lt;String[]&gt; infoImportantesMedicament = infoImportantesByCodeCIS.get(fields[0]);</span>
+<span class="nc" id="L155">			List&lt;InfoImportante&gt; infoImportantesEntity = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">			if (infoImportantesMedicament != null) {</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">				for (String[] infoImportante : infoImportantesMedicament) {</span>
+<span class="nc" id="L158">					String[] values = infoImportante[3].split(&quot;;&quot;);</span>
+<span class="nc" id="L159">					InfoImportante info = new InfoImportante();</span>
+<span class="nc" id="L160">					info.setDateDebut(formatter.parse(infoImportante[1].replace(&quot;/&quot;, &quot;-&quot;)));</span>
+<span class="nc" id="L161">					info.setDateFin(formatter.parse(infoImportante[2].replace(&quot;/&quot;, &quot;-&quot;)));</span>
+<span class="nc" id="L162">					info.setLien(values[1]);</span>
+<span class="nc" id="L163">					info.setMessage(values[2]);</span>
+<span class="nc" id="L164">					infoImportantesEntity.add(info);</span>
+<span class="nc" id="L165">				}</span>
+<span class="nc" id="L166">				medicament.setInfoImportantes(infoImportantesEntity);</span>
+			}
+			//Same for ConditionDelivrance
+<span class="nc" id="L169">			List&lt;String[]&gt; conditionDelivrancesMedicament = conditionDelivrancesByCodeCIS.get(fields[0]);</span>
+<span class="nc" id="L170">			List&lt;ConditionDelivrance&gt; conditionDelivrancesEntity = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">			if (conditionDelivrancesMedicament != null) {</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">				for (String[] conditionDelivrance : conditionDelivrancesMedicament) {</span>
+<span class="nc" id="L173">					ConditionDelivrance condition = new ConditionDelivrance();</span>
+<span class="nc" id="L174">					condition.setCondition(conditionDelivrance[1]);</span>
+<span class="nc" id="L175">					conditionDelivrancesEntity.add(condition);</span>
+<span class="nc" id="L176">				}</span>
+<span class="nc" id="L177">				medicament.setConditionDelivrances(conditionDelivrancesEntity);</span>
+			}
+			//Same for composition
+<span class="nc" id="L180">			List&lt;String[]&gt; compositionsMedicament = compositionsByCodeCIS.get(fields[0]);</span>
+<span class="nc" id="L181">			List&lt;Composition&gt; compositionsEntity = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">			if (compositionsMedicament != null) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">				for (String[] composition : compositionsMedicament) {</span>
+<span class="nc" id="L184">					Composition compo = new Composition();</span>
+<span class="nc" id="L185">					compo.setCodeSubstance(composition[2]);</span>
+<span class="nc" id="L186">					compo.setDenominationSubstance(composition[3]);</span>
+<span class="nc" id="L187">					compo.setDosage(composition[4]);</span>
+<span class="nc" id="L188">					compo.setDesignationElementPharmaceutique(composition[1]);</span>
+<span class="nc" id="L189">					compo.setNatureComposant(composition[6]);</span>
+<span class="nc" id="L190">					compo.setReferenceDosage(composition[5]);</span>
+<span class="nc" id="L191">					compositionsEntity.add(compo);</span>
+<span class="nc" id="L192">				}</span>
+<span class="nc" id="L193">				medicament.setCompositions(compositionsEntity);</span>
+			}
+<span class="nc" id="L195">			medicamentsEntityList.add(medicament);</span>
+		}
+<span class="nc" id="L197">	log.info(&quot;Medicaments created&quot;);</span>
+<span class="nc" id="L198">	medicamentsEntityList = medicamentRepository.saveAll(medicamentsEntityList);</span>
+<span class="nc" id="L199">	log.info(&quot;Medicaments saved&quot;);</span>
+<span class="nc" id="L200">	List&lt;Presentation&gt; presentationsEntityList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L201">	int t = 0;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">	for(String[] presentation:presentations) {</span>
+<span class="nc" id="L203">		String prix = &quot;0.0&quot;;</span>
+<span class="nc bnc" id="L204" title="All 4 branches missed.">		if (presentation.length &gt; 10 &amp;&amp; !Objects.equals(presentation[9], &quot;&quot;)) {</span>
+<span class="nc" id="L205">			prix = presentation[9].replace(&quot;,&quot;, &quot;.&quot;).replace(&quot;%&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">			if (prix.split(&quot;\\.&quot;).length &gt; 2) {</span>
+<span class="nc" id="L207">				prix = prix.replaceFirst(&quot;\\.&quot;, &quot;&quot;);</span>
+			}
+		}
+<span class="nc" id="L210">		String indicationRemboursement = &quot;&quot;;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">		if (Double.parseDouble(prix) &gt; 0.0) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">			if (presentation.length == 13) {</span>
+<span class="nc" id="L213">				indicationRemboursement = presentation[12].replace(&quot;'&quot;, &quot;''&quot;);</span>
+			}
+<span class="nc" id="L215">			Presentation pres = new Presentation();</span>
+<span class="nc" id="L216">			pres.setCodeCIP7(presentation[1]);</span>
+<span class="nc" id="L217">			pres.setDenomination(presentation[2]);</span>
+<span class="nc" id="L218">			pres.setEtatCommercialisation(presentation[4]);</span>
+<span class="nc" id="L219">			pres.setIndicationRemboursement(indicationRemboursement);</span>
+<span class="nc" id="L220">			pres.setPrix(Double.parseDouble(prix));</span>
+<span class="nc" id="L221">			pres.setStatusAdministratif(presentation[3]);</span>
+<span class="nc" id="L222">			pres.setStock(100);</span>
+<span class="nc" id="L223">			String tauxRemboursement = &quot;0.0&quot;;</span>
+<span class="nc bnc" id="L224" title="All 4 branches missed.">			if (presentation.length &gt; 9 &amp;&amp; !Objects.equals(presentation[8], &quot;&quot;)) {</span>
+<span class="nc" id="L225">				tauxRemboursement = presentation[8].replace(&quot;,&quot;, &quot;.&quot;).replace(&quot;%&quot;, &quot;&quot;);</span>
+			}
+<span class="nc" id="L227">			pres.setTauxRemboursement(Double.parseDouble(tauxRemboursement));</span>
+<span class="nc" id="L228">			Medicament res = medicamentsEntityList.stream().filter(medicament -&gt; medicament.getCodeCIS().equals(presentation[0])).findFirst().orElse(null);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">			if(res!=null) {</span>
+<span class="nc" id="L230">				pres.setMedicament(res);</span>
+<span class="nc" id="L231">				presentationsEntityList.add(pres);</span>
+			}
+		}
+	}
+<span class="nc" id="L235">	log.info(&quot;Presentations created&quot;);</span>
+<span class="nc" id="L236">	presentationRepository.saveAll(presentationsEntityList);</span>
+<span class="nc" id="L237">	log.info(&quot;Presentations saved&quot;);</span>
+<span class="nc" id="L238">	List&lt;String[]&gt; data = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L239">	try(BufferedReader br = new BufferedReader(new FileReader(&quot;server/src/main/resources/csv/etalab_formatted.csv&quot;))) {</span>
+		String line;
+<span class="nc bnc" id="L241" title="All 2 branches missed.">		while ((line = br.readLine()) != null) {</span>
+			// Use the delimiter to split the line into an array of fields
+<span class="nc" id="L243">			String[] fields = line.split(&quot;;&quot;, Integer.MAX_VALUE);</span>
+			
+			// Add the array of fields to the data list
+<span class="nc" id="L246">			data.add(fields);</span>
+<span class="nc" id="L247">		}</span>
+<span class="nc" id="L248">	} catch(Exception e) {</span>
+<span class="nc" id="L249">		e.printStackTrace();</span>
+<span class="nc" id="L250">	}</span>
+<span class="nc" id="L251">	data.remove(0);</span>
+<span class="nc" id="L252">	int i = 0;</span>
+<span class="nc bnc" id="L253" title="All 6 branches missed.">	while(data.size()&gt;i &amp;&amp;!data.get(i)[8].equals(&quot;&quot;) &amp;&amp;data.get(i)[8]!=null) {</span>
+<span class="nc" id="L254">		i++;</span>
+	}
+<span class="nc" id="L256">	List&lt;Etablissement&gt; etablissementsEntityList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L257">	data =data.subList(0,i);</span>
+	//Convert List&lt;String[]&gt; to String[][]
+<span class="nc" id="L259">	String[][] etablissements = data.toArray(new String[data.size()][]);</span>
+<span class="nc" id="L260">	int k = 0;</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">	for(String[] etablissment:etablissements) {</span>
+<span class="nc" id="L262">		String codePostal = etablissment[8].substring(0, etablissment[8].indexOf(&quot; &quot;));</span>
+<span class="nc" id="L263">		String ville = etablissment[8].substring(etablissment[8].indexOf(&quot; &quot;) + 1);</span>
+<span class="nc" id="L264">		Etablissement etablissement = new Etablissement();</span>
+<span class="nc" id="L265">		etablissement.setEtalab(etablissment[0]);</span>
+		try {
+<span class="nc" id="L267">			etablissement.setFiness(Long.decode(etablissment[1]));</span>
+<span class="nc" id="L268">			etablissement.setAdresse(etablissment[3] + &quot; &quot; + etablissment[4] + &quot; &quot; + etablissment[5]);</span>
+<span class="nc" id="L269">			etablissement.setCategorie(etablissment[10]);</span>
+<span class="nc" id="L270">			etablissement.setCodePostal(codePostal);</span>
+<span class="nc" id="L271">			etablissement.setDepartement(etablissment[6]);</span>
+<span class="nc" id="L272">			etablissement.setNom(etablissment[2]);</span>
+<span class="nc" id="L273">			etablissement.setRegion(etablissment[7]);</span>
+<span class="nc" id="L274">			etablissement.setTelephone(etablissment[9]);</span>
+<span class="nc" id="L275">			etablissement.setVille(ville);</span>
+<span class="nc" id="L276">			etablissementsEntityList.add(etablissement);</span>
+<span class="nc" id="L277">			k++;</span>
+<span class="nc" id="L278">		}catch (Exception e) {</span>
+<span class="nc" id="L279">		}</span>
+	}
+<span class="nc" id="L281">	log.info(&quot;Etablissements created : &quot;+k);</span>
+<span class="nc" id="L282">	etablissementRepository.saveAll(etablissementsEntityList);</span>
+<span class="nc" id="L283">	log.info(&quot;Etablissements saved&quot;);</span>
+<span class="nc" id="L284">	List&lt;Utilisateur&gt; utilisateurEntityList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">	for(int m=0;m&lt;4;m++) {</span>
+<span class="nc" id="L286">		Utilisateur utilisateur = new Utilisateur();</span>
+<span class="nc" id="L287">		utilisateur.setNom(&quot;nom&quot;+m);</span>
+<span class="nc" id="L288">		utilisateur.setPrenom(&quot;prenom&quot;+m);</span>
+<span class="nc" id="L289">		utilisateur.setAdresse(&quot;adresse&quot;+m);</span>
+<span class="nc" id="L290">		utilisateur.setTelephone(&quot;telephone&quot;+m);</span>
+<span class="nc" id="L291">		utilisateur.setEmail(&quot;mail&quot;+m);</span>
+<span class="nc" id="L292">		utilisateur.setMotDePasse(&quot;motDePasse&quot;+m);</span>
+<span class="nc" id="L293">		utilisateur.setEtablissement(etablissementsEntityList.get(m*15000));</span>
+<span class="nc" id="L294">		utilisateurEntityList.add(utilisateur);</span>
+	}
+<span class="nc" id="L296">	log.info(&quot;Utilisateurs created&quot;);</span>
+<span class="nc" id="L297">	utilisateurRepository.saveAll(utilisateurEntityList);</span>
+<span class="nc" id="L298">	log.info(&quot;Utilisateurs saved&quot;);</span>
+	
+<span class="nc" id="L300">}</span>
+	
+	private static void ReadFile(String[] filePaths, String delimiter, ArrayList&lt;String[][]&gt; allData) {
+<span class="nc bnc" id="L303" title="All 2 branches missed.">		for (String filePath : filePaths) {</span>
+			// List to hold the extracted data
+<span class="nc" id="L305">			List&lt;String[]&gt; data = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L306">			try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {</span>
+				String line;
+<span class="nc bnc" id="L308" title="All 2 branches missed.">				while ((line = br.readLine()) != null) {</span>
+					// Use the delimiter to split the line into an array of fields
+<span class="nc" id="L310">					String[] fields = line.split(delimiter, Integer.MAX_VALUE);</span>
+					
+					// Add the array of fields to the data list
+<span class="nc" id="L313">					data.add(fields);</span>
+<span class="nc" id="L314">				}</span>
+<span class="nc" id="L315">			} catch (Exception e) {</span>
+<span class="nc" id="L316">				e.printStackTrace();</span>
+<span class="nc" id="L317">			}</span>
+			//Convert List&lt;String[]&gt; to String[][]
+<span class="nc" id="L319">			String[][] dataArray = data.toArray(new String[data.size()][]);</span>
+<span class="nc" id="L320">			allData.add(dataArray);</span>
+		}
+<span class="nc" id="L322">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

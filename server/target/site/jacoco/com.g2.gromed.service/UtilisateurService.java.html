@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtilisateurService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.service</a> &gt; <span class="el_source">UtilisateurService.java</span></div><h1>UtilisateurService.java</h1><pre class="source lang-java linenums">package com.g2.gromed.service;
+
+import com.g2.gromed.composant.CommandeComposant;
+import com.g2.gromed.composant.UtilisateurComposant;
+import com.g2.gromed.entity.Commande;
+import com.g2.gromed.entity.StatusCommande;
+import com.g2.gromed.entity.Utilisateur;
+import com.g2.gromed.mapper.IUtilisateurMapper;
+import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+
+<span class="fc" id="L16">@Log</span>
+@Service
+<span class="fc" id="L18">@AllArgsConstructor</span>
+public class UtilisateurService {
+	
+	private UtilisateurComposant utilisateurComposant;
+	private IUtilisateurMapper utilisateurMapper;
+	private CommandeComposant commandeComposant;
+	
+	public UtilisateurDTO authenticate(String email, String motDePasse) {
+<span class="nc" id="L26">		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);</span>
+<span class="nc" id="L27">		Commande commande = commandeComposant.getCart(email);</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if(commande == null) {</span>
+<span class="nc" id="L30">			commande = new Commande();</span>
+<span class="nc" id="L31">			commande.setUtilisateur(utilisateur);</span>
+<span class="nc" id="L32">			commande.setStatus(StatusCommande.PANIER);</span>
+<span class="nc" id="L33">			commande.setDateCommande(new Date());</span>
+<span class="nc" id="L34">			commande = commandeComposant.createNewCommande(commande);</span>
+<span class="nc" id="L35">			log.info(&quot;commande created : &quot;+commande.getNumeroCommande());</span>
+		}
+
+<span class="nc" id="L38">		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

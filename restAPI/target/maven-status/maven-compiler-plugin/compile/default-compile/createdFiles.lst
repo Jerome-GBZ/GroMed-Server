@@ -1,0 +1,14 @@
+com\g2\gromed\model\dto\presentation\Pagination.class
+com\g2\gromed\model\dto\presentation\InfoImportanteDTO.class
+com\g2\gromed\model\dto\presentation\PresentationCardDTO.class
+com\g2\gromed\model\dto\presentation\PresentationDetailDTO.class
+com\g2\gromed\model\dto\commande\ConditionPrescriptionDTO.class
+com\g2\gromed\model\dto\filtre\FiltreDTO.class
+com\g2\gromed\endpoint\IFiltreEndpoint.class
+com\g2\gromed\model\dto\commande\AlerteIndisponibilitePresentationDTO.class
+com\g2\gromed\model\dto\commande\PresentationPanierDTO.class
+com\g2\gromed\endpoint\IUtilisateurEndpoint.class
+com\g2\gromed\model\dto\commande\LivraisonDTO.class
+com\g2\gromed\model\dto\utilisateur\UtilisateurDTO.class
+com\g2\gromed\endpoint\ICommandeEndpoint.class
+com\g2\gromed\endpoint\IPresentationEndpoint.class

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Presentation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.entity</a> &gt; <span class="el_source">Presentation.java</span></div><h1>Presentation.java</h1><pre class="source lang-java linenums">package com.g2.gromed.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+<span class="nc" id="L7">@Setter</span>
+@Entity
+<span class="fc" id="L9">@AllArgsConstructor</span>
+<span class="fc" id="L10">@NoArgsConstructor</span>
+<span class="pc" id="L11">@Builder</span>
+@Table(name = &quot;PRESENTATION&quot;)
+public class Presentation {
+
+	@Id
+	@Column(unique = true)
+<span class="fc" id="L17">	private String codeCIP7;</span>
+
+	@Column(length = 1024)
+<span class="fc" id="L20">	private String denomination;</span>
+
+<span class="fc" id="L22">	private String statusAdministratif;</span>
+
+<span class="fc" id="L24">	private String etatCommercialisation;</span>
+
+<span class="fc" id="L26">	private Double tauxRemboursement;</span>
+
+	@Column(length = 2048)
+<span class="fc" id="L29">	private String indicationRemboursement;</span>
+
+<span class="fc" id="L31">	private Double prix;</span>
+
+<span class="fc" id="L33">	private int stock;</span>
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = &quot;codeCIS&quot; , referencedColumnName = &quot;codeCIS&quot;)
+<span class="fc" id="L37">	private Medicament medicament;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

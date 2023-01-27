@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ICommandeMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.mapper</a> &gt; <span class="el_source">ICommandeMapperImpl.java</span></div><h1>ICommandeMapperImpl.java</h1><pre class="source lang-java linenums">package com.g2.gromed.mapper;
+
+import com.g2.gromed.entity.CommandeMedicament;
+import com.g2.gromed.entity.Medicament;
+import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
+import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2023-01-27T11:30:59+0100&quot;,
+    comments = &quot;version: 1.5.3.Final, compiler: javac, environment: Java 18.0.2.1 (Oracle Corporation)&quot;
+)
+@Component
+<span class="fc" id="L20">public class ICommandeMapperImpl implements ICommandeMapper {</span>
+
+    @Override
+    public PresentationPanierDTO commandeMedicamentToPresentationPanierDTO(CommandeMedicament commandeMedicament, List&lt;InfoImportanteDTO&gt; infoImportantes, List&lt;ConditionPrescriptionDTO&gt; conditionDelivrances) {
+<span class="nc bnc" id="L24" title="All 6 branches missed.">        if ( commandeMedicament == null &amp;&amp; infoImportantes == null &amp;&amp; conditionDelivrances == null ) {</span>
+<span class="nc" id="L25">            return null;</span>
+        }
+
+<span class="nc" id="L28">        PresentationPanierDTO presentationPanierDTO = new PresentationPanierDTO();</span>
+
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if ( commandeMedicament != null ) {</span>
+<span class="nc" id="L31">            presentationPanierDTO.setCodeCIP7( commandeMedicamentPresentationCodeCIP7( commandeMedicament ) );</span>
+<span class="nc" id="L32">            presentationPanierDTO.setDenomination( commandeMedicamentPresentationMedicamentDenomination( commandeMedicament ) );</span>
+<span class="nc" id="L33">            presentationPanierDTO.setQuantite( commandeMedicament.getQuantite() );</span>
+<span class="nc" id="L34">            presentationPanierDTO.setPrixUnitaire( commandeMedicamentPresentationPrix( commandeMedicament ) );</span>
+<span class="nc" id="L35">            presentationPanierDTO.setTauxRemboursement( commandeMedicamentPresentationTauxRemboursement( commandeMedicament ) );</span>
+<span class="nc" id="L36">            presentationPanierDTO.setStock( commandeMedicamentPresentationStock( commandeMedicament ) );</span>
+        }
+<span class="nc" id="L38">        List&lt;InfoImportanteDTO&gt; list = infoImportantes;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L40">            presentationPanierDTO.setInfoImportantes( new ArrayList&lt;InfoImportanteDTO&gt;( list ) );</span>
+        }
+<span class="nc" id="L42">        List&lt;ConditionPrescriptionDTO&gt; list1 = conditionDelivrances;</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        if ( list1 != null ) {</span>
+<span class="nc" id="L44">            presentationPanierDTO.setConditionsPrescription( new ArrayList&lt;ConditionPrescriptionDTO&gt;( list1 ) );</span>
+        }
+
+<span class="nc" id="L47">        return presentationPanierDTO;</span>
+    }
+
+    private String commandeMedicamentPresentationCodeCIP7(CommandeMedicament commandeMedicament) {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if ( commandeMedicament == null ) {</span>
+<span class="nc" id="L52">            return null;</span>
+        }
+<span class="nc" id="L54">        Presentation presentation = commandeMedicament.getPresentation();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if ( presentation == null ) {</span>
+<span class="nc" id="L56">            return null;</span>
+        }
+<span class="nc" id="L58">        String codeCIP7 = presentation.getCodeCIP7();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if ( codeCIP7 == null ) {</span>
+<span class="nc" id="L60">            return null;</span>
+        }
+<span class="nc" id="L62">        return codeCIP7;</span>
+    }
+
+    private String commandeMedicamentPresentationMedicamentDenomination(CommandeMedicament commandeMedicament) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if ( commandeMedicament == null ) {</span>
+<span class="nc" id="L67">            return null;</span>
+        }
+<span class="nc" id="L69">        Presentation presentation = commandeMedicament.getPresentation();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if ( presentation == null ) {</span>
+<span class="nc" id="L71">            return null;</span>
+        }
+<span class="nc" id="L73">        Medicament medicament = presentation.getMedicament();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if ( medicament == null ) {</span>
+<span class="nc" id="L75">            return null;</span>
+        }
+<span class="nc" id="L77">        String denomination = medicament.getDenomination();</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if ( denomination == null ) {</span>
+<span class="nc" id="L79">            return null;</span>
+        }
+<span class="nc" id="L81">        return denomination;</span>
+    }
+
+    private Double commandeMedicamentPresentationPrix(CommandeMedicament commandeMedicament) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if ( commandeMedicament == null ) {</span>
+<span class="nc" id="L86">            return null;</span>
+        }
+<span class="nc" id="L88">        Presentation presentation = commandeMedicament.getPresentation();</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if ( presentation == null ) {</span>
+<span class="nc" id="L90">            return null;</span>
+        }
+<span class="nc" id="L92">        Double prix = presentation.getPrix();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if ( prix == null ) {</span>
+<span class="nc" id="L94">            return null;</span>
+        }
+<span class="nc" id="L96">        return prix;</span>
+    }
+
+    private Double commandeMedicamentPresentationTauxRemboursement(CommandeMedicament commandeMedicament) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if ( commandeMedicament == null ) {</span>
+<span class="nc" id="L101">            return null;</span>
+        }
+<span class="nc" id="L103">        Presentation presentation = commandeMedicament.getPresentation();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if ( presentation == null ) {</span>
+<span class="nc" id="L105">            return null;</span>
+        }
+<span class="nc" id="L107">        Double tauxRemboursement = presentation.getTauxRemboursement();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if ( tauxRemboursement == null ) {</span>
+<span class="nc" id="L109">            return null;</span>
+        }
+<span class="nc" id="L111">        return tauxRemboursement;</span>
+    }
+
+    private int commandeMedicamentPresentationStock(CommandeMedicament commandeMedicament) {
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if ( commandeMedicament == null ) {</span>
+<span class="nc" id="L116">            return 0;</span>
+        }
+<span class="nc" id="L118">        Presentation presentation = commandeMedicament.getPresentation();</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if ( presentation == null ) {</span>
+<span class="nc" id="L120">            return 0;</span>
+        }
+<span class="nc" id="L122">        int stock = presentation.getStock();</span>
+<span class="nc" id="L123">        return stock;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

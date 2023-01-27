@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PageableJsonDeserializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.page</a> &gt; <span class="el_source">PageableJsonDeserializer.java</span></div><h1>PageableJsonDeserializer.java</h1><pre class="source lang-java linenums">package com.g2.gromed.page;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.io.IOException;
+
+<span class="fc" id="L14">public class PageableJsonDeserializer extends JsonDeserializer&lt;Pageable&gt; {</span>
+
+    @Override
+    public Pageable deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+
+<span class="fc" id="L19">        ObjectCodec codec = p.getCodec();</span>
+<span class="fc" id="L20">        JsonNode treeNode = codec.readTree(p);</span>
+        int pageSize;
+<span class="fc" id="L22">        JsonNode pageSizeNode = treeNode.path(&quot;pageSize&quot;);</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">        pageSize = pageSizeNode.isValueNode() ? pageSizeNode.asInt(20) : 0;</span>
+
+        int pageNumber;
+<span class="fc" id="L26">        JsonNode pageNumberNode = treeNode.path(&quot;pageNumber&quot;);</span>
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        pageNumber = pageNumberNode.isValueNode() ? pageNumberNode.asInt(0) : 0;</span>
+
+        Sort sort;
+<span class="fc" id="L30">        JsonNode sortNode = treeNode.path(&quot;sort&quot;);</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        sort = sortNode.isArray() ? codec.treeToValue(sortNode, Sort.class) : null;</span>
+
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        return sort == null ? PageRequest.of(pageNumber, pageSize) : PageRequest.of(pageNumber, pageSize, sort);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

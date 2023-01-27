@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Commande.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.entity</a> &gt; <span class="el_source">Commande.java</span></div><h1>Commande.java</h1><pre class="source lang-java linenums">package com.g2.gromed.entity;
+
+
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Date;
+import java.util.List;
+
+@Getter
+<span class="pc" id="L12">@Setter</span>
+@Entity
+<span class="pc" id="L14">@Builder</span>
+<span class="fc" id="L15">@AllArgsConstructor</span>
+<span class="fc" id="L16">@NoArgsConstructor</span>
+@Table(name = &quot;Commande&quot;)
+public class Commande {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L21">	private Long numeroCommande;</span>
+
+	@Column(name = &quot;date_commande&quot;, columnDefinition = &quot;DATE&quot;)
+	@Temporal(TemporalType.TIMESTAMP)
+<span class="fc" id="L25">	private Date dateCommande;</span>
+
+<span class="fc" id="L27">	private double total;</span>
+
+<span class="fc" id="L29">	private String facture;</span>
+
+<span class="fc" id="L31">	private StatusCommande status;</span>
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = &quot;email&quot;,referencedColumnName = &quot;email&quot;)
+<span class="nc" id="L35">	private Utilisateur utilisateur;</span>
+
+	@OneToOne
+	@JoinColumn(name = &quot;commande_type_id&quot;, referencedColumnName = &quot;commande_type_id&quot;)
+<span class="fc" id="L39">	private CommandeType commandeType;</span>
+
+	@OneToMany(mappedBy = &quot;commande&quot;, cascade = CascadeType.ALL)
+<span class="fc" id="L42">	private List&lt;CommandeMedicament&gt; commandeMedicaments;</span>
+	
+	@OneToMany(mappedBy = &quot;commande&quot;,cascade = CascadeType.ALL)
+<span class="nc" id="L45">	private List&lt;Livraison&gt; livraisons;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

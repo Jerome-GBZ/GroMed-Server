@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PresentationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.service</a> &gt; <span class="el_source">PresentationService.java</span></div><h1>PresentationService.java</h1><pre class="source lang-java linenums">package com.g2.gromed.service;
+
+import com.g2.gromed.composant.PresentationComposant;
+import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.mapper.IInfoImportanteMapper;
+import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
+import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+
+@Service
+<span class="fc" id="L19">@AllArgsConstructor</span>
+public class PresentationService {
+	private PresentationComposant presentationComposant;
+	private IPresentationMapper presentationMapper;
+	private IInfoImportanteMapper infoImportanteMapper;
+
+	public Page&lt;PresentationCardDTO&gt; getAllPresentations(Pageable pagination) {
+<span class="fc" id="L26">		Page&lt;Presentation&gt; presentations = presentationComposant.getPresentations(pagination);</span>
+<span class="fc" id="L27">		return presentations.map(presentationMapper::toPresentationCardDTO);</span>
+	}
+
+	public PresentationDetailDTO getDetailPresentation(String codeCIP7) {
+<span class="fc" id="L31">		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		if(null == presentation){</span>
+<span class="fc" id="L33">			return null;</span>
+		}
+<span class="fc" id="L35">		List&lt;InfoImportanteDTO&gt; infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()</span>
+<span class="fc" id="L36">				.stream()</span>
+<span class="fc" id="L37">				.map(infoImportanteMapper::toInfoImportanteDTO)</span>
+<span class="fc" id="L38">				.toList();</span>
+<span class="fc" id="L39">		return presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

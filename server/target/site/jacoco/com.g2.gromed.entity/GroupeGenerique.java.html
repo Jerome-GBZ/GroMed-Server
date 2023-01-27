@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupeGenerique.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">server</a> &gt; <a href="index.source.html" class="el_package">com.g2.gromed.entity</a> &gt; <span class="el_source">GroupeGenerique.java</span></div><h1>GroupeGenerique.java</h1><pre class="source lang-java linenums">package com.g2.gromed.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+<span class="nc" id="L7">@Setter</span>
+@Entity
+<span class="pc" id="L9">@Builder</span>
+<span class="fc" id="L10">@NoArgsConstructor</span>
+<span class="fc" id="L11">@AllArgsConstructor</span>
+@Table(name = &quot;GROUPE_GENERIQUE&quot;)
+public class GroupeGenerique {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="nc" id="L16">	private Long idGroupeGenerique;</span>
+
+<span class="nc" id="L18">	private String identifiantGroupeGenerique;</span>
+
+	@OneToOne
+	@JoinColumn(name = &quot;codeCIS&quot;)
+<span class="nc" id="L22">	private Medicament medicament;</span>
+
+<span class="nc" id="L24">	private String typeGenerique;</span>
+
+<span class="nc" id="L26">	private String numeroTri;</span>
+
+	@Column(length = 1024)
+<span class="nc" id="L29">	private String libelle;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
