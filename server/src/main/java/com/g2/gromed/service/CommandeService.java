@@ -46,11 +46,7 @@ public class CommandeService {
 		}
 		Commande commande = commandeComposant.getCart(email);
 		if(commande == null){
-			commande = new Commande();
-			commande.setUtilisateur(utilisateur);
-			commande.setStatus(StatusCommande.PANIER);
-			commande.setDateCommande(new Date());
-			commande = commandeComposant.createNewCommande(commande);
+			commande = createNewCartForUser(utilisateur);
 			log.info("Commande created: " + commande.getNumeroCommande());
 		}else{
 			log.info("Commande found: " + commande.getNumeroCommande());
@@ -127,14 +123,37 @@ public class CommandeService {
 		if(commande == null){
 			return null;
 		}
+		
 		commande.setStatus(StatusCommande.EN_COURS);
 		List<CommandeMedicament> listCommandeMedicament = commande.getCommandeMedicaments();
 		if(listCommandeMedicament.isEmpty()){
 			return null;
 		}
+		
 		Livraison livraison = new Livraison();
 		livraison.setCommande(commande);
 		livraison.setDateLivraison(new Date());
+		
+		List<LivraisonPresentation> livraisonPresentations =createLivraisonMedicamentsEntity(inOneTime, listCommandeMedicament);
+		
+		livraison.setLivraisonPresentations(livraisonPresentations);
+		livraison = livraisonComposant.saveLivraison(livraison);
+		commande.getLivraisons().add(livraison);
+		commandeComposant.validateCart(commande);
+		createNewCartForUser(utilisateur);
+		
+		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
+	}
+	
+	private Commande createNewCartForUser(Utilisateur utilisateur) {
+		Commande newCommande = new Commande();
+		newCommande.setUtilisateur(utilisateur);
+		newCommande.setStatus(StatusCommande.PANIER);
+		newCommande.setDateCommande(new Date());
+		return commandeComposant.createNewCommande(newCommande);
+	}
+	
+	private List<LivraisonPresentation> createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
 		listCommandeMedicament.forEach(cm -> {
 			Presentation presentation = cm.getPresentation();
@@ -151,15 +170,6 @@ public class CommandeService {
 			livraisonPresentations.add(livraisonPresentation);
 			presentationComposant.savePresentation(presentation);
 		});
-		livraison.setLivraisonPresentations(livraisonPresentations);
-		livraison = livraisonComposant.saveLivraison(livraison);
-		commande.getLivraisons().add(livraison);
-		commandeComposant.validateCart(commande);
-		Commande newCommande = new Commande();
-		newCommande.setUtilisateur(utilisateur);
-		newCommande.setStatus(StatusCommande.PANIER);
-		newCommande.setDateCommande(new Date());
-		commandeComposant.createNewCommande(newCommande);
-		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
+		return livraisonPresentations;
 	}
 }

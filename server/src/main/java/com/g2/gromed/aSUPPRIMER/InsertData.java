@@ -2,8 +2,6 @@ package com.g2.gromed.aSUPPRIMER;
 
 import com.g2.gromed.entity.*;
 import com.g2.gromed.repository.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -284,7 +282,7 @@ public class InsertData {
 	etablissementRepository.saveAll(etablissementsEntityList);
 	log.info("Etablissements saved");
 	List<Utilisateur> utilisateurEntityList = new ArrayList<>();
-	for(int m=0;m<10;m++) {
+	for(int m=0;m<4;m++) {
 		Utilisateur utilisateur = new Utilisateur();
 		utilisateur.setNom("nom"+m);
 		utilisateur.setPrenom("prenom"+m);
@@ -292,7 +290,7 @@ public class InsertData {
 		utilisateur.setTelephone("telephone"+m);
 		utilisateur.setEmail("mail"+m);
 		utilisateur.setMotDePasse("motDePasse"+m);
-		utilisateur.setEtablissement(etablissementsEntityList.get(m*9000));
+		utilisateur.setEtablissement(etablissementsEntityList.get(m*15000));
 		utilisateurEntityList.add(utilisateur);
 	}
 	log.info("Utilisateurs created");
