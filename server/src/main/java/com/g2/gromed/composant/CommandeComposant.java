@@ -1,15 +1,14 @@
 package com.g2.gromed.composant;
 
-import com.g2.gromed.entity.Commande;
-import com.g2.gromed.entity.CommandeMedicament;
-import com.g2.gromed.entity.Livraison;
-import com.g2.gromed.entity.StatusCommande;
+import com.g2.gromed.entity.*;
 import com.g2.gromed.repository.ICommandeMedicamentRepository;
 import com.g2.gromed.repository.ICommandeRepository;
 import com.g2.gromed.repository.ILivraisonRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Log
 @Component
@@ -19,8 +18,6 @@ public class CommandeComposant {
 	
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
 	
-	private ILivraisonRepository livraisonRepository;
-	
 	public Commande getCart(String email) {
   	return commandeRepository.findFirstByStatusAndUtilisateurEmail(StatusCommande.PANIER,email);
 	}
@@ -29,8 +26,8 @@ public class CommandeComposant {
 		return commandeMedicamentRepository.findFirstByCommandeNumeroCommandeAndPresentationCodeCIP7(numeroCommande, codeCIP7);
 	}
 	
-	public Long addToCart(CommandeMedicament commandeMedicament) {
-		return commandeMedicamentRepository.save(commandeMedicament).getCommandeMedicamentId();
+	public void addToCart(CommandeMedicament commandeMedicament) {
+		commandeMedicamentRepository.save(commandeMedicament);
 	}
 	
 	public int countCartPresentation(Long numeroCommande) {
@@ -45,11 +42,9 @@ public class CommandeComposant {
 		commandeMedicamentRepository.delete(commandePresentation);
 	}
 	
-	public Livraison createLivraison(Livraison livraison) {
-		return livraisonRepository.save(livraison);
+	public void validateCart(Commande commande) {
+		commandeRepository.save(commande);
 	}
 	
-	public Commande validateCart(Commande commande) {
-		return commandeRepository.save(commande);
-	}
+
 }

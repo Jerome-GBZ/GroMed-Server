@@ -8,10 +8,12 @@ import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import com.g2.gromed.service.CommandeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class CommandeController implements ICommandeEndpoint {

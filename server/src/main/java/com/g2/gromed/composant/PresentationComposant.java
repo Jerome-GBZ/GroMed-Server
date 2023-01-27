@@ -20,7 +20,7 @@ public class PresentationComposant {
 		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
 	
-	public Presentation savePresentation(Presentation presentation){
-		return presentationRepository.save(presentation);
+	public void updatePresentation(Presentation presentation){
+		presentationRepository.save(presentation);
 	}
 }
