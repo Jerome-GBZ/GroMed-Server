@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
 @RequestMapping("/commande")
 public interface ICommandeEndpoint {
 	

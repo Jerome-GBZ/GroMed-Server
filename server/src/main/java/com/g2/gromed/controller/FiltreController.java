@@ -5,8 +5,10 @@ import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.service.FiltreService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class FiltreController implements IFiltreEndpoint {

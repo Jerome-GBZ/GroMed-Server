@@ -21,20 +21,13 @@ public class UtilisateurService {
 	private UtilisateurComposant utilisateurComposant;
 	private IUtilisateurMapper utilisateurMapper;
 	private CommandeComposant commandeComposant;
+	private CommandeService commandeService;
 	
 	public UtilisateurDTO authenticate(String email, String motDePasse) {
 		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
-		Commande commande = commandeComposant.getCart(email);
-
-		if(commande == null) {
-			commande = new Commande();
-			commande.setUtilisateur(utilisateur);
-			commande.setStatus(StatusCommande.PANIER);
-			commande.setDateCommande(new Date());
-			commande = commandeComposant.createNewCommande(commande);
-			log.info("commande created : "+commande.getNumeroCommande());
-		}
-
+		Commande commande = commandeService.createCommandeIfDontExist(utilisateur);
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
+
+
 }
