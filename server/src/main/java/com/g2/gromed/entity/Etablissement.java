@@ -3,8 +3,6 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Entity

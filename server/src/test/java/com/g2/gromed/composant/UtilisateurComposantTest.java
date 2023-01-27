@@ -13,7 +13,7 @@ import java.text.ParseException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
-public class UtilisateurComposantTest {
+class UtilisateurComposantTest {
 	@Autowired
 	private UtilisateurComposant utilisateurComposant;
 	@Autowired
