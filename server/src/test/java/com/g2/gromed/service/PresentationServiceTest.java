@@ -4,6 +4,7 @@ import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.entity.InfoImportante;
+import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
@@ -41,7 +42,9 @@ class PresentationServiceTest {
 
     @Test
     void getAllPresentations() {
-        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        Medicament medicament = TestUtils.getMedicament(1);
+        Presentation presentation = TestUtils.getPresentation(1);
+        presentation.setMedicament(medicament);
         List<Presentation> presentationList = new ArrayList<>();
         presentationList.add(presentation);
 
@@ -61,7 +64,9 @@ class PresentationServiceTest {
 
     @Test
     void getDetailPresentation() {
-        Presentation presentation = TestUtils.getPresentationMedicamentFull(1, 2, 2, 2, 2);
+        Medicament medicament = TestUtils.getMedicament(1);
+        Presentation presentation = TestUtils.getPresentation(1);
+        presentation.setMedicament(medicament);
         when(presentationComposant.getPresentationByCodeCIP7(presentation.getCodeCIP7())).thenReturn(presentation);
 
         List<InfoImportante> infoImportanteList = presentation.getMedicament().getInfoImportantes();
@@ -75,7 +80,7 @@ class PresentationServiceTest {
 
     @Test
     void getDetailPresentationNotFound() {
-        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        Presentation presentation = TestUtils.getPresentation(1);
         when(presentationComposant.getPresentationByCodeCIP7(presentation.getCodeCIP7())).thenReturn(null);
 
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
