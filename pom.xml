@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.g2</groupId>
-	<artifactId>gromed</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>gromed</name>
-	<description>Gromed project</description>
-	<modules>
-		<module>restAPI</module>
-		<module>server</module>
-	</modules>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<jettyVersion>9.4.3.v20170317</jettyVersion>
-		<jettyServletVersion>9.4.3.v20170317</jettyServletVersion>
-		<sonar.host.url>http://im2ag-sonar.u-ga.fr:9000/</sonar.host.url>
-		<java.version>17</java.version>
-	</properties>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.2</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.g2</groupId>
+    <artifactId>gromed</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>gromed</name>
+    <description>Gromed project</description>
+    <modules>
+        <module>restAPI</module>
+        <module>server</module>
+    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <jettyVersion>9.4.3.v20170317</jettyVersion>
+        <jettyServletVersion>9.4.3.v20170317</jettyServletVersion>
+        <sonar.host.url>http://im2ag-sonar.u-ga.fr:9000/</sonar.host.url>
+        <sonar.exclusions>server/src/main/java/com/g2/gromed/aSUPPRIMER/InsertData.java, server/src/main/java/com/g2/gromed/controller/TestController.java, server/src/main/java/com/g2/gromed/page/PageJsonConfig.java</sonar.exclusions>
+
+        <java.version>17</java.version>
+    </properties>
 </project>

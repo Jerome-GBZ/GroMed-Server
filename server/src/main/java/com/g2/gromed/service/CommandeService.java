@@ -4,10 +4,8 @@ import com.g2.gromed.composant.CommandeComposant;
 import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
-import com.g2.gromed.mapper.ICommandeMapper;
-import com.g2.gromed.mapper.IConditionDelivranceMapper;
-import com.g2.gromed.mapper.IInfoImportanteMapper;
-import com.g2.gromed.mapper.IUtilisateurMapper;
+import com.g2.gromed.mapper.*;
+import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
@@ -16,11 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Log
 @Service
@@ -31,11 +25,11 @@ public class CommandeService {
 	private IUtilisateurMapper utilisateurMapper;
 	private IConditionDelivranceMapper conditionDelivranceMapper;
 	private CommandeComposant commandeComposant;
-	
+
 	private UtilisateurComposant utilisateurComposant;
-	
+
 	private PresentationComposant presentationComposant;
-	
+
 	public UtilisateurDTO addPresentationToCart(String email, String codeCIP7, int quantite) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
@@ -53,7 +47,7 @@ public class CommandeService {
 		}else{
 			log.info("Commande found: " + commande.getNumeroCommande());
 		}
-		
+
 		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7);
 		log.info("CommandeMedicament found: " + commandeMedicament);
 		if(commandeMedicament == null){
@@ -68,7 +62,7 @@ public class CommandeService {
 		}
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
-	
+
 	public UtilisateurDTO deletePresentationFromCart(String email, String codeCIP7 ) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
@@ -79,7 +73,7 @@ public class CommandeService {
 		commandeComposant.removeFromCart(commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7));
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
-	
+
 	public List<PresentationPanierDTO> getCart(String email) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Commande commande = commandeComposant.getCart(email);
@@ -96,4 +90,25 @@ public class CommandeService {
 				})
 				.toList();
 	}
+
+    public AlerteIndisponibilitePresentationDTO getUnavailablePresentations(String email) {
+		Commande commande = commandeComposant.getCart(email);
+		if(null == commande || commande.getCommandeMedicaments().isEmpty()){
+			return null;
+		}
+
+		List<CommandeMedicament> commandeMedicaments = commande.getCommandeMedicaments();
+		Map<String, Integer> alertesIndisponibilites = new HashMap<>();
+		commandeMedicaments.forEach(commandeMedicament -> {
+			String codeCIP7 = commandeMedicament.getPresentation().getCodeCIP7();
+			Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
+			int stock = presentation.getStock();
+			int quantite = commandeMedicament.getQuantite();
+			if(quantite > stock){
+				alertesIndisponibilites.put(codeCIP7, stock);
+			}
+		});
+
+		return new AlerteIndisponibilitePresentationDTO(alertesIndisponibilites);
+    }
 }

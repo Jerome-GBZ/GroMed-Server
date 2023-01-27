@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+
 @RestController
-public class testController {
+public class TestController {
 	
 
 	
@@ -14,7 +16,11 @@ public class testController {
 	private InsertData insertData;
 	
 	@PostMapping("/poeple")
-	public void poeple() throws Exception {
-		insertData.transformData();
+	public void poeple() {
+		try {
+			insertData.transformData();
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
