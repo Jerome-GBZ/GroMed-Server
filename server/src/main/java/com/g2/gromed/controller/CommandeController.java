@@ -1,6 +1,7 @@
 package com.g2.gromed.controller;
 
 import com.g2.gromed.endpoint.ICommandeEndpoint;
+import com.g2.gromed.model.dto.commande.LivraisonDTO;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
@@ -37,5 +38,11 @@ public class CommandeController implements ICommandeEndpoint {
 	public ResponseEntity<AlerteIndisponibilitePresentationDTO> checkStockAvailability(String email) {
 		AlerteIndisponibilitePresentationDTO alerteIndisponibilitePresentationDTO = commandeService.getUnavailablePresentations(email);
 		return alerteIndisponibilitePresentationDTO != null ? ResponseEntity.ok(alerteIndisponibilitePresentationDTO) : ResponseEntity.notFound().build();
+	}
+	
+	@Override
+	public ResponseEntity<LivraisonDTO> validateCart(String email) {
+		LivraisonDTO livraisonDTO = commandeService.validateCart(email);
+		return livraisonDTO!= null ? ResponseEntity.ok(livraisonDTO) : ResponseEntity.notFound().build();
 	}
 }

@@ -28,4 +28,6 @@ class UtilisateurComposantTest {
 		Utilisateur resultUtilisateur = utilisateurComposant.authenticate(utilisateur.getEmail(), utilisateur.getMotDePasse());
 		assertThat(resultUtilisateur).usingRecursiveComparison().ignoringFields("commandes","commandeTypes", "$$_hibernate_attributeInterceptor", "$$_hibernate_collectionTracker", "$$_hibernate_tracker").isEqualTo(utilisateur);
 	}
+	
+	
 }

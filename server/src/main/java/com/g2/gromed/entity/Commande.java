@@ -38,6 +38,9 @@ public class Commande {
 	@JoinColumn(name = "commande_type_id", referencedColumnName = "commande_type_id")
 	private CommandeType commandeType;
 
-	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
 	private List<CommandeMedicament> commandeMedicaments;
+	
+	@OneToMany(mappedBy = "commande",cascade = CascadeType.ALL)
+	private List<Livraison> livraisons;
 }
