@@ -6,7 +6,6 @@ import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.mapper.*;
-import com.g2.gromed.mapper.*;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
 import com.g2.gromed.model.dto.commande.LivraisonDTO;
@@ -18,6 +17,7 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log
 @Service
