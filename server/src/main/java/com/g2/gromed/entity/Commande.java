@@ -3,8 +3,7 @@ package com.g2.gromed.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Commande")
 public class Commande {
 	@Id
@@ -28,7 +30,7 @@ public class Commande {
 
 	private StatusCommande status;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "email",referencedColumnName = "email")
 	private Utilisateur utilisateur;
 
@@ -36,6 +38,6 @@ public class Commande {
 	@JoinColumn(name = "commande_type_id", referencedColumnName = "commande_type_id")
 	private CommandeType commandeType;
 
-	@OneToMany(mappedBy = "commande")
+	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<CommandeMedicament> commandeMedicaments;
 }

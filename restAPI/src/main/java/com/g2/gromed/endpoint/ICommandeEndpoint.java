@@ -1,5 +1,6 @@
 package com.g2.gromed.endpoint;
 
+import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import io.swagger.annotations.ApiOperation;
@@ -33,5 +34,11 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "404", description = "Commande de l'utilisateur non trouvé")
 	@GetMapping(value = "/panier", produces = "application/json")
 	ResponseEntity<List<PresentationPanierDTO>> getUserCart(@RequestParam("email") String email);
-	
+
+	@ApiOperation(value = "Vérifier la disponibilité des médicaments au moment de la validation du panier")
+	@ApiResponse(responseCode = "200", description = "OK")
+	@ApiResponse(responseCode = "500", description = "Erreur serveur")
+	@ApiResponse(responseCode = "404", description = "Panier non trouvé")
+	@GetMapping(value = "/panier/disponibilite", produces = "application/json")
+	ResponseEntity<AlerteIndisponibilitePresentationDTO> checkStockAvailability(@RequestParam("email") String email);
 }

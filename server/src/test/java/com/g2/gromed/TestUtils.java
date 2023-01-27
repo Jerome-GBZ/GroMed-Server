@@ -24,6 +24,20 @@ public abstract class TestUtils {
                 .build();
     }
 
+    public static Presentation getPresentationWithGivenMedicament(int n, Medicament medicament) {
+        return Presentation.builder()
+                .codeCIP7(String.format("CIP7-%d", n))
+                .denomination(String.format("Présentation médicament %d", n))
+                .statusAdministratif(String.format("Statut admin médicament %d", n))
+                .etatCommercialisation(String.format("Etat comm médicament %d", n))
+                .tauxRemboursement((double) n)
+                .indicationRemboursement(String.format("Indication remboursement médicament %d", n))
+                .prix((double) 10 * n)
+                .stock(100)
+                .medicament(medicament)
+                .build();
+    }
+
     public static Presentation getPresentationMedicamentFull(int n, int nbGenerique, int nbInfo, int nbCompo, int nbCondition) {
         return Presentation.builder()
                 .codeCIP7(String.format("CIP7-%d", n))
@@ -101,7 +115,6 @@ public abstract class TestUtils {
         List<Composition> compositions = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
             compositions.add(Composition.builder()
-                    .idComposition((long) i)
                     .codeSubstance(String.format("code substance %d", i))
                     .dosage(String.format("dosage %d", i))
                     .denominationSubstance(String.format("denomination %d", i))
@@ -117,7 +130,6 @@ public abstract class TestUtils {
         List<GroupeGenerique> groupeGeneriques = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
             groupeGeneriques.add(GroupeGenerique.builder()
-                    .idGroupeGenerique((long) i)
                     .identifiantGroupeGenerique(String.format("identifiant %d", i))
                     .libelle(String.format("libelle %d", i))
                     .typeGenerique(String.format("type %d", i))
@@ -138,7 +150,7 @@ public abstract class TestUtils {
         }
         return conditionDelivrances;
     }
-    
+
     public static List<Etablissement> getEtablissementList(int nb) {
         List<Etablissement> etablissements = new ArrayList<>();
         for (int i = 0; i < nb; i++) {
@@ -157,14 +169,14 @@ public abstract class TestUtils {
         }
         return etablissements;
     }
+
     public static List<Utilisateur> getUtilisateurList(int nb) throws ParseException {
         List<Utilisateur> utilisateurs = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
-        String stringDate= DateFor.format(date);
+        String stringDate = DateFor.format(date);
         for (int i = 0; i < nb; i++) {
             utilisateurs.add(Utilisateur.builder()
-                    .id((long) i)
                     .nom(String.format("nom %d", i))
                     .prenom(String.format("prenom %d", i))
                     .email(String.format("email %d", i))
@@ -179,6 +191,41 @@ public abstract class TestUtils {
         }
         return utilisateurs;
     }
-    
+
+    public static Utilisateur getSimpleUtilisateurWithEmail(String email) {
+        return Utilisateur.builder()
+                .email(email)
+                .build();
+    }
+
+    public static Commande getCommandeWith3Products(int n, List<Presentation> presentations) {
+        Commande commande = Commande.builder()
+                .numeroCommande((long) n)
+                .total(10)
+                .commandeType(null)
+                .dateCommande(new Date())
+                .utilisateur(null)
+                .build();
+
+        List<CommandeMedicament> commandeMedicaments = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            commandeMedicaments.add(CommandeMedicament.builder()
+                    .commande(commande)
+                    .quantite((i+1) * 50)
+                    .presentation(presentations.get(i))
+                    .build());
+        }
+
+        commande.setCommandeMedicaments(commandeMedicaments);
+        return commande;
+    }
+
+    public static Commande getCommandeSimple(int n){
+        return Commande.builder()
+                .numeroCommande((long) n)
+                .commandeMedicaments(new ArrayList<>())
+                .total(10)
+                .build();
+    }
 
 }
