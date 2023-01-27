@@ -24,56 +24,37 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @AllArgsConstructor
 public class CommandeService {
 	private ICommandeMapper commandeMapper;
-	private IInfoImportanteMapper infoImportanteMapper;
-	private IUtilisateurMapper utilisateurMapper;
-	private IConditionDelivranceMapper conditionDelivranceMapper;
-	
-	private ILivraisonMapper livraisonMapper;
-	
 	private CommandeComposant commandeComposant;
-
-	private UtilisateurComposant utilisateurComposant;
-
-	private PresentationComposant presentationComposant;
-	
+	private ILivraisonMapper livraisonMapper;
 	private LivraisonComposant livraisonComposant;
+	private UtilisateurComposant utilisateurComposant;
+	private IUtilisateurMapper utilisateurMapper;
+	private PresentationComposant presentationComposant;
+	private IInfoImportanteMapper infoImportanteMapper;
+	private IConditionDelivranceMapper conditionDelivranceMapper;
 	
 	public UtilisateurDTO addPresentationToCart(String email, String codeCIP7, int quantite) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
-		if(presentation == null || utilisateur == null || quantite <= 0){
+		
+		if(presentation == null || utilisateur == null || quantite <= 0) {
 			return null;
 		}
-		Commande commande = commandeComposant.getCart(email);
-		if(commande == null){
-			commande = createNewCartForUser(utilisateur);
-			log.info("Commande created: " + commande.getNumeroCommande());
-		}else{
-			log.info("Commande found: " + commande.getNumeroCommande());
-		}
-
-		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7);
-		log.info("CommandeMedicament found: " + commandeMedicament);
-		if(commandeMedicament == null){
-			CommandeMedicament newMedicament = new CommandeMedicament();
-			newMedicament.setQuantite(quantite);
-			newMedicament.setCommande(commande);
-			newMedicament.setPresentation(presentation);
-			commandeComposant.addToCart(newMedicament);
-		}else{
-			commandeMedicament.setQuantite(commandeMedicament.getQuantite() + quantite);
-			commandeComposant.addToCart(commandeMedicament);
-		}
+		
+		Commande commande = createCommandeIfDontExist(utilisateur);
+		addPresentationToCart(quantite, presentation, commande);
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
-
+	
 	public UtilisateurDTO deletePresentationFromCart(String email, String codeCIP7 ) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
 		Commande commande = commandeComposant.getCart(email);
+		
 		if(presentation == null || utilisateur == null || commande == null){
 			return null;
 		}
+		
 		commandeComposant.removeFromCart(commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), codeCIP7));
 		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
 	}
@@ -81,18 +62,18 @@ public class CommandeService {
 	public List<PresentationPanierDTO> getCart(String email) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		Commande commande = commandeComposant.getCart(email);
-		if(utilisateur == null || commande == null){
+		
+		if(utilisateur == null || commande == null) {
 			return Collections.emptyList();
 		}
+		
 		List<CommandeMedicament> panier = commande.getCommandeMedicaments();
-		return panier
-				.stream()
+		return panier.stream()
 				.map(cm -> {
 					List<InfoImportanteDTO> infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).toList();
 					List<ConditionPrescriptionDTO> conditionPrescriptions = cm.getPresentation().getMedicament().getConditionDelivrances().stream().map(conditionDelivranceMapper::conditionDelivranceToConditionPrescriptionDTO).toList();
 					return commandeMapper.commandeMedicamentToPresentationPanierDTO(cm,infoImportantes,conditionPrescriptions);
-				})
-				.toList();
+				}).toList();
 	}
 
     public AlerteIndisponibilitePresentationDTO getUnavailablePresentations(String email) {
@@ -120,13 +101,15 @@ public class CommandeService {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		AtomicBoolean inOneTime = new AtomicBoolean(true);
 		Commande commande = commandeComposant.getCart(email);
-		if(commande == null){
+		
+		if(commande == null) {
 			return null;
 		}
 		
 		commande.setStatus(StatusCommande.EN_COURS);
 		List<CommandeMedicament> listCommandeMedicament = commande.getCommandeMedicaments();
-		if(listCommandeMedicament.isEmpty()){
+		
+		if(listCommandeMedicament.isEmpty()) {
 			return null;
 		}
 		
@@ -140,19 +123,50 @@ public class CommandeService {
 		livraison = livraisonComposant.saveLivraison(livraison);
 		commande.getLivraisons().add(livraison);
 		commandeComposant.validateCart(commande);
-		createNewCartForUser(utilisateur);
+		createCommandeIfDontExist(utilisateur);
 		
 		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
 	}
 	
-	private Commande createNewCartForUser(Utilisateur utilisateur) {
-		Commande newCommande = new Commande();
-		newCommande.setUtilisateur(utilisateur);
-		newCommande.setStatus(StatusCommande.PANIER);
-		newCommande.setDateCommande(new Date());
-		return commandeComposant.createNewCommande(newCommande);
+	/**
+	 * @param utilisateur l'utilisateur dont on cherche le panier
+	 * @return le panier de l'utilisateur s'il existe, sinon on en crée un nouveau
+	 */
+	public Commande createCommandeIfDontExist(Utilisateur utilisateur) {
+		Commande commande = commandeComposant.getCart(utilisateur.getEmail());
+		if(commande == null) {
+			commande = new Commande();
+			commande.setUtilisateur(utilisateur);
+			commande.setStatus(StatusCommande.PANIER);
+			commande.setDateCommande(new Date());
+			commande = commandeComposant.createNewCommande(commande);
+		}
+		return commande;
 	}
 	
+	/**
+	 * @param quantite  la quantité de la présentation à ajouter au panier
+	 * @param presentation la présentation à ajouter au panier
+	 * @param commande le panier dans lequel on ajoute la présentation
+	 */
+	private void addPresentationToCart(int quantite, Presentation presentation, Commande commande) {
+		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getCodeCIP7());
+		if(commandeMedicament == null){
+			CommandeMedicament newMedicament = new CommandeMedicament();
+			newMedicament.setQuantite(quantite);
+			newMedicament.setCommande(commande);
+			newMedicament.setPresentation(presentation);
+			commandeComposant.addToCart(newMedicament);
+		}else{
+			commandeMedicament.setQuantite(commandeMedicament.getQuantite() + quantite);
+			commandeComposant.addToCart(commandeMedicament);
+		}
+	}
+	/**
+	 * @param inOneTime le booléen qui indique si la livraison est possible en une fois ou non
+	 * @param listCommandeMedicament la liste des présentations commandées
+	 * @return la liste des livraisons de présentations
+	 */
 	private List<LivraisonPresentation> createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
 		listCommandeMedicament.forEach(cm -> {
@@ -168,7 +182,7 @@ public class CommandeService {
 				livraisonPresentation.setQuantite(cm.getQuantite());
 			}
 			livraisonPresentations.add(livraisonPresentation);
-			presentationComposant.savePresentation(presentation);
+			presentationComposant.updatePresentation(presentation);
 		});
 		return livraisonPresentations;
 	}
