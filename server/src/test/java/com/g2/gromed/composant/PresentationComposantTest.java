@@ -29,8 +29,8 @@ class PresentationComposantTest {
 
     @Test
     void getPresentations() {
-        Presentation presentation1 = TestUtils.getPresentationMedicamentSimple(1);
-        Presentation presentation2 = TestUtils.getPresentationMedicamentSimple(2);
+        Presentation presentation1 = TestUtils.getPresentation(1);
+        Presentation presentation2 = TestUtils.getPresentation(2);
         List<Presentation> presentations = new ArrayList<>();
         presentations.add(presentation1);
         presentations.add(presentation2);
@@ -38,21 +38,29 @@ class PresentationComposantTest {
         presentationRepository.save(presentation1);
         presentationRepository.save(presentation2);
 
-        Page<Presentation> expected = new PageImpl<>(presentations, PageRequest.of(0,2), 1);
-        Page<Presentation> result = presentationComposant.getPresentations(PageRequest.of(0,2));
+        Page<Presentation> expected = new PageImpl<>(presentations, PageRequest.of(0, 2), 1);
+        Page<Presentation> result = presentationComposant.getPresentations(PageRequest.of(0, 2));
 
-        assertThatList(result.getContent()).usingRecursiveComparison().ignoringFields("medicament", "$$_hibernate_attributeInterceptor", "$$_hibernate_tracker").isEqualTo(expected.getContent());
+        assertThatList(result.getContent())
+                .usingRecursiveComparison()
+                .ignoringFields("medicament")
+                .ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
+                .isEqualTo(expected.getContent());
     }
 
     @Test
     void getDetailPresentation() {
-        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        Presentation presentation = TestUtils.getPresentation(1);
         presentationRepository.save(presentation);
 
         Presentation resultPresentation = presentationComposant.getPresentationByCodeCIP7("CIP7-1");
 
         Assertions.assertEquals(presentation.getCodeCIP7(), resultPresentation.getCodeCIP7());
-        assertThat(resultPresentation).usingRecursiveComparison().ignoringFields("medicament", "$$_hibernate_attributeInterceptor", "$$_hibernate_tracker").isEqualTo(presentation);
+        assertThat(resultPresentation)
+                .usingRecursiveComparison()
+                .ignoringFields("medicament")
+                .ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
+                .isEqualTo(presentation);
     }
 
 }

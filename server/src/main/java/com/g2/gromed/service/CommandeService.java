@@ -97,7 +97,7 @@ public class CommandeService {
 
     public AlerteIndisponibilitePresentationDTO getUnavailablePresentations(String email) {
 		Commande commande = commandeComposant.getCart(email);
-		if(null == commande || commande.getCommandeMedicaments().isEmpty()){
+		if(null == commande || (commande.getCommandeMedicaments() != null && commande.getCommandeMedicaments().isEmpty())){
 			return null;
 		}
 
