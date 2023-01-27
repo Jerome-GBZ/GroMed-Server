@@ -208,7 +208,7 @@ public class InsertData {
 			}
 		}
 		String indicationRemboursement = "";
-		if (Double.parseDouble(prix) >= 0.0) {
+		if (Double.parseDouble(prix) > 0.0) {
 			if (presentation.length == 13) {
 				indicationRemboursement = presentation[12].replace("'", "''");
 			}
