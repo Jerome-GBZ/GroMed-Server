@@ -10,5 +10,5 @@ public interface ILivraisonMapper {
 
 	@Mapping(target = "dateLivraison", source = "livraison.dateLivraison")
 	@Mapping(target = "delivered", source = "delivered")
-	LivraisonDTO livraisontoLivraisonDTO(Livraison livraison,boolean delivered);
+	LivraisonDTO livraisontoLivraisonDTO(Livraison livraison, boolean delivered);
 }

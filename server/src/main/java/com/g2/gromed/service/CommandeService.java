@@ -7,6 +7,7 @@ import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.mapper.*;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
+import com.g2.gromed.model.dto.commande.CommandeDTO;
 import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
 import com.g2.gromed.model.dto.commande.LivraisonDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Log
 @Service
@@ -185,5 +187,18 @@ public class CommandeService {
 			presentationComposant.updatePresentation(presentation);
 		});
 		return livraisonPresentations;
+	}
+
+	/**
+	 * @param email l'email de l'utilisateur dont on cherche les commandes
+	 * @return les commandes passées de l'utilisateur
+	 */
+	public List<CommandeDTO> getAllCommande(String email) {
+		List<Commande> commandes = commandeComposant.getAllByEmail(email);
+
+		// List<CommandeDTO> commandesDTO = commandes.stream().map(commandeMapper::commandeToCommandeDTO).toList();
+		List<CommandeDTO> commandesDTO = commandes.stream().map(c -> commandeMapper.commandeToCommandeDTO(c, true)).collect(Collectors.toList());
+
+		return commandesDTO;
 	}
 }

@@ -4,6 +4,7 @@ import com.g2.gromed.endpoint.ICommandeEndpoint;
 import com.g2.gromed.model.dto.commande.LivraisonDTO;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.commande.CommandeDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import com.g2.gromed.service.CommandeService;
 import lombok.AllArgsConstructor;
@@ -23,13 +24,13 @@ public class CommandeController implements ICommandeEndpoint {
 		UtilisateurDTO utilisateurDTO = commandeService.addPresentationToCart(email, codeCIP7, quantite);
 		return utilisateurDTO!= null ? ResponseEntity.ok(utilisateurDTO) : ResponseEntity.notFound().build();
 	}
-	
+
 	@Override
 	public ResponseEntity<UtilisateurDTO> deletePresentationToCart(String email, String codeCIP7) {
 		UtilisateurDTO utilisateurDTO = commandeService.deletePresentationFromCart(email, codeCIP7);
 		return utilisateurDTO!= null ? ResponseEntity.ok(utilisateurDTO) : ResponseEntity.notFound().build();
 	}
-	
+
 	@Override
 	public ResponseEntity<List<PresentationPanierDTO>> getUserCart(String email) {
 		List<PresentationPanierDTO> panier = commandeService.getCart(email);
@@ -41,10 +42,16 @@ public class CommandeController implements ICommandeEndpoint {
 		AlerteIndisponibilitePresentationDTO alerteIndisponibilitePresentationDTO = commandeService.getUnavailablePresentations(email);
 		return alerteIndisponibilitePresentationDTO != null ? ResponseEntity.ok(alerteIndisponibilitePresentationDTO) : ResponseEntity.notFound().build();
 	}
-	
+
 	@Override
 	public ResponseEntity<LivraisonDTO> validateCart(String email) {
 		LivraisonDTO livraisonDTO = commandeService.validateCart(email);
 		return livraisonDTO!= null ? ResponseEntity.ok(livraisonDTO) : ResponseEntity.notFound().build();
+	}
+
+
+	public ResponseEntity<List<CommandeDTO>> getAllCommande(String email) {
+		List<CommandeDTO> commandesDTO = commandeService.getAllCommande(email);
+		return commandesDTO != null ? ResponseEntity.ok(commandesDTO) : ResponseEntity.notFound().build();
 	}
 }
