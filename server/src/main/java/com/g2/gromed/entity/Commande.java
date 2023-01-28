@@ -29,7 +29,7 @@ public class Commande {
 	private String facture;
 
 	private StatusCommande status;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "email",referencedColumnName = "email")
 	private Utilisateur utilisateur;
@@ -40,7 +40,7 @@ public class Commande {
 
 	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
 	private List<CommandeMedicament> commandeMedicaments;
-	
-	@OneToMany(mappedBy = "commande",cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
 	private List<Livraison> livraisons;
 }
