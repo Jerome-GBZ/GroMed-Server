@@ -1,7 +1,12 @@
 package com.g2.gromed.controller;
 
 import com.g2.gromed.GromedApplication;
+import com.g2.gromed.TestUtils;
+import com.g2.gromed.entity.Commande;
+import com.g2.gromed.entity.StatusCommande;
+import com.g2.gromed.mapper.ICommandeMapper;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
+import com.g2.gromed.model.dto.commande.CommandeDTO;
 import com.g2.gromed.service.CommandeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -28,6 +32,9 @@ class CommandeControllerTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
+
+    @Autowired
+    private ICommandeMapper commandeMapper;
 
 
     @Test
@@ -73,5 +80,32 @@ class CommandeControllerTest {
 
         ResponseEntity<AlerteIndisponibilitePresentationDTO> expected = ResponseEntity.notFound().build();
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
+    }
+
+    @Test
+    void getAllCommande() {
+        Commande commande1 = TestUtils.getCommande(1, StatusCommande.EN_COURS);
+        Commande commande3 = TestUtils.getCommande(3, StatusCommande.LIVREE);
+        List<Commande> commandes = new ArrayList<>(Arrays.asList(commande1, commande3));
+        List<CommandeDTO> mockedServiceResult = commandes.stream().map(commande -> commandeMapper.commandeToCommandeDTO(commande, true)).toList();
+
+        when(commandeService.getAllCommande("email")).thenReturn(mockedServiceResult);
+
+        final HttpHeaders headers = new HttpHeaders();
+        final Map<String, String> urlParam = new HashMap<>();
+        urlParam.put("email", "email");
+
+        final ResponseEntity<List<CommandeDTO>> response = testRestTemplate.exchange(
+                "/commande/all?email={email}",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                },
+                urlParam);
+
+        ResponseEntity<List<CommandeDTO>> expected = ResponseEntity.ok(mockedServiceResult);
+
+        assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
+
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Log
 @Service
@@ -191,6 +190,9 @@ public class CommandeService {
 	 */
 	public List<CommandeDTO> getAllCommande(String email) {
 		List<Commande> commandes = commandeComposant.getAllByEmail(email);
-		return commandes.stream().map(c -> commandeMapper.commandeToCommandeDTO(c, true)).collect(Collectors.toList());
+		return commandes
+				.stream()
+				.map(c -> commandeMapper.commandeToCommandeDTO(c, true))
+				.toList();
 	}
 }

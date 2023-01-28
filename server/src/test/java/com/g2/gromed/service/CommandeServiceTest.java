@@ -5,7 +5,9 @@ import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.CommandeComposant;
 import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.entity.*;
+import com.g2.gromed.mapper.ICommandeMapper;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
+import com.g2.gromed.model.dto.commande.CommandeDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ class CommandeServiceTest {
 
     @Autowired
     CommandeService commandeService;
+
+    @Autowired
+    ICommandeMapper commandeMapper;
 
 
     @Test
@@ -84,4 +89,24 @@ class CommandeServiceTest {
         AlerteIndisponibilitePresentationDTO result = commandeService.getUnavailablePresentations("email");
         Assertions.assertNull(result);
     }
+
+    @Test
+    void getAllCommande(){
+        Commande commande1 = TestUtils.getCommande(1, StatusCommande.EN_COURS);
+        Commande commande3 = TestUtils.getCommande(3, StatusCommande.LIVREE);
+        List<Commande> commandes = new ArrayList<>(Arrays.asList(commande1, commande3));
+
+        when(commandeComposant.getAllByEmail("email")).thenReturn(commandes);
+
+        List<CommandeDTO> expected = commandes.stream().map(commande -> commandeMapper.commandeToCommandeDTO(commande, true)).toList();
+        List<CommandeDTO> result = commandeService.getAllCommande("email");
+
+        Assertions.assertEquals(expected.size(), result.size());
+        Assertions.assertEquals(expected.get(0).getNumeroCommande(), result.get(0).getNumeroCommande());
+        Assertions.assertEquals(expected.get(1).getNumeroCommande(), result.get(1).getNumeroCommande());
+        Assertions.assertEquals(expected.get(0).getTotal(), result.get(0).getTotal());
+        Assertions.assertEquals(expected.get(1).getTotal(), result.get(1).getTotal());
+
+    }
+
 }
