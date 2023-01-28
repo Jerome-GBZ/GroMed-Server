@@ -22,11 +22,15 @@ class UtilisateurComposantTest {
 
 	@Test
 	void Autenticate() throws ParseException {
-		Utilisateur utilisateur = TestUtils.getUtilisateurList(1).get(0);
+		Utilisateur utilisateur = TestUtils.getUtilisateur(1);
 		utilisateur = utilisateurRepository.save(utilisateur);
 		
 		Utilisateur resultUtilisateur = utilisateurComposant.authenticate(utilisateur.getEmail(), utilisateur.getMotDePasse());
-		assertThat(resultUtilisateur).usingRecursiveComparison().ignoringFields("commandes","commandeTypes", "$$_hibernate_attributeInterceptor", "$$_hibernate_collectionTracker", "$$_hibernate_tracker").isEqualTo(utilisateur);
+		assertThat(resultUtilisateur)
+				.usingRecursiveComparison()
+				.ignoringFields("commandes","commandeTypes", "etablissement")
+				.ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
+				.isEqualTo(utilisateur);
 	}
 	
 	

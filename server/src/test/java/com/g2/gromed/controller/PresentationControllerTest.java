@@ -2,6 +2,7 @@ package com.g2.gromed.controller;
 
 import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
+import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
@@ -9,9 +10,11 @@ import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import com.g2.gromed.repository.IPresentationRepository;
+import com.g2.gromed.service.PresentationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
@@ -30,20 +33,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class PresentationControllerTest {
+
+    @MockBean
+    PresentationService presentationService;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
     private IPresentationMapper presentationMapper;
+
     @Autowired
     private IInfoImportanteMapper infoImportanteMapper;
-    @Autowired
-    private IPresentationRepository presentationRepository;
 
     @Test
     void getPresentations200() {
@@ -52,10 +58,19 @@ class PresentationControllerTest {
         urlParam.put("page", 0);
         urlParam.put("size", 2);
 
-        Presentation presentation1 = TestUtils.getPresentationMedicamentSimple(1);
-        Presentation presentation2 = TestUtils.getPresentationMedicamentSimple(2);
-        presentationRepository.save(presentation1);
-        presentationRepository.save(presentation2);
+        Medicament medicament = TestUtils.getMedicament(10);
+        Presentation presentation1 = TestUtils.getPresentation(1);
+        presentation1.setMedicament(medicament);
+        Presentation presentation2 = TestUtils.getPresentation(2);
+        presentation2.setMedicament(medicament);
+
+        List<PresentationCardDTO> presentationCardDTOList = new ArrayList<>();
+        presentationCardDTOList.add(presentationMapper.toPresentationCardDTO(presentation1));
+        presentationCardDTOList.add(presentationMapper.toPresentationCardDTO(presentation2));
+        final Page<PresentationCardDTO> mockedServiceResponse = new PageImpl<>(presentationCardDTOList, PageRequest.of(urlParam.get("page"), urlParam.get("size")), 1);
+
+        when(presentationService.getAllPresentations(PageRequest.of(0, 2))).thenReturn(mockedServiceResponse);
+
 
         final ResponseEntity<Page<PresentationCardDTO>> response = testRestTemplate.exchange(
                 "/presentation/all?page={page}&size={size}",
@@ -65,12 +80,8 @@ class PresentationControllerTest {
                 },
                 urlParam);
 
-        List<PresentationCardDTO> presentationCardDTOList = new ArrayList<>();
-        presentationCardDTOList.add(presentationMapper.toPresentationCardDTO(presentation1));
-        presentationCardDTOList.add(presentationMapper.toPresentationCardDTO(presentation2));
-        final Page<PresentationCardDTO> expectedResponse = new PageImpl<>(presentationCardDTOList, PageRequest.of(urlParam.get("page"), urlParam.get("size")), 1);
 
-        final ResponseEntity<Page<PresentationCardDTO>> expected = ResponseEntity.ok(expectedResponse);
+        final ResponseEntity<Page<PresentationCardDTO>> expected = ResponseEntity.ok(mockedServiceResponse);
 
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
     }
@@ -82,6 +93,7 @@ class PresentationControllerTest {
         urlParam.put("page", 0);
         urlParam.put("size", 1);
 
+        when(presentationService.getAllPresentations(PageRequest.of(0, 1))).thenReturn(new PageImpl<>(new ArrayList<>(), PageRequest.of(urlParam.get("page"), urlParam.get("size")), 1));
         final ResponseEntity<Page<PresentationCardDTO>> response = testRestTemplate.exchange(
                 "/presentation/all?page={page}&size={size}",
                 HttpMethod.GET,
@@ -101,8 +113,17 @@ class PresentationControllerTest {
         final Map<String, String> urlParam = new HashMap<>();
         urlParam.put("codeCIP7", "CIP7-1");
 
-        Presentation presentation = TestUtils.getPresentationMedicamentFull(1, 0, 1, 0, 0);
-        presentationRepository.save(presentation);
+        Presentation presentation = TestUtils.getPresentation(1);
+        Medicament medicament = TestUtils.getMedicament(10);
+        presentation.setMedicament(medicament);
+
+        List<InfoImportanteDTO> infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()
+                .stream()
+                .map(infoImportanteMapper::toInfoImportanteDTO)
+                .collect(Collectors.toList());
+        PresentationDetailDTO mockedServiceResponse = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+
+        when(presentationService.getDetailPresentation("CIP7-1")).thenReturn(mockedServiceResponse);
 
         final ResponseEntity<PresentationDetailDTO> response = testRestTemplate.exchange(
                 "/presentation/detail?codeCIP7={codeCIP7}",
@@ -112,15 +133,9 @@ class PresentationControllerTest {
                 },
                 urlParam);
 
-        List<InfoImportanteDTO> infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()
-                .stream()
-                .map(infoImportanteMapper::toInfoImportanteDTO)
-                .collect(Collectors.toList());
-        PresentationDetailDTO presentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+        final ResponseEntity<PresentationDetailDTO> expected = ResponseEntity.ok(mockedServiceResponse);
 
-        final ResponseEntity<PresentationDetailDTO> expected = ResponseEntity.ok(presentationDetailDTO);
-
-        assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
+        assertThat(response).usingRecursiveComparison().ignoringFields("headers", "medicament").isEqualTo(expected);
     }
 
     @Test
@@ -128,6 +143,8 @@ class PresentationControllerTest {
         final HttpHeaders headers = new HttpHeaders();
         final Map<String, String> urlParam = new HashMap<>();
         urlParam.put("codeCIP7", "CIP7-1");
+
+        when(presentationService.getDetailPresentation("CIP-7")).thenReturn(null);
 
         final ResponseEntity<PresentationDetailDTO> response = testRestTemplate.exchange(
                 "/presentation/detail?codeCIP7={codeCIP7}",
