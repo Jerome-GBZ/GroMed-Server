@@ -1,7 +1,6 @@
 package com.g2.gromed.entity;
 
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +29,7 @@ public class Commande {
 
 	private StatusCommande status;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "email",referencedColumnName = "email")
 	private Utilisateur utilisateur;
 

@@ -1,10 +1,10 @@
 package com.g2.gromed.model.dto.commande;
 
-import java.sql.Date;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter

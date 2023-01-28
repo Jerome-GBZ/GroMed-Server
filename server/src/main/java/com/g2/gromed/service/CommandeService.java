@@ -6,11 +6,7 @@ import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.mapper.*;
-import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
-import com.g2.gromed.model.dto.commande.CommandeDTO;
-import com.g2.gromed.model.dto.commande.ConditionPrescriptionDTO;
-import com.g2.gromed.model.dto.commande.LivraisonDTO;
-import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.commande.*;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
@@ -195,10 +191,6 @@ public class CommandeService {
 	 */
 	public List<CommandeDTO> getAllCommande(String email) {
 		List<Commande> commandes = commandeComposant.getAllByEmail(email);
-
-		// List<CommandeDTO> commandesDTO = commandes.stream().map(commandeMapper::commandeToCommandeDTO).toList();
-		List<CommandeDTO> commandesDTO = commandes.stream().map(c -> commandeMapper.commandeToCommandeDTO(c, true)).collect(Collectors.toList());
-
-		return commandesDTO;
+		return commandes.stream().map(c -> commandeMapper.commandeToCommandeDTO(c, true)).collect(Collectors.toList());
 	}
 }
