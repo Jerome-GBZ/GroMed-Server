@@ -6,7 +6,6 @@ import com.g2.gromed.repository.ICommandeRepository;
 import com.g2.gromed.repository.ICommandeTypeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import oracle.security.pki.OracleWallet;
 import org.springframework.stereotype.Component;
 
 @Log

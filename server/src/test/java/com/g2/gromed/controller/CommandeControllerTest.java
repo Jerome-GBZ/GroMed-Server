@@ -190,7 +190,7 @@ class CommandeControllerTest {
         final HttpHeaders headers = new HttpHeaders();
         final Map<String, String> urlParam = new HashMap<>();
         urlParam.put("email", "email");
-        when(commandeService.getCart("email")).thenReturn(new ArrayList<>());
+        when(commandeService.getCart("email")).thenReturn(null);
         final ResponseEntity<List<PresentationPanierDTO>> response = testRestTemplate.exchange(
                 "/commande/panier?email={email}",
                 HttpMethod.GET,

@@ -162,7 +162,7 @@ public class CommandeService {
 	 * @param presentation la présentation à ajouter au panier
 	 * @param commande le panier dans lequel on ajoute la présentation
 	 */
-	private void addPresentationToCart(int quantite, Presentation presentation, Commande commande) {
+	public void addPresentationToCart(int quantite, Presentation presentation, Commande commande) {
 		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getCodeCIP7());
 		if(commandeMedicament == null){
 			CommandeMedicament newMedicament = new CommandeMedicament();

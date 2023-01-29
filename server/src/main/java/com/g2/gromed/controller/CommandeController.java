@@ -10,7 +10,6 @@ import com.g2.gromed.service.CommandeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class CommandeController implements ICommandeEndpoint {
 	@Override
 	public ResponseEntity<List<PresentationPanierDTO>> getUserCart(String email) {
 		List<PresentationPanierDTO> panier = commandeService.getCart(email);
-		return !panier.isEmpty() ? ResponseEntity.ok(panier) : ResponseEntity.notFound().build();
+		return panier!=null ? ResponseEntity.ok(panier) : ResponseEntity.notFound().build();
 	}
 
 	@Override
