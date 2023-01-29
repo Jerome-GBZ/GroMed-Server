@@ -1,13 +1,15 @@
 package com.g2.gromed.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "COMMANDE_TYPE")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommandeType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

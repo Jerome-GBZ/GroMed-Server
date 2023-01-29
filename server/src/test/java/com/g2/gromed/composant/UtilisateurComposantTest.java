@@ -33,5 +33,18 @@ class UtilisateurComposantTest {
 				.isEqualTo(utilisateur);
 	}
 	
+	@Test
+	void getUserByEmail() throws ParseException {
+		Utilisateur utilisateur = TestUtils.getUtilisateur(1);
+		utilisateur = utilisateurRepository.save(utilisateur);
+		
+		Utilisateur resultUtilisateur = utilisateurComposant.getUserByEmail(utilisateur.getEmail());
+		assertThat(resultUtilisateur)
+				.usingRecursiveComparison()
+				.ignoringFields("commandes","commandeTypes", "etablissement")
+				.ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
+				.isEqualTo(utilisateur);
+	}
+	
 	
 }

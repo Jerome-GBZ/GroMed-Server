@@ -1,5 +1,6 @@
 package com.g2.gromed.endpoint;
 
+import com.g2.gromed.model.dto.commande.CommandeDetailDTO;
 import com.g2.gromed.model.dto.commande.LivraisonDTO;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
@@ -47,6 +48,13 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
 	@ApiResponse(responseCode = "404", description = "Probleme lors de la validation")
 	@GetMapping(value = "/validate", produces = "application/json")
-	ResponseEntity<LivraisonDTO> validateCart(@RequestParam("email") String email);
+	ResponseEntity<LivraisonDTO> validateCart(@RequestParam("email") String email,@RequestParam("saveName") String saveName);
+	
+	@ApiOperation(value = "Renvoie le détail d'une commande")
+	@ApiResponse(responseCode = "200", description = "OK")
+	@ApiResponse(responseCode = "500", description = "Erreur serveur")
+	@ApiResponse(responseCode = "404", description = "Probleme lors de la récupération des détails de la commande")
+	@GetMapping(value = "/detail", produces = "application/json")
+	ResponseEntity<CommandeDetailDTO> getDetailCommande(@RequestParam("email") String email,@RequestParam("commande") int idCommande);
 	
 }

@@ -22,7 +22,6 @@ public class CommandeMedicament {
 	private Commande commande;
 	
 	@OneToOne
-	
 	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
 	private Presentation presentation;
 }

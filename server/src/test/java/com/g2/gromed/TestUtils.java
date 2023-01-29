@@ -2,12 +2,9 @@ package com.g2.gromed;
 
 import com.g2.gromed.entity.*;
 
-import javax.swing.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
 
 public abstract class TestUtils {
 
@@ -26,11 +23,11 @@ public abstract class TestUtils {
 
     public static Medicament getMedicament(int n) {
         return Medicament.builder()
-                .codeCIS(String.format("CIS-%d", 1))
+                .codeCIS(String.format("CIS-%d", n))
                 .formePharmaceutique(String.format("Forme pharma médicament %d", n))
                 .voiesAdministratifAMM(String.format("Forme pharma médicament %d", n))
                 .typeProcedureAMM(String.format("Type procédure médicament %d", n))
-                .dateAMM(new Date())
+                .dateAMM(Instant.now())
                 .etatCommercialisation(String.format("Etat commercialisation %d", n))
                 .statusBDM(String.format("Status BDM médicament %d", n))
                 .numeroAutorisationEuropeenne(String.format("Numéro auto %d", n))
@@ -66,8 +63,8 @@ public abstract class TestUtils {
     public static InfoImportante getInfoImportante(int n) {
         return InfoImportante.builder()
                 .idInfoImportante((long) n)
-                .dateDebut(new Date())
-                .dateFin(new Date())
+                .dateDebut(Instant.now())
+                .dateFin(Instant.now())
                 .lien(String.format("lien %d", n))
                 .message(String.format("message %d", n))
                 .build();
@@ -90,7 +87,7 @@ public abstract class TestUtils {
                 .email(String.format("email %d", n))
                 .adresse(String.format("adresse %d", n))
                 .motDePasse(String.format("mot de passe %d", n))
-                .dateNaissance(new Date())
+                .dateNaissance(Instant.now())
                 .ville(String.format("ville %d", n))
                 .telephone(String.format("telephone %d", n))
                 .codePostal(String.format("code postal %d", n))
@@ -100,11 +97,11 @@ public abstract class TestUtils {
     public static Commande getCommande(int n, StatusCommande statusCommande) {
         return Commande.builder()
                 .numeroCommande((long) n)
-                .dateCommande(new Date())
+                .dateCommande(Instant.now())
                 .total(n * 10)
                 .facture(String.format("facture %d", n))
                 .status(statusCommande)
-                .commandeMedicaments(new ArrayList<>())
+                .commandeMedicaments(null)
                 .build();
     }
 
@@ -113,6 +110,17 @@ public abstract class TestUtils {
                     .commandeMedicamentId((long) n)
                     .quantite(n * 10)
                     .build();
-        }
-
+    }
+    public static Livraison getLivraison() {
+        return Livraison.builder()
+                .dateLivraison(Instant.now())
+                .livraisonPresentations(null)
+                .build();
+    }
+    public static CommandeType getCommandeType(int n,String name){
+        return CommandeType.builder()
+                .commandeTypeId((long) n)
+                .name(name)
+                .build();
+    }
 }

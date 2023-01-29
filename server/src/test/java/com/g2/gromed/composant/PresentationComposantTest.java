@@ -62,5 +62,21 @@ class PresentationComposantTest {
                 .ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
                 .isEqualTo(presentation);
     }
+    @Test
+    void updatePresentation(){
+        Presentation presentation = TestUtils.getPresentation(1);
+        presentationRepository.save(presentation);
+        presentation.setStock(10);
+        presentationComposant.updatePresentation(presentation);
+
+        Presentation resultPresentation = presentationRepository.findFirstByCodeCIP7("CIP7-1");
+
+        Assertions.assertEquals(presentation.getCodeCIP7(), resultPresentation.getCodeCIP7());
+        assertThat(resultPresentation)
+                .usingRecursiveComparison()
+                .ignoringFields("medicament")
+                .ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
+                .isEqualTo(presentation);
+    }
 
 }
