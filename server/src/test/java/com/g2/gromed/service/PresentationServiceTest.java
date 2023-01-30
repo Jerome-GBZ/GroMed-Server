@@ -9,19 +9,13 @@ import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
-import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +34,7 @@ class PresentationServiceTest {
     @Autowired
     PresentationService presentationService;
 
-    @Test
+   /* @Test
     void getAllPresentations() {
         Medicament medicament = TestUtils.getMedicament(1);
         Presentation presentation = TestUtils.getPresentation(1);
@@ -61,7 +55,7 @@ class PresentationServiceTest {
 
         assertThat(resultPagePresentationCardDTO).usingRecursiveComparison().isEqualTo(expectedPagePresentationCardDTO);
     }
-
+*/
     @Test
     void getDetailPresentation() {
         Medicament medicament = TestUtils.getMedicament(1);

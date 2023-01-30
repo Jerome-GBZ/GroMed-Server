@@ -1,6 +1,7 @@
 package com.g2.gromed.endpoint;
 
 
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +22,7 @@ public interface IPresentationEndpoint {
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
 	@ApiResponse(responseCode = "404", description = "Médicament non trouvé")
 	@GetMapping(value = "/all", produces = "application/json")
-	ResponseEntity<Page<PresentationCardDTO>> getPresentations(@Parameter Pageable pagination);
+	ResponseEntity<Page<PresentationCardDTO>> getPresentations(@Parameter Pageable pagination, @Parameter FiltreDTO filtreDTO);
 
 	@ApiOperation(value = "Récupère les informations détallées d'une présentation d'un médicament")
 	@ApiResponse(responseCode = "200", description = "OK")

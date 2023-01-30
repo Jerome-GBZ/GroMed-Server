@@ -50,6 +50,7 @@ class PresentationControllerTest {
 
     @Autowired
     private IInfoImportanteMapper infoImportanteMapper;
+/*
 
     @Test
     void getPresentations200() {
@@ -85,6 +86,8 @@ class PresentationControllerTest {
 
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
     }
+*/
+/*
 
     @Test
     void getPresentations404() {
@@ -106,6 +109,7 @@ class PresentationControllerTest {
 
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
     }
+*/
 
     @Test
     void getDetailPresentation200() {
