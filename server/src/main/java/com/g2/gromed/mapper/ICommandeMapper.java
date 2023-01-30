@@ -11,7 +11,15 @@ import java.util.List;
 
 @Mapper
 public interface ICommandeMapper {
-	
+
+	@Mapping(source = "commande.numeroCommande", target = "numeroCommande")
+	@Mapping(source = "commande.dateCommande", target = "dateCommande")
+	@Mapping(source = "commande.status", target = "status")
+	@Mapping(target = "delivered", source = "delivered")
+	@Mapping(source = "commande.total", target = "total")
+	@Mapping(target = "nombrePresentation", expression = "java(commande.getCommandeMedicaments().size())")
+	CommandeDTO commandeToCommandeDTO(Commande commande, boolean delivered);
+
 	@Mapping(source = "commandeMedicament.presentation.codeCIP7", target = "codeCIP7")
 	@Mapping(source = "commandeMedicament.presentation.medicament.denomination", target = "denomination")
 	@Mapping(source = "commandeMedicament.quantite", target = "quantite")
@@ -30,6 +38,5 @@ public interface ICommandeMapper {
 	
 	@Mapping(source = "commandeMedicament.presentation.medicament.denomination", target = "nomPresentation")
 	@Mapping(source = "commandeMedicament.quantite", target = "quantite")
-	
 	PresentationRecapCommandeDTO commandeMedicamentToPresentationRecapCommandeDTO(CommandeMedicament commandeMedicament);
 }

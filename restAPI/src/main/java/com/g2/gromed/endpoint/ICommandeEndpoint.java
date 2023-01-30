@@ -1,9 +1,6 @@
 package com.g2.gromed.endpoint;
 
-import com.g2.gromed.model.dto.commande.CommandeDetailDTO;
-import com.g2.gromed.model.dto.commande.LivraisonDTO;
-import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
-import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.commande.*;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,5 +53,11 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "404", description = "Probleme lors de la récupération des détails de la commande")
 	@GetMapping(value = "/detail", produces = "application/json")
 	ResponseEntity<CommandeDetailDTO> getDetailCommande(@RequestParam("email") String email,@RequestParam("commande") int idCommande);
-	
+
+	@ApiOperation(value = "Récupérer toutes les commandes de l'utilisateur")
+	@ApiResponse(responseCode = "200", description = "OK")
+	@ApiResponse(responseCode = "500", description = "Erreur serveur")
+	@ApiResponse(responseCode = "404", description = "Probleme lors de la validation")
+	@GetMapping(value = "/all", produces = "application/json")
+	ResponseEntity<List<CommandeDTO>> getAllCommande(@RequestParam("email") String email);
 }

@@ -1,10 +1,7 @@
 package com.g2.gromed.controller;
 
 import com.g2.gromed.endpoint.ICommandeEndpoint;
-import com.g2.gromed.model.dto.commande.CommandeDetailDTO;
-import com.g2.gromed.model.dto.commande.LivraisonDTO;
-import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
-import com.g2.gromed.model.dto.commande.PresentationPanierDTO;
+import com.g2.gromed.model.dto.commande.*;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import com.g2.gromed.service.CommandeService;
 import lombok.AllArgsConstructor;
@@ -53,5 +50,11 @@ public class CommandeController implements ICommandeEndpoint {
 	public ResponseEntity<CommandeDetailDTO> getDetailCommande(String email, int idCommande) {
 		CommandeDetailDTO commandeDetailDTO = commandeService.getDetailCommande(email, idCommande);
 		return commandeDetailDTO!= null ? ResponseEntity.ok(commandeDetailDTO) : ResponseEntity.notFound().build();
+	}
+
+	@Override
+	public ResponseEntity<List<CommandeDTO>> getAllCommande(String email) {
+		List<CommandeDTO> commandesDTO = commandeService.getAllCommande(email);
+		return commandesDTO != null ? ResponseEntity.ok(commandesDTO) : ResponseEntity.notFound().build();
 	}
 }
