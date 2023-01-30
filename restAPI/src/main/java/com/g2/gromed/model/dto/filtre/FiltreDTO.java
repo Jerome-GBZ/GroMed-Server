@@ -17,10 +17,13 @@ public class FiltreDTO {
     @Schema(description = "Indique si la présentation du médicament est en stock", example = "false")
     boolean isAvailable;
 
+    @Schema(description = "Indique si la présentation est celle d'une médicament original", example = "true")
+    boolean isOriginal;
+
     @Schema(description = "Indique si la présentation est celle d'une médicament générique", example = "true")
     boolean isGenerique;
 
-    @Schema(description = "Liste de tous les titulaires de médicaments", example = "[{titulaire: 'Sanofi']")
+    @Schema(description = "Liste de tous les titulaires de médicaments", example = "[\"Boirons\", \"Sanofi\"]")
     List<String> titulaires;
 
     @Schema(description = "Liste de toutes les dénominations de substances de médicaments", example = "[{composition: 'H1N1']")
