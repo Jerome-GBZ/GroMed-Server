@@ -73,14 +73,11 @@ public class CommandeService {
 	}
 
     public AlerteIndisponibilitePresentationDTO getUnavailablePresentations(String email) {
-	    Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
-		if(utilisateur == null) {
+		Commande commande = commandeComposant.getCart(email);
+
+		if(null == commande || commande.getCommandeMedicaments() == null || commande.getCommandeMedicaments().isEmpty()){
 		    return null;
 	    }
-		Commande commande = createCartIfDontExist(utilisateur);
-		if(null == commande || (commande.getCommandeMedicaments() != null && commande.getCommandeMedicaments().isEmpty())){
-			return null;
-		}
 
 		List<CommandeMedicament> commandeMedicaments = commande.getCommandeMedicaments();
 		Map<String, Integer> alertesIndisponibilites = new HashMap<>();
@@ -218,5 +215,17 @@ public class CommandeService {
 						return livraisonMapper.livraisonToLivraisonDetailDTO(livraison,recapLivraisonDTO);
 				}).toList();
 		return commandeMapper.commandeToCommandeDetailDTO(commande,commande.getStatus() == StatusCommande.LIVREE,livraisonDetailDTOs,presentationRecapCommandeDTOs);
+	}
+
+	/**
+	 * @param email l'email de l'utilisateur dont on cherche les commandes
+	 * @return les commandes passées de l'utilisateur
+	 */
+	public List<CommandeDTO> getAllCommande(String email) {
+		List<Commande> commandes = commandeComposant.getAllByEmail(email);
+		return commandes
+				.stream()
+				.map(c -> commandeMapper.commandeToCommandeDTO(c, true))
+				.toList();
 	}
 }
