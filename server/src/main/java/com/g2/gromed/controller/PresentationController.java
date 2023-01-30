@@ -1,6 +1,7 @@
 package com.g2.gromed.controller;
 
 import com.g2.gromed.endpoint.IPresentationEndpoint;
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import com.g2.gromed.service.PresentationService;
@@ -19,8 +20,8 @@ public class PresentationController implements IPresentationEndpoint {
 	private PresentationService presentationService;
 	
 	@Override
-	public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination){
-		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination);
+	public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination, FiltreDTO filtreDTO){
+		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination, filtreDTO);
 		return !page.getContent().isEmpty() ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
 	}
 	

@@ -4,6 +4,7 @@ import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
@@ -22,8 +23,8 @@ public class PresentationService {
 	private IPresentationMapper presentationMapper;
 	private IInfoImportanteMapper infoImportanteMapper;
 
-	public Page<PresentationCardDTO> getAllPresentations(Pageable pagination) {
-		Page<Presentation> presentations = presentationComposant.getPresentations(pagination);
+	public Page<PresentationCardDTO> getAllPresentations(Pageable pagination, FiltreDTO filtreDTO) {
+		Page<Presentation> presentations = presentationComposant.getPresentations(pagination, filtreDTO);
 		return presentations.map(presentationMapper::toPresentationCardDTO);
 	}
 

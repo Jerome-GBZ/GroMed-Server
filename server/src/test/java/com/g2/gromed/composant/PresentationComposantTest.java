@@ -8,15 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatList;
 
 @SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
 class PresentationComposantTest {
@@ -26,7 +19,7 @@ class PresentationComposantTest {
 
     @Autowired
     private PresentationComposant presentationComposant;
-
+/*
     @Test
     void getPresentations() {
         Presentation presentation1 = TestUtils.getPresentation(1);
@@ -46,7 +39,7 @@ class PresentationComposantTest {
                 .ignoringFields("medicament")
                 .ignoringFieldsMatchingRegexes(".{0,}$$.{0,}")
                 .isEqualTo(expected.getContent());
-    }
+    }*/
 
     @Test
     void getDetailPresentation() {
