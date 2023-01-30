@@ -13,7 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -114,13 +116,16 @@ public class CommandeService {
 		commande.setTotal(listCommandeMedicament.stream().mapToDouble(cm -> cm.getPresentation().getPrix() * cm.getQuantite()).sum());
 		Livraison livraison = new Livraison();
 		livraison.setCommande(commande);
-		livraison.setDateLivraison(Instant.now());
+		Clock cl = Clock.systemUTC();
+		cl.withZone(ZoneId.of("Europe/Paris"));
+		livraison.setDateLivraison(cl.instant());
 		
 		List<LivraisonPresentation> livraisonPresentations =createLivraisonMedicamentsEntity(inOneTime, listCommandeMedicament);
 		
 		livraison.setLivraisonPresentations(livraisonPresentations);
 		livraison = livraisonComposant.saveLivraison(livraison);
 		commande.getLivraisons().add(livraison);
+		commande.setDateCommande(cl.instant());
 		commande = commandeComposant.validateCart(commande);
 		if(saveName != null && !saveName.isEmpty()) {
 			saveAsCommandeType(saveName, utilisateur, commande);
@@ -148,7 +153,9 @@ public class CommandeService {
 			commande = new Commande();
 			commande.setUtilisateur(utilisateur);
 			commande.setStatus(StatusCommande.PANIER);
-			commande.setDateCommande(Instant.now());
+			Clock cl = Clock.systemUTC();
+			cl.withZone(ZoneId.of("Europe/Paris"));
+			commande.setDateCommande(cl.instant());
 			commande = commandeComposant.createNewCommande(commande);
 		}
 		return commande;
