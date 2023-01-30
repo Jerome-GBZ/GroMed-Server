@@ -3,12 +3,10 @@ package com.g2.gromed.composant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.repository.ICommandeMedicamentRepository;
 import com.g2.gromed.repository.ICommandeRepository;
-import com.g2.gromed.repository.ILivraisonRepository;
+import com.g2.gromed.repository.ICommandeTypeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Log
 @Component
@@ -17,6 +15,7 @@ public class CommandeComposant {
 	private ICommandeRepository commandeRepository;
 	
 	private ICommandeMedicamentRepository commandeMedicamentRepository;
+	private ICommandeTypeRepository commandeTypeRepository;
 	
 	public Commande getCart(String email) {
   	return commandeRepository.findFirstByStatusAndUtilisateurEmail(StatusCommande.PANIER,email);
@@ -42,9 +41,12 @@ public class CommandeComposant {
 		commandeMedicamentRepository.delete(commandePresentation);
 	}
 	
-	public void validateCart(Commande commande) {
-		commandeRepository.save(commande);
+	public Commande validateCart(Commande commande) {
+		return commandeRepository.save(commande);
 	}
 	
-
+	
+	public CommandeType saveCommandeType(CommandeType commandeType) {
+		return commandeTypeRepository.save(commandeType);
+	}
 }

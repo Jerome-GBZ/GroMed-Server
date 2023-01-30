@@ -3,7 +3,9 @@ package com.g2.gromed.service;
 import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.CommandeComposant;
+import com.g2.gromed.composant.LivraisonComposant;
 import com.g2.gromed.composant.PresentationComposant;
+import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import org.junit.jupiter.api.Assertions;
@@ -27,11 +29,17 @@ class CommandeServiceTest {
 
     @MockBean
     PresentationComposant presentationComposant;
-
+    
+    @MockBean
+    UtilisateurComposant utilisateurComposant;
+    
+    @MockBean
+    LivraisonComposant livraisonComposant;
+    
     @Autowired
     CommandeService commandeService;
-
-
+    
+    
     @Test
     void getUnavailablePresentationsOK() {
 
@@ -54,7 +62,7 @@ class CommandeServiceTest {
         List<CommandeMedicament> commandeMedicamentList = new ArrayList<>(Arrays.asList(commandeMedicament2, commandeMedicament1));
         commande.setCommandeMedicaments(commandeMedicamentList);
 
-
+        when(utilisateurComposant.getUserByEmail(utilisateur.getEmail())).thenReturn(utilisateur);
         when(commandeComposant.getCart(utilisateur.getEmail())).thenReturn(commande);
         when(presentationComposant.getPresentationByCodeCIP7(presentation1.getCodeCIP7())).thenReturn(presentation1);
         when(presentationComposant.getPresentationByCodeCIP7(presentation2.getCodeCIP7())).thenReturn(presentation2);

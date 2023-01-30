@@ -5,7 +5,7 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -22,7 +22,7 @@ public class Commande {
 
 	@Column(name = "date_commande", columnDefinition = "DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date dateCommande;
+	private Instant dateCommande;
 
 	private double total;
 

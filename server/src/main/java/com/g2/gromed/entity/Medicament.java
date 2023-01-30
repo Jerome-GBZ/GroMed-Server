@@ -3,7 +3,7 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -25,8 +25,8 @@ public class Medicament {
 	private String typeProcedureAMM;
 
 	@Column(name = "dateamm", columnDefinition = "DATE")
-	@Temporal(TemporalType.DATE)
-	private Date dateAMM;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Instant dateAMM;
 
 	private String etatCommercialisation;
 
