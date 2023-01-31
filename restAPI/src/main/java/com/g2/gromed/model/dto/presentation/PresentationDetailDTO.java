@@ -40,7 +40,7 @@ public class PresentationDetailDTO {
 	@Schema(description = "Indique le taux de remboursement", example = "0.5")
 	private Double tauxRemboursement;
 	
-	@Schema(description = "Indique les vois d'administration du médicament", example = "voie 1;voie 2")
+	@Schema(description = "Indique les voies d'administrations du médicament", example = "voie 1;voie 2")
 	private String voiesAdministration;
 	
 	@Schema(description = "Indique la liste des informations importantes du médicament")
