@@ -6,9 +6,11 @@ import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.entity.InfoImportante;
 import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
 import com.g2.gromed.model.dto.filtre.FiltreDTO;
+import com.g2.gromed.model.dto.presentation.CompositionDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
@@ -38,6 +40,8 @@ class PresentationServiceTest {
     IPresentationMapper presentationMapper;
     @Autowired
     IInfoImportanteMapper infoImportanteMapper;
+    @Autowired
+    ICompositionMapper compositionMapper;
     @Autowired
     PresentationService presentationService;
 
@@ -74,8 +78,9 @@ class PresentationServiceTest {
 
         List<InfoImportante> infoImportanteList = presentation.getMedicament().getInfoImportantes();
         List<InfoImportanteDTO> infoImportanteDTOList = infoImportanteList.stream().map(infoImportanteMapper::toInfoImportanteDTO).collect(Collectors.toList());
+        List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions().stream().map(compositionMapper::toCompositionDTO).collect(Collectors.toList());
 
-        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList, compositionDTOList);
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
 
         assertThat(resultPresentationDetailDTO).usingRecursiveComparison().isEqualTo(expectedPresentationDetailDTO);
