@@ -6,14 +6,18 @@ import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import com.g2.gromed.service.PresentationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Level;
+
 @CrossOrigin
 @RestController
+@Log
 @AllArgsConstructor
 public class PresentationController implements IPresentationEndpoint {
 	
@@ -21,6 +25,13 @@ public class PresentationController implements IPresentationEndpoint {
 	
 	@Override
 	public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination, FiltreDTO filtreDTO){
+		log.log(Level.INFO, "name " + filtreDTO.getPresentationName());
+		log.log(Level.INFO, "avail " + filtreDTO.isAvailable());
+		log.log(Level.INFO, "gener " + filtreDTO.isGenerique());
+		log.log(Level.INFO, "origi " + filtreDTO.isOriginal());
+		log.log(Level.INFO, "subst " + filtreDTO.getSubstancesDenomitations());
+		log.log(Level.INFO, "titul " + filtreDTO.getTitulaires());
+
 		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination, filtreDTO);
 		return !page.getContent().isEmpty() ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
 	}
