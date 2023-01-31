@@ -45,7 +45,7 @@ public interface ICommandeEndpoint {
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
 	@ApiResponse(responseCode = "404", description = "Probleme lors de la validation")
 	@GetMapping(value = "/validate", produces = "application/json")
-	ResponseEntity<LivraisonDTO> validateCart(@RequestParam("email") String email,@RequestParam("saveName") String saveName);
+	ResponseEntity<LivraisonDTO> validateCart(@RequestParam("email") String email,@RequestParam(value = "saveName",required = false) String saveName);
 	
 	@ApiOperation(value = "Renvoie le détail d'une commande")
 	@ApiResponse(responseCode = "200", description = "OK")

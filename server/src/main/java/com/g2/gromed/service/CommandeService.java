@@ -11,7 +11,11 @@ import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -66,6 +70,9 @@ public class CommandeService {
 		}
 		Commande commande = createCartIfDontExist(utilisateur);
 		List<CommandeMedicament> panier = commande.getCommandeMedicaments();
+		if(panier == null || panier.isEmpty()) {
+			return Collections.emptyList();
+		}
 		return panier.stream()
 				.map(cm -> {
 					List<InfoImportanteDTO> infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).toList();
@@ -130,10 +137,10 @@ public class CommandeService {
 		if(saveName != null && !saveName.isEmpty()) {
 			saveAsCommandeType(saveName, utilisateur, commande);
 		}
-		createCartIfDontExist(utilisateur);
 		
 		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
 	}
+	
 	
 	private void saveAsCommandeType(String saveName, Utilisateur utilisateur, Commande commande) {
 		CommandeType commandeType = new CommandeType();
@@ -187,21 +194,41 @@ public class CommandeService {
 	private List<LivraisonPresentation> createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
 		listCommandeMedicament.forEach(cm -> {
-			Presentation presentation = cm.getPresentation();
 			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
-			livraisonPresentation.setPresentation(presentation);
-			int stock = presentation.getStock();
-			presentation.setStock(stock - cm.getQuantite());
-			if(presentation.getStock()<0){
-				inOneTime.set(false);
-				livraisonPresentation.setQuantite(stock);
-			}else{
-				livraisonPresentation.setQuantite(cm.getQuantite());
+			Presentation presentation = updateStock(cm.getPresentation().getCodeCIP7(), cm.getQuantite());
+			if(presentation != null) {
+				livraisonPresentation.setPresentation(presentation);
+				if (presentation.getStock() < 0) {
+					inOneTime.set(false);
+					livraisonPresentation.setQuantite(cm.getQuantite()-presentation.getStock());
+				} else {
+					livraisonPresentation.setQuantite(cm.getQuantite());
+				}
+				livraisonPresentations.add(livraisonPresentation);
 			}
-			livraisonPresentations.add(livraisonPresentation);
-			presentationComposant.updatePresentation(presentation);
+			
 		});
 		return livraisonPresentations;
+	}
+	
+	@Retryable(maxAttempts = 50, backoff = @Backoff(delay = 1000))
+	@Transactional()
+	public Presentation updateStock(String codeCIP7, int quantite) {
+		Optional<Presentation> res = presentationComposant.findByCodeCIP7(codeCIP7);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		Presentation presentation;
+		if(res.isPresent()){
+			presentation = res.get();
+			presentation.setStock(presentation.getStock() - quantite);
+			return presentationComposant.updatePresentation(presentation);
+		}else
+		{
+			return null;
+		}
 	}
 	
 	public CommandeDetailDTO getDetailCommande(String email, int idCommande) {

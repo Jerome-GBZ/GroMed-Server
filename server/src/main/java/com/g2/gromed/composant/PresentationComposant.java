@@ -5,11 +5,14 @@ import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.repository.IPresentationRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -29,8 +32,11 @@ public class PresentationComposant {
 		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
 	
-	public void updatePresentation(Presentation presentation){
-		presentationRepository.save(presentation);
+	public Presentation updatePresentation(Presentation presentation){
+		return presentationRepository.save(presentation);
 	}
-
+	
+	public Optional<Presentation> findByCodeCIP7(String codeCIP7) {
+		return presentationRepository.findByCodeCIP7(codeCIP7);
+	}
 }
