@@ -40,6 +40,12 @@ public class PresentationDetailDTO {
 	@Schema(description = "Indique le taux de remboursement", example = "0.5")
 	private Double tauxRemboursement;
 	
-	@Schema(description = "Indique la liste des informations importantes du médicament", example = "[\n{\n\"message\": \"LYNPARZA (Olaparib) : Comprimés et gélules NE sont PAS substituables Risque d'erreurs médicamenteuses en lien avec une nouvelle forme pharmaceutique - Lettre aux professionnels de santé\"\n}\n]")
+	@Schema(description = "Indique les vois d'administration du médicament", example = "voie 1;voie 2")
+	private String voiesAdministration;
+	
+	@Schema(description = "Indique la liste des informations importantes du médicament")
 	private List<InfoImportanteDTO> informationsImportantes;
+	
+	@Schema(description = "Indique la liste des compositions du médicament")
+	private List<CompositionDTO> compositions;
 }
