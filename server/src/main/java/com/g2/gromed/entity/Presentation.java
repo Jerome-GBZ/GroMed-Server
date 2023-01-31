@@ -9,7 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "PRESENTATION")
+@Table(name = "PRESENTATION",indexes = {
+		@Index(name="stockIndex", columnList = "stock")
+})
 public class Presentation {
 
 	@Id

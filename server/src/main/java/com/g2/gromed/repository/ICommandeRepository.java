@@ -12,6 +12,6 @@ import java.util.List;
 public interface ICommandeRepository extends JpaRepository<Commande, Long> {
 	Commande findFirstByStatusAndUtilisateurEmail(StatusCommande panier, String email);
 
-	@Query("select c from Commande c join c.utilisateur u where u.email = :email and c.status in :status")
+	@Query("select c from Commande c join c.utilisateur u where u.email = :email and c.status in :status order by c.dateCommande desc")
 	List<Commande> findByEmailAndStatusIn(String email, List<StatusCommande> status);
 }

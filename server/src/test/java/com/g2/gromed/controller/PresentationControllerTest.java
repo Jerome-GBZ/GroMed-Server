@@ -4,8 +4,10 @@ import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.presentation.CompositionDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
@@ -50,6 +52,8 @@ class PresentationControllerTest {
 
     @Autowired
     private IInfoImportanteMapper infoImportanteMapper;
+    @Autowired
+    private ICompositionMapper compositionMapper;
 /*
 
     @Test
@@ -125,7 +129,11 @@ class PresentationControllerTest {
                 .stream()
                 .map(infoImportanteMapper::toInfoImportanteDTO)
                 .collect(Collectors.toList());
-        PresentationDetailDTO mockedServiceResponse = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+        List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions()
+                .stream()
+                .map(compositionMapper::toCompositionDTO)
+                .collect(Collectors.toList());
+        PresentationDetailDTO mockedServiceResponse = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList, compositionDTOList);
 
         when(presentationService.getDetailPresentation("CIP7-1")).thenReturn(mockedServiceResponse);
 

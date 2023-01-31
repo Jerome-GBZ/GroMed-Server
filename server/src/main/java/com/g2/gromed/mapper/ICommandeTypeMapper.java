@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface ICommandeTypeMapper {
 	@Mapping(target = "nbProduit", expression = "java(commandeType.getCommande().getCommandeMedicaments().size())")
 	@Mapping(target = "prixTotal", source = "commandeType.commande.total")
-	@Mapping(target = "name", source = "commandeType.name")
+	@Mapping(target = "nom", source = "commandeType.name")
 	CommandeTypeInfo toCommandeTypeInfo(CommandeType commandeType);
 	
 }

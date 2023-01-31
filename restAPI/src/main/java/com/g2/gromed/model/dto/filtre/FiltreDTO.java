@@ -26,6 +26,6 @@ public class FiltreDTO {
     @Schema(description = "Liste de tous les titulaires de médicaments", example = "[\"Boirons\", \"Sanofi\"]")
     List<String> titulaires;
 
-    @Schema(description = "Liste de toutes les dénominations de substances de médicaments", example = "[{composition: 'H1N1']")
+    @Schema(description = "Liste de toutes les dénominations de substances de médicaments",example = "[\"CHLORURE DE SODIUM\"]")
     List<String> substancesDenomitations;
 }

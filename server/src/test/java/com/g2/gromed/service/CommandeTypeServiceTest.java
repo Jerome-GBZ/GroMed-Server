@@ -49,11 +49,11 @@ class CommandeTypeServiceTest {
 		CommandeType ct2 = TestUtils.getCommandeType(2, "test");
 		List<CommandeType> commandeTypes = List.of(ct1,ct2);
 		CommandeTypeInfo cti1 = new CommandeTypeInfo();
-		cti1.setName("coucou");
+		cti1.setNom("coucou");
 		cti1.setNbProduit(0);
 		cti1.setPrixTotal(0.0);
 		CommandeTypeInfo cti2 = new CommandeTypeInfo();
-		cti2.setName("test");
+		cti2.setNom("test");
 		cti2.setNbProduit(0);
 		cti2.setPrixTotal(0.0);
 		when(commandeTypeComposant.getCommandeTypes(anyString(),anyString())).thenReturn(commandeTypes);

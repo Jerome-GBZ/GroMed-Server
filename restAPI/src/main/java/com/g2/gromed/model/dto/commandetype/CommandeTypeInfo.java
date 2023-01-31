@@ -10,7 +10,7 @@ import lombok.Setter;
 public class CommandeTypeInfo {
 	
 	@Schema(description="Le nom de la commande type",example ="commande generale" )
-	private String name;
+	private String nom;
 	@Schema(description="le nombre de presentation dans la commande type",example ="67" )
 	private int nbProduit;
 	@Schema(description="le montant total de la commande type",example = "5642.25")
