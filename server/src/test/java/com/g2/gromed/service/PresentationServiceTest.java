@@ -3,11 +3,14 @@ package com.g2.gromed.service;
 import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.PresentationComposant;
+import com.g2.gromed.entity.Composition;
 import com.g2.gromed.entity.InfoImportante;
 import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.presentation.CompositionDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import org.junit.jupiter.api.Assertions;
@@ -29,6 +32,8 @@ class PresentationServiceTest {
     PresentationComposant presentationComposant;
     @Autowired
     IPresentationMapper presentationMapper;
+    @Autowired
+    ICompositionMapper compositionMapper;
     @Autowired
     IInfoImportanteMapper infoImportanteMapper;
     @Autowired
@@ -65,8 +70,8 @@ class PresentationServiceTest {
 
         List<InfoImportante> infoImportanteList = presentation.getMedicament().getInfoImportantes();
         List<InfoImportanteDTO> infoImportanteDTOList = infoImportanteList.stream().map(infoImportanteMapper::toInfoImportanteDTO).collect(Collectors.toList());
-
-        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+        List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions().stream().map(compositionMapper::toCompositionDTO).collect(Collectors.toList());
+        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList,compositionDTOList);
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
 
         assertThat(resultPresentationDetailDTO).usingRecursiveComparison().isEqualTo(expectedPresentationDetailDTO);
