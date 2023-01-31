@@ -7,7 +7,6 @@ import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
-import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -58,8 +57,8 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 			predicateList.add(compositionJoin.get("denominationSubstance").in(filtreDTO.getSubstancesDenomitations()));
 		}
 		sortFunction(sorts, cb, cq, root, medicamentJoin);
-		
-		
+
+
 		cq.where(predicateList.toArray(new Predicate[]{}));
 		List<Presentation> presentationList = entityManager
 				.createQuery(cq)
@@ -69,7 +68,7 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 
 		return new PageImpl<>(presentationList, pageable, presentationList.size());
 	}
-	
+
 	private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
 		Sort.Order denominationOrder = sorts.getOrderFor("denomination");
 		if(denominationOrder!= null && denominationOrder.isAscending()){
@@ -84,6 +83,6 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 			cq.orderBy(cb.desc(root.get("prix")));
 		}
 	}
-	
-	
+
+
 }

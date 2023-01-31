@@ -6,14 +6,18 @@ import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import com.g2.gromed.service.PresentationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Level;
+
 @CrossOrigin
 @RestController
+@Log
 @AllArgsConstructor
 public class PresentationController implements IPresentationEndpoint {
 	
