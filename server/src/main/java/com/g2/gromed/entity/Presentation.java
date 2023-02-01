@@ -2,6 +2,9 @@ package com.g2.gromed.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 
 @Getter
 @Setter
@@ -12,6 +15,8 @@ import lombok.*;
 @Table(name = "PRESENTATION",indexes = {
 		@Index(name="stockIndex", columnList = "stock")
 })
+@OptimisticLocking(type = OptimisticLockType.DIRTY)
+@DynamicUpdate
 public class Presentation {
 
 	@Id

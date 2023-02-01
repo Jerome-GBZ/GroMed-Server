@@ -11,13 +11,17 @@ import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Log
 @Service
@@ -66,6 +70,9 @@ public class CommandeService {
 		}
 		Commande commande = createCartIfDontExist(utilisateur);
 		List<CommandeMedicament> panier = commande.getCommandeMedicaments();
+		if(panier == null || panier.isEmpty()) {
+			return Collections.emptyList();
+		}
 		return panier.stream()
 				.map(cm -> {
 					List<InfoImportanteDTO> infoImportantes = cm.getPresentation().getMedicament().getInfoImportantes().stream().map(infoImportanteMapper::toInfoImportanteDTO).toList();
@@ -95,7 +102,12 @@ public class CommandeService {
 
 		return new AlerteIndisponibilitePresentationDTO(alertesIndisponibilites);
     }
-	
+	@Recover
+	LivraisonDTO recoverValidateCart(Exception e, String sql){
+		return null;
+	}
+	@Retryable(maxAttempts = 50)
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public LivraisonDTO validateCart(String email, String saveName) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		AtomicBoolean inOneTime = new AtomicBoolean(true);
@@ -120,7 +132,7 @@ public class CommandeService {
 		cl.withZone(ZoneId.of("Europe/Paris"));
 		livraison.setDateLivraison(cl.instant());
 		
-		List<LivraisonPresentation> livraisonPresentations =createLivraisonMedicamentsEntity(inOneTime, listCommandeMedicament);
+		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament);
 		
 		livraison.setLivraisonPresentations(livraisonPresentations);
 		livraison = livraisonComposant.saveLivraison(livraison);
@@ -130,10 +142,10 @@ public class CommandeService {
 		if(saveName != null && !saveName.isEmpty()) {
 			saveAsCommandeType(saveName, utilisateur, commande);
 		}
-		createCartIfDontExist(utilisateur);
 		
 		return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
 	}
+	
 	
 	private void saveAsCommandeType(String saveName, Utilisateur utilisateur, Commande commande) {
 		CommandeType commandeType = new CommandeType();
@@ -166,6 +178,7 @@ public class CommandeService {
 	 * @param presentation la présentation à ajouter au panier
 	 * @param commande le panier dans lequel on ajoute la présentation
 	 */
+
 	public void addPresentationToCart(int quantite, Presentation presentation, Commande commande) {
 		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getCodeCIP7());
 		if(commandeMedicament == null){
@@ -184,23 +197,34 @@ public class CommandeService {
 	 * @param listCommandeMedicament la liste des présentations commandées
 	 * @return la liste des livraisons de présentations
 	 */
-	private List<LivraisonPresentation> createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
+
+	private List<LivraisonPresentation> createLivraisonAndUpdateStock(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
+		HashMap<String,Integer> quantityPresentation = new HashMap<>();
+		List<String> codeCIP7 = new ArrayList<>();
 		listCommandeMedicament.forEach(cm -> {
-			Presentation presentation = cm.getPresentation();
+			codeCIP7.add(cm.getPresentation().getCodeCIP7());
+			quantityPresentation.put(cm.getPresentation().getCodeCIP7(), cm.getQuantite());
+		});
+		List<Presentation> presentations = presentationComposant.findByCodeCIP7In(codeCIP7);
+		presentations.forEach(p -> {
 			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
-			livraisonPresentation.setPresentation(presentation);
-			int stock = presentation.getStock();
-			presentation.setStock(stock - cm.getQuantite());
-			if(presentation.getStock()<0){
+			p.setStock(p.getStock() - quantityPresentation.get(p.getCodeCIP7()));
+			livraisonPresentation.setPresentation(p);
+			if (p.getStock() < 0) {
 				inOneTime.set(false);
-				livraisonPresentation.setQuantite(stock);
-			}else{
-				livraisonPresentation.setQuantite(cm.getQuantite());
+				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7())-p.getStock());
+			} else {
+				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7()));
 			}
 			livraisonPresentations.add(livraisonPresentation);
-			presentationComposant.updatePresentation(presentation);
 		});
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		presentationComposant.upadteAll(presentations);
 		return livraisonPresentations;
 	}
 	

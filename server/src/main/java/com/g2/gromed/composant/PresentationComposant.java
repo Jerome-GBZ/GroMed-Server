@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 @Log
@@ -29,8 +32,15 @@ public class PresentationComposant {
 		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
 	
-	public void updatePresentation(Presentation presentation){
-		presentationRepository.save(presentation);
+	public Presentation updatePresentation(Presentation presentation){
+		return presentationRepository.save(presentation);
 	}
-
+	
+	public List<Presentation> findByCodeCIP7In(List<String> codeCIP7) {
+		return presentationRepository.findByCodeCIP7In(codeCIP7);
+	}
+	
+	public void upadteAll(List<Presentation> presentations) {
+		presentationRepository.saveAll(presentations);
+	}
 }

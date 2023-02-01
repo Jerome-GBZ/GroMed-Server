@@ -6,12 +6,16 @@ import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -83,6 +87,9 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 			cq.orderBy(cb.desc(root.get("prix")));
 		}
 	}
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="10000")})
+	List<Presentation> findByCodeCIP7In(List<String> codeCIP7);
 
 
 }
