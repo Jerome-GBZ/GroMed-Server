@@ -11,17 +11,17 @@ import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.utilisateur.UtilisateurDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Log
 @Service
@@ -102,7 +102,12 @@ public class CommandeService {
 
 		return new AlerteIndisponibilitePresentationDTO(alertesIndisponibilites);
     }
-	
+	@Recover
+	LivraisonDTO recoverValidateCart(Exception e, String sql){
+		return null;
+	}
+	@Retryable(maxAttempts = 50)
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public LivraisonDTO validateCart(String email, String saveName) {
 		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
 		AtomicBoolean inOneTime = new AtomicBoolean(true);
@@ -127,7 +132,7 @@ public class CommandeService {
 		cl.withZone(ZoneId.of("Europe/Paris"));
 		livraison.setDateLivraison(cl.instant());
 		
-		List<LivraisonPresentation> livraisonPresentations =createLivraisonMedicamentsEntity(inOneTime, listCommandeMedicament);
+		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament);
 		
 		livraison.setLivraisonPresentations(livraisonPresentations);
 		livraison = livraisonComposant.saveLivraison(livraison);
@@ -173,6 +178,7 @@ public class CommandeService {
 	 * @param presentation la présentation à ajouter au panier
 	 * @param commande le panier dans lequel on ajoute la présentation
 	 */
+
 	public void addPresentationToCart(int quantite, Presentation presentation, Commande commande) {
 		CommandeMedicament commandeMedicament = commandeComposant.findFirstByNumeroCommandeAndCodeCIP7(commande.getNumeroCommande(), presentation.getCodeCIP7());
 		if(commandeMedicament == null){
@@ -191,44 +197,35 @@ public class CommandeService {
 	 * @param listCommandeMedicament la liste des présentations commandées
 	 * @return la liste des livraisons de présentations
 	 */
-	private List<LivraisonPresentation> createLivraisonMedicamentsEntity(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
+
+	private List<LivraisonPresentation> createLivraisonAndUpdateStock(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
+		HashMap<String,Integer> quantityPresentation = new HashMap<>();
+		List<String> codeCIP7 = new ArrayList<>();
 		listCommandeMedicament.forEach(cm -> {
-			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
-			Presentation presentation = updateStock(cm.getPresentation().getCodeCIP7(), cm.getQuantite());
-			if(presentation != null) {
-				livraisonPresentation.setPresentation(presentation);
-				if (presentation.getStock() < 0) {
-					inOneTime.set(false);
-					livraisonPresentation.setQuantite(cm.getQuantite()-presentation.getStock());
-				} else {
-					livraisonPresentation.setQuantite(cm.getQuantite());
-				}
-				livraisonPresentations.add(livraisonPresentation);
-			}
-			
+			codeCIP7.add(cm.getPresentation().getCodeCIP7());
+			quantityPresentation.put(cm.getPresentation().getCodeCIP7(), cm.getQuantite());
 		});
-		return livraisonPresentations;
-	}
-	
-	@Retryable(maxAttempts = 50, backoff = @Backoff(delay = 1000))
-	@Transactional()
-	public Presentation updateStock(String codeCIP7, int quantite) {
-		Optional<Presentation> res = presentationComposant.findByCodeCIP7(codeCIP7);
+		List<Presentation> presentations = presentationComposant.findByCodeCIP7In(codeCIP7);
+		presentations.forEach(p -> {
+			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
+			p.setStock(p.getStock() - quantityPresentation.get(p.getCodeCIP7()));
+			livraisonPresentation.setPresentation(p);
+			if (p.getStock() < 0) {
+				inOneTime.set(false);
+				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7())-p.getStock());
+			} else {
+				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7()));
+			}
+			livraisonPresentations.add(livraisonPresentation);
+		});
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		Presentation presentation;
-		if(res.isPresent()){
-			presentation = res.get();
-			presentation.setStock(presentation.getStock() - quantite);
-			return presentationComposant.updatePresentation(presentation);
-		}else
-		{
-			return null;
-		}
+		presentationComposant.upadteAll(presentations);
+		return livraisonPresentations;
 	}
 	
 	public CommandeDetailDTO getDetailCommande(String email, int idCommande) {
