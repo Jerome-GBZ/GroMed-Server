@@ -133,9 +133,10 @@ public class CommandeService {
 		livraison.setDateLivraison(cl.instant());
 		livraison = livraisonComposant.saveLivraison(livraison);
 		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament,livraison);
-		
-		livraison.setLivraisonPresentations(livraisonPresentations);
-		livraison = livraisonComposant.saveLivraison(livraison);
+		if(!livraisonPresentations.isEmpty()) {
+			livraison.setLivraisonPresentations(livraisonPresentations);
+			livraison = livraisonComposant.saveLivraison(livraison);
+		}
 		commande.getLivraisons().add(livraison);
 		commande.setDateCommande(cl.instant());
 		commande = commandeComposant.validateCart(commande);
@@ -209,16 +210,18 @@ public class CommandeService {
 		List<Presentation> presentations = presentationComposant.findByCodeCIP7In(codeCIP7);
 		presentations.forEach(p -> {
 			LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
-			p.setStock(p.getStock() - quantityPresentation.get(p.getCodeCIP7()));
+			int stock = p.getStock();
+			p.setStock(stock - quantityPresentation.get(p.getCodeCIP7()));
 			livraisonPresentation.setPresentation(p);
-			if (p.getStock() < 0) {
+			livraisonPresentation.setLivraison(livraison);
+			if (stock > 0 && stock-quantityPresentation.get(p.getCodeCIP7()) < 0) {
 				inOneTime.set(false);
 				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7())-p.getStock());
-			} else {
+				livraisonPresentations.add(livraisonPresentation);
+			} else if(stock >0 && stock-quantityPresentation.get(p.getCodeCIP7()) >= 0) {
 				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7()));
+				livraisonPresentations.add(livraisonPresentation);
 			}
-			livraisonPresentation.setLivraison(livraison);
-			livraisonPresentations.add(livraisonPresentation);
 		});
 		try {
 			Thread.sleep(5000);
