@@ -60,8 +60,8 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 		if(filtreDTO.getSubstancesDenomitations() != null && !filtreDTO.getSubstancesDenomitations().isEmpty()){
 			predicateList.add(compositionJoin.get("denominationSubstance").in(filtreDTO.getSubstancesDenomitations()));
 		}
-		sortFunction(sorts, cb, cq, root, medicamentJoin);
 
+		sortFunction(sorts, cb, cq, root, medicamentJoin);
 
 		cq.where(predicateList.toArray(new Predicate[]{}));
 		List<Presentation> presentationList = entityManager
@@ -70,7 +70,11 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 				.setMaxResults(pageable.getPageSize())
 				.getResultList();
 
-		return new PageImpl<>(presentationList, pageable, presentationList.size());
+		int count = entityManager
+				.createQuery(cq)
+				.getResultList().size();
+
+		return new PageImpl<>(presentationList, pageable, count);
 	}
 
 	private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
