@@ -9,10 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
 import jakarta.persistence.criteria.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -66,15 +63,23 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 		cq.where(predicateList.toArray(new Predicate[]{}));
 		List<Presentation> presentationList = entityManager
 				.createQuery(cq)
-				.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-				.setMaxResults(pageable.getPageSize())
 				.getResultList();
 
-		int count = entityManager
-				.createQuery(cq)
-				.getResultList().size();
+		int firstIndex = pageable.getPageNumber() * pageable.getPageSize();
+		int lastIndex = firstIndex + pageable.getPageSize();
+		int resultLast = presentationList.size();
 
-		return new PageImpl<>(presentationList, pageable, count);
+		if(firstIndex <= resultLast && lastIndex > resultLast){
+			lastIndex = resultLast;
+		} else if (firstIndex > resultLast && lastIndex > resultLast) {
+			firstIndex = 0;
+			lastIndex = Math.min(presentationList.size(), pageable.getPageSize());
+			pageable = PageRequest.of(0, pageable.getPageSize());
+		}
+
+		List<Presentation> result = presentationList.subList(firstIndex, lastIndex);
+
+		return new PageImpl<>(result, pageable, presentationList.size());
 	}
 
 	private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
