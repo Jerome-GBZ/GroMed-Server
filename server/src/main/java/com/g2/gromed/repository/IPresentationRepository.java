@@ -38,7 +38,7 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 		List<Predicate> predicateList = new ArrayList<>();
 
 		if(!filtreDTO.getPresentationName().equals("")){
-			predicateList.add(cb.like(medicamentJoin.get("denomination"), "%" + filtreDTO.getPresentationName() + "%"));
+			predicateList.add(cb.like(cb.lower(medicamentJoin.get("denomination")), "%" + filtreDTO.getPresentationName().toLowerCase() + "%"));
 		}
 
 		if(filtreDTO.isAvailable()){

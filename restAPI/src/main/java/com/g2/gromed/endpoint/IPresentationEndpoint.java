@@ -20,7 +20,6 @@ public interface IPresentationEndpoint {
 	@ApiOperation(value = "Récupère toutes les présentations des différents médicaments")
 	@ApiResponse(responseCode = "200", description = "OK")
 	@ApiResponse(responseCode = "500", description = "Erreur serveur")
-	@ApiResponse(responseCode = "404", description = "Médicament non trouvé")
 	@GetMapping(value = "/all", produces = "application/json")
 	ResponseEntity<Page<PresentationCardDTO>> getPresentations(@Parameter Pageable pagination, @Parameter FiltreDTO filtreDTO);
 
