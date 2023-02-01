@@ -36,10 +36,6 @@ public class PresentationComposant {
 		return presentationRepository.save(presentation);
 	}
 	
-	public Optional<Presentation> findByCodeCIP7(String codeCIP7) {
-		return presentationRepository.findByCodeCIP7(codeCIP7);
-	}
-	
 	public List<Presentation> findByCodeCIP7In(List<String> codeCIP7) {
 		return presentationRepository.findByCodeCIP7In(codeCIP7);
 	}
