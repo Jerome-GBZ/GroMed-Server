@@ -7,28 +7,37 @@ import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
 import com.g2.gromed.model.dto.presentation.CompositionDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
+import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
 import com.g2.gromed.service.PresentationService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = GromedApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect")
@@ -48,7 +57,7 @@ class PresentationControllerTest {
     private IInfoImportanteMapper infoImportanteMapper;
     @Autowired
     private ICompositionMapper compositionMapper;
-/*
+
 
     @Test
     void getPresentations200() {
@@ -59,6 +68,8 @@ class PresentationControllerTest {
         filtre.setGenerique(false);
         filtre.setOriginal(true);
         filtre.setAvailable(true);
+        filtre.setTitulaires(List.of());
+        filtre.setSubstancesDenomitations(List.of());
 
         Medicament medicament = TestUtils.getMedicament(10);
         Presentation presentation1 = TestUtils.getPresentation(1);
@@ -72,11 +83,11 @@ class PresentationControllerTest {
         final Page<PresentationCardDTO> mockedServiceResponse = new PageImpl<>(presentationCardDTOList, PageRequest.of(0, 2), 2);
 
         Assertions.assertNotNull(mockedServiceResponse);
-        when(presentationService.getAllPresentations(PageRequest.of(0, 2), any())).thenReturn(mockedServiceResponse);
-
+        when(presentationService.getAllPresentations(any(Pageable.class), any(FiltreDTO.class))).thenReturn(mockedServiceResponse);
+        //doReturn(mockedServiceResponse).when(presentationService).getAllPresentations(any(Pageable.class), eq(filtre));
 
         final ResponseEntity<Page<PresentationCardDTO>> response = testRestTemplate.exchange(
-                "/presentation/all?page=0&size=100&presentationName=A&generique=false&original=true&available=true",
+                "/presentation/all?page=0&size=100&presentationName=A&generique=false&original=true&available=true&titulaires=&substancesDenomitations=",
                 HttpMethod.GET,
                 new HttpEntity<>(null, headers),
                 new ParameterizedTypeReference<>() {
@@ -87,7 +98,7 @@ class PresentationControllerTest {
 
         assertThat(response).usingRecursiveComparison().ignoringFields("headers").isEqualTo(expected);
     }
-*/
+
 
 /*
 
