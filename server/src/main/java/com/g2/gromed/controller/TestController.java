@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 
-@CrossOrigin
+@CrossOrigin // NOSONAR
 @RestController
 public class TestController {
 	

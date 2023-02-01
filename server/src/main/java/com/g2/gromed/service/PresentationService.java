@@ -1,7 +1,6 @@
 package com.g2.gromed.service;
 
 import com.g2.gromed.composant.PresentationComposant;
-import com.g2.gromed.entity.Composition;
 import com.g2.gromed.entity.Presentation;
 import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;

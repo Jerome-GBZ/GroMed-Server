@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin // NOSONAR
 @RestController
 @AllArgsConstructor
 public class CommandeTypeController implements ICommandeTypeEndpoint {

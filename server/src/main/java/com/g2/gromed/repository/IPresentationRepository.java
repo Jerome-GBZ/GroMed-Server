@@ -83,19 +83,21 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 	}
 
 	private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
-		Sort.Order denominationOrder = sorts.getOrderFor("denomination");
+		String deno = "denomination";
+		String prix = "prix";
+		setSort(sorts, cb, cq, deno, medicamentJoin.get(deno));
+		setSort(sorts, cb, cq, prix, root.get(prix));
+	}
+
+	static void setSort(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, String deno, Path<Object> objectPath) {
+		Sort.Order denominationOrder = sorts.getOrderFor(deno);
 		if(denominationOrder!= null && denominationOrder.isAscending()){
-			cq.orderBy(cb.asc(medicamentJoin.get("denomination")));
+			cq.orderBy(cb.asc(objectPath));
 		}else if (denominationOrder!= null && denominationOrder.isDescending()){
-			cq.orderBy(cb.desc(medicamentJoin.get("denomination")));
-		}
-		Sort.Order prixOrder = sorts.getOrderFor("prix");
-		if(prixOrder!= null && prixOrder.isAscending()){
-			cq.orderBy(cb.asc(root.get("prix")));
-		}else if (prixOrder!= null && prixOrder.isDescending()){
-			cq.orderBy(cb.desc(root.get("prix")));
+			cq.orderBy(cb.desc(objectPath));
 		}
 	}
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="10000")})
 	List<Presentation> findByCodeCIP7In(List<String> codeCIP7);

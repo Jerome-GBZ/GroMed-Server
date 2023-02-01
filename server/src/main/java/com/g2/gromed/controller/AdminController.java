@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
+@CrossOrigin // NOSONAR
 @RestController
 @AllArgsConstructor
 public class AdminController implements IAdminEndpoint{

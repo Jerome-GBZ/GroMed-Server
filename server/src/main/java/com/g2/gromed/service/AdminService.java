@@ -23,9 +23,7 @@ public class AdminService {
 	private CommandeComposant commandeComposant;
 	public boolean refill() {
 		List<Presentation> presentations = presentationComposant.getPresentationWithoutStock();
-		presentations.forEach(presentation -> {
-			presentation.setStock(100);
-		});
+		presentations.forEach(presentation -> presentation.setStock(100));
 		List<Commande> commandes = commandeComposant.getCommandesNotDelivered();
 		commandes.forEach(this::sendLastDelivery);
 		commandeComposant.saveAll(commandes);
@@ -49,12 +47,8 @@ public class AdminService {
 	private List<LivraisonPresentation> getLivraisonPresentations(List<CommandeMedicament> commandeMedicaments, List<LivraisonPresentation> livraisonPresentations) {
 		List<LivraisonPresentation> newLivraison = new ArrayList<>();
 		HashMap<String,Integer> quantity = new HashMap<>();
-		commandeMedicaments.forEach(commandeMedicament -> {
-			quantity.put(commandeMedicament.getPresentation().getCodeCIP7(), commandeMedicament.getQuantite());
-		});
-		livraisonPresentations.forEach(livraisonPresentation -> {
-			quantity.put(livraisonPresentation.getPresentation().getCodeCIP7(),quantity.get(livraisonPresentation.getPresentation().getCodeCIP7())-livraisonPresentation.getQuantite());
-		});
+		commandeMedicaments.forEach(commandeMedicament -> quantity.put(commandeMedicament.getPresentation().getCodeCIP7(), commandeMedicament.getQuantite()));
+		livraisonPresentations.forEach(livraisonPresentation -> quantity.put(livraisonPresentation.getPresentation().getCodeCIP7(),quantity.get(livraisonPresentation.getPresentation().getCodeCIP7())-livraisonPresentation.getQuantite()));
 		commandeMedicaments.forEach(commandeMedicament -> {
 			if(quantity.get(commandeMedicament.getPresentation().getCodeCIP7())>0) {
 				LivraisonPresentation livraisonPresentation = new LivraisonPresentation();
