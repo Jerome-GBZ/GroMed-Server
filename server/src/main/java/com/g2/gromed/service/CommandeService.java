@@ -133,9 +133,10 @@ public class CommandeService {
 		livraison.setDateLivraison(cl.instant());
 		livraison = livraisonComposant.saveLivraison(livraison);
 		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament,livraison);
-		
-		livraison.setLivraisonPresentations(livraisonPresentations);
-		livraison = livraisonComposant.saveLivraison(livraison);
+		if(!livraisonPresentations.isEmpty()) {
+			livraison.setLivraisonPresentations(livraisonPresentations);
+			livraison = livraisonComposant.saveLivraison(livraison);
+		}
 		commande.getLivraisons().add(livraison);
 		commande.setDateCommande(cl.instant());
 		commande = commandeComposant.validateCart(commande);
