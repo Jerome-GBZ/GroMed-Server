@@ -90,6 +90,7 @@ public interface IPresentationRepository extends JpaRepository<Presentation, Lon
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="10000")})
 	List<Presentation> findByCodeCIP7In(List<String> codeCIP7);
-
-
+	
+	
+	List<Presentation> findByStockLessThanEqual(int i);
 }

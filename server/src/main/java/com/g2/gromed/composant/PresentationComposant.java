@@ -43,4 +43,8 @@ public class PresentationComposant {
 	public void upadteAll(List<Presentation> presentations) {
 		presentationRepository.saveAll(presentations);
 	}
+	
+	public List<Presentation> getPresentationWithoutStock() {
+		return presentationRepository.findByStockLessThanEqual(0);
+	}
 }

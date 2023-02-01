@@ -14,4 +14,6 @@ public interface ICommandeRepository extends JpaRepository<Commande, Long> {
 
 	@Query("select c from Commande c join c.utilisateur u where u.email = :email and c.status in :status order by c.dateCommande desc")
 	List<Commande> findByEmailAndStatusIn(String email, List<StatusCommande> status);
+	
+	List<Commande> findByStatus(StatusCommande enCours);
 }
