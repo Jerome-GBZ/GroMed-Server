@@ -26,7 +26,7 @@ public class PresentationController implements IPresentationEndpoint {
 	@Override
 	public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination, FiltreDTO filtreDTO){
 		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination, filtreDTO);
-		return !page.getContent().isEmpty() ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
+		return page!=null ? ResponseEntity.ok(page) : ResponseEntity.notFound().build();
 	}
 	
 	@Override
