@@ -131,8 +131,8 @@ public class CommandeService {
 		Clock cl = Clock.systemUTC();
 		cl.withZone(ZoneId.of("Europe/Paris"));
 		livraison.setDateLivraison(cl.instant());
-		
-		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament);
+		livraison = livraisonComposant.saveLivraison(livraison);
+		List<LivraisonPresentation> livraisonPresentations =createLivraisonAndUpdateStock(inOneTime, listCommandeMedicament,livraison);
 		
 		livraison.setLivraisonPresentations(livraisonPresentations);
 		livraison = livraisonComposant.saveLivraison(livraison);
@@ -198,7 +198,7 @@ public class CommandeService {
 	 * @return la liste des livraisons de présentations
 	 */
 
-	private List<LivraisonPresentation> createLivraisonAndUpdateStock(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament) {
+	private List<LivraisonPresentation> createLivraisonAndUpdateStock(AtomicBoolean inOneTime, List<CommandeMedicament> listCommandeMedicament,Livraison livraison) {
 		List<LivraisonPresentation> livraisonPresentations = new ArrayList<>();
 		HashMap<String,Integer> quantityPresentation = new HashMap<>();
 		List<String> codeCIP7 = new ArrayList<>();
@@ -217,6 +217,7 @@ public class CommandeService {
 			} else {
 				livraisonPresentation.setQuantite(quantityPresentation.get(p.getCodeCIP7()));
 			}
+			livraisonPresentation.setLivraison(livraison);
 			livraisonPresentations.add(livraisonPresentation);
 		});
 		try {
@@ -243,6 +244,7 @@ public class CommandeService {
 				.map(livraison  -> {
 						List<PresentationRecapCommandeDTO> recapLivraisonDTO = livraison.getLivraisonPresentations().stream()
 								.map(livraisonMapper::livraisonPresentationToPresentationRecapCommandeDTO).toList();
+						log.info("size : "+livraison.getLivraisonPresentations().size());
 						return livraisonMapper.livraisonToLivraisonDetailDTO(livraison,recapLivraisonDTO);
 				}).toList();
 		return commandeMapper.commandeToCommandeDetailDTO(commande,commande.getStatus() == StatusCommande.LIVREE,livraisonDetailDTOs,presentationRecapCommandeDTOs);
