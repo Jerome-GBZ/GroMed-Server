@@ -59,4 +59,12 @@ public class CommandeComposant {
     public CommandeType saveCommandeType(CommandeType commandeType) {
         return commandeTypeRepository.save(commandeType);
     }
+	
+	public List<Commande> getCommandesNotDelivered() {
+        return commandeRepository.findByStatus(StatusCommande.EN_COURS);
+	}
+    
+    public void saveAll(List<Commande> commandes) {
+        commandeRepository.saveAll(commandes);
+    }
 }
