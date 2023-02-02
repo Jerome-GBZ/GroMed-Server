@@ -9,7 +9,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
 import jakarta.persistence.criteria.*;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -21,87 +24,99 @@ import java.util.List;
 
 @Repository
 public interface IPresentationRepository extends JpaRepository<Presentation, Long> {
-	Presentation findFirstByCodeCIP7(String codeCIP7);
+    Presentation findFirstByCodeCIP7(String codeCIP7);
 
-	default Page<Presentation> getAllFromCriterias(EntityManager entityManager, FiltreDTO filtreDTO, Pageable pageable){
-		Sort sorts = pageable.getSort();
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Presentation> cq = cb.createQuery(Presentation.class);
-		Root<Presentation> root = cq.from(Presentation.class);
-		Join<Presentation, Medicament> medicamentJoin = root.join("medicament");
-		Join<Medicament, GroupeGenerique> groupeGeneriqueJoin = medicamentJoin.join("groupeGeneriques", JoinType.LEFT);
-		Join<Medicament, Composition> compositionJoin = medicamentJoin.join("compositions", JoinType.LEFT);
+    default Page<Presentation> getAllFromCriterias(EntityManager entityManager, FiltreDTO filtreDTO, Pageable pageable) {
 
-		List<Predicate> predicateList = new ArrayList<>();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Presentation> cq = cb.createQuery(Presentation.class);
+        Root<Presentation> root = cq.from(Presentation.class);
+        Join<Presentation, Medicament> medicamentJoin = root.join("medicament");
+        Join<Medicament, GroupeGenerique> groupeGeneriqueJoin = medicamentJoin.join("groupeGeneriques", JoinType.LEFT);
+        Join<Medicament, Composition> compositionJoin = medicamentJoin.join("compositions", JoinType.LEFT);
 
-		if(!filtreDTO.getPresentationName().equals("")){
-			predicateList.add(cb.like(cb.lower(medicamentJoin.get("denomination")), "%" + filtreDTO.getPresentationName().toLowerCase() + "%"));
-		}
+        CriteriaBuilder cbCount = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cqCount = cbCount.createQuery(Long.class);
+        Root<Presentation> rootCount = cqCount.from(Presentation.class);
+        Join<Presentation, Medicament> medicamentJoinCount = rootCount.join("medicament");
+        Join<Medicament, GroupeGenerique> groupeGeneriqueJoinCount = medicamentJoinCount.join("groupeGeneriques", JoinType.LEFT);
+        Join<Medicament, Composition> compositionJoinCount = medicamentJoinCount.join("compositions", JoinType.LEFT);
+        cqCount.select(cbCount.countDistinct(rootCount.get("codeCIP7")));
 
-		if(filtreDTO.isAvailable()){
-			predicateList.add(cb.greaterThan(root.get("stock"), 0));
-		}
+        List<Predicate> predicateList = new ArrayList<>();
+        List<Predicate> predicateListCount = new ArrayList<>();
 
-		if(filtreDTO.getTitulaires() != null && !filtreDTO.getTitulaires().isEmpty()){
-			predicateList.add(medicamentJoin.get("titulaire").in(filtreDTO.getTitulaires()));
-		}
+        if (!filtreDTO.getPresentationName().equals("")) {
+            predicateList.add(cb.like(cb.lower(medicamentJoin.get("denomination")), "%" + filtreDTO.getPresentationName().toLowerCase() + "%"));
+            predicateListCount.add(cbCount.like(cbCount.lower(medicamentJoinCount.get("denomination")), "%" + filtreDTO.getPresentationName().toLowerCase() + "%"));
+        }
 
-		if(filtreDTO.isOriginal() && !filtreDTO.isGenerique()){
-			predicateList.add(cb.isNull(groupeGeneriqueJoin.get("medicament")));
-		}
+        if (filtreDTO.isAvailable()) {
+            predicateList.add(cb.greaterThan(root.get("stock"), 0));
+            predicateListCount.add(cbCount.greaterThan(rootCount.get("stock"), 0));
+        }
 
-		if(filtreDTO.isGenerique() && !filtreDTO.isOriginal()){
-			predicateList.add(cb.isNotNull(groupeGeneriqueJoin.get("medicament")));
-		}
+        if (filtreDTO.getTitulaires() != null && !filtreDTO.getTitulaires().isEmpty()) {
+            predicateList.add(medicamentJoin.get("titulaire").in(filtreDTO.getTitulaires()));
+            predicateListCount.add(medicamentJoinCount.get("titulaire").in(filtreDTO.getTitulaires()));
+        }
 
-		if(filtreDTO.getSubstancesDenomitations() != null && !filtreDTO.getSubstancesDenomitations().isEmpty()){
-			predicateList.add(compositionJoin.get("denominationSubstance").in(filtreDTO.getSubstancesDenomitations()));
-		}
+        if (filtreDTO.isOriginal() && !filtreDTO.isGenerique()) {
+            predicateList.add(cb.isNull(groupeGeneriqueJoin.get("medicament")));
+            predicateListCount.add(cbCount.isNull(groupeGeneriqueJoinCount.get("medicament")));
+        }
 
-		sortFunction(sorts, cb, cq, root, medicamentJoin);
+        if (filtreDTO.isGenerique() && !filtreDTO.isOriginal()) {
+            predicateList.add(cb.isNotNull(groupeGeneriqueJoin.get("medicament")));
+            predicateListCount.add(cbCount.isNotNull(groupeGeneriqueJoinCount.get("medicament")));
+        }
 
-		cq.where(predicateList.toArray(new Predicate[]{}));
-		List<Presentation> presentationList = entityManager
-				.createQuery(cq)
-				.getResultList();
+        if (filtreDTO.getSubstancesDenomitations() != null && !filtreDTO.getSubstancesDenomitations().isEmpty()) {
+            predicateList.add(compositionJoin.get("denominationSubstance").in(filtreDTO.getSubstancesDenomitations()));
+            predicateListCount.add(compositionJoinCount.get("denominationSubstance").in(filtreDTO.getSubstancesDenomitations()));
 
-		int firstIndex = pageable.getPageNumber() * pageable.getPageSize();
-		int lastIndex = firstIndex + pageable.getPageSize();
-		int resultLast = presentationList.size();
+        }
 
-		if(firstIndex <= resultLast && lastIndex > resultLast){
-			lastIndex = resultLast;
-		} else if (firstIndex > resultLast && lastIndex > resultLast) {
-			firstIndex = 0;
-			lastIndex = Math.min(presentationList.size(), pageable.getPageSize());
-			pageable = PageRequest.of(0, pageable.getPageSize());
-		}
+        Sort sorts = pageable.getSort();
+        sortFunction(sorts, cb, cq, root, medicamentJoin);
 
-		List<Presentation> result = presentationList.subList(firstIndex, lastIndex);
+        if(!predicateList.isEmpty()) {
+            cq.where(predicateList.toArray(new Predicate[]{}));
+        }
+        List<Presentation> presentationList = entityManager
+                .createQuery(cq.distinct(true))
+                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
 
-		return new PageImpl<>(result, pageable, presentationList.size());
-	}
+        if(!predicateListCount.isEmpty()) {
+            cqCount.where(predicateListCount.toArray(new Predicate[]{}));
+        }
+		Long count = entityManager
+				.createQuery(cqCount)
+				.getSingleResult();
 
-	private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
-		String deno = "denomination";
-		String prix = "prix";
-		setSort(sorts, cb, cq, deno, medicamentJoin.get(deno));
-		setSort(sorts, cb, cq, prix, root.get(prix));
-	}
+        return new PageImpl<>(presentationList, pageable, count);
+    }
 
-	static void setSort(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, String deno, Path<Object> objectPath) {
-		Sort.Order denominationOrder = sorts.getOrderFor(deno);
-		if(denominationOrder!= null && denominationOrder.isAscending()){
-			cq.orderBy(cb.asc(objectPath));
-		}else if (denominationOrder!= null && denominationOrder.isDescending()){
-			cq.orderBy(cb.desc(objectPath));
-		}
-	}
+    private static void sortFunction(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, Root<Presentation> root, Join<Presentation, Medicament> medicamentJoin) {
+        setSort(sorts, cb, cq, "denomination", medicamentJoin.get("denomination"));
+        setSort(sorts, cb, cq, "prix", root.get("prix"));
+    }
 
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="10000")})
-	List<Presentation> findByCodeCIP7In(List<String> codeCIP7);
-	
-	
-	List<Presentation> findByStockLessThanEqual(int i);
+    static void setSort(Sort sorts, CriteriaBuilder cb, CriteriaQuery<Presentation> cq, String deno, Path<Object> objectPath) {
+        Sort.Order denominationOrder = sorts.getOrderFor(deno);
+        if (denominationOrder != null && denominationOrder.isAscending()) {
+            cq.orderBy(cb.asc(objectPath));
+        } else if (denominationOrder != null && denominationOrder.isDescending()) {
+            cq.orderBy(cb.desc(objectPath));
+        }
+    }
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "10000")})
+    List<Presentation> findByCodeCIP7In(List<String> codeCIP7);
+
+
+    List<Presentation> findByStockLessThanEqual(int i);
 }
