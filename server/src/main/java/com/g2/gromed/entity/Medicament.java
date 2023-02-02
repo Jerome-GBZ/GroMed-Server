@@ -3,7 +3,7 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -12,7 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "MEDICAMENT")
+@Table(name = "MEDICAMENT",indexes = {
+		@Index(name="denominationMedicamentIndex", columnList = "denomination"),
+		@Index(name="titulaireMedicamentIndex", columnList = "titulaire")
+})
 public class Medicament {
 	
 	@Id
@@ -25,8 +28,8 @@ public class Medicament {
 	private String typeProcedureAMM;
 
 	@Column(name = "dateamm", columnDefinition = "DATE")
-	@Temporal(TemporalType.DATE)
-	private Date dateAMM;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Instant dateAMM;
 
 	private String etatCommercialisation;
 
@@ -40,20 +43,20 @@ public class Medicament {
 
 	private String denomination;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "codeCIS")
 	private List<Composition> compositions;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ConditionDelivrance> conditionDelivrances;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<InfoImportante> infoImportantes;
 
 	@JoinColumn(name = "codeCIS")
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<GroupeGenerique> groupeGeneriques;
 
 }

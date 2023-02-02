@@ -3,7 +3,7 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -18,12 +18,12 @@ public class InfoImportante {
 	private Long idInfoImportante;
 
 	@Column(name = "date_debut", columnDefinition = "DATE")
-	@Temporal(TemporalType.DATE)
-	private Date dateDebut;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Instant dateDebut;
 
 	@Column(name = "date_fin", columnDefinition = "DATE")
-	@Temporal(TemporalType.DATE)
-	private Date dateFin;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Instant dateFin;
 	
 	@Column(length = 1024)
 	private String lien;

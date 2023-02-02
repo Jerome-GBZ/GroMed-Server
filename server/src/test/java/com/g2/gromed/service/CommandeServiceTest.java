@@ -3,7 +3,9 @@ package com.g2.gromed.service;
 import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.CommandeComposant;
+import com.g2.gromed.composant.LivraisonComposant;
 import com.g2.gromed.composant.PresentationComposant;
+import com.g2.gromed.composant.UtilisateurComposant;
 import com.g2.gromed.entity.*;
 import com.g2.gromed.model.dto.commande.AlerteIndisponibilitePresentationDTO;
 import org.junit.jupiter.api.Assertions;
@@ -13,10 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,31 +29,46 @@ class CommandeServiceTest {
 
     @MockBean
     PresentationComposant presentationComposant;
-
+    
+    @MockBean
+    UtilisateurComposant utilisateurComposant;
+    
+    @MockBean
+    LivraisonComposant livraisonComposant;
+    
     @Autowired
     CommandeService commandeService;
-
-
+    
+    
     @Test
     void getUnavailablePresentationsOK() {
 
-        Medicament medicament = TestUtils.getMedicamentSimple(1);
-        Presentation presentation1 = TestUtils.getPresentationWithGivenMedicament(10, medicament);
-        Presentation presentation2 = TestUtils.getPresentationWithGivenMedicament(20, medicament);
-        Presentation presentation3 = TestUtils.getPresentationWithGivenMedicament(30, medicament);
-        Utilisateur utilisateur = TestUtils.getSimpleUtilisateurWithEmail("email");
+        Medicament medicament = TestUtils.getMedicament(1);
 
-        Commande commande = TestUtils.getCommandeWith3Products(1, new ArrayList<>(Arrays.asList(presentation1, presentation2, presentation3)));
+        Presentation presentation1 = TestUtils.getPresentation(10);
+        presentation1.setMedicament(medicament);
+        Presentation presentation2 = TestUtils.getPresentation(11);
+        presentation2.setMedicament(medicament);
+
+        Utilisateur utilisateur = TestUtils.getUtilisateur(1);
+
+        Commande commande = TestUtils.getCommande(1, StatusCommande.PANIER);
         commande.setUtilisateur(utilisateur);
-        commande.setStatus(StatusCommande.PANIER);
 
-        when(commandeComposant.getCart("email")).thenReturn(commande);
+        CommandeMedicament commandeMedicament1 = TestUtils.getCommandeMedicament(5);
+        commandeMedicament1.setPresentation(presentation1);
+        CommandeMedicament commandeMedicament2 = TestUtils.getCommandeMedicament(20);
+        commandeMedicament2.setPresentation(presentation2);
+        List<CommandeMedicament> commandeMedicamentList = new ArrayList<>(Arrays.asList(commandeMedicament2, commandeMedicament1));
+        commande.setCommandeMedicaments(commandeMedicamentList);
+
+        when(utilisateurComposant.getUserByEmail(utilisateur.getEmail())).thenReturn(utilisateur);
+        when(commandeComposant.getCart(utilisateur.getEmail())).thenReturn(commande);
         when(presentationComposant.getPresentationByCodeCIP7(presentation1.getCodeCIP7())).thenReturn(presentation1);
         when(presentationComposant.getPresentationByCodeCIP7(presentation2.getCodeCIP7())).thenReturn(presentation2);
-        when(presentationComposant.getPresentationByCodeCIP7(presentation3.getCodeCIP7())).thenReturn(presentation3);
 
         Map<String, Integer> alertesMap = new HashMap<>();
-        alertesMap.put(presentation3.getCodeCIP7(), 100);
+        alertesMap.put(presentation2.getCodeCIP7(), 100);
 
         AlerteIndisponibilitePresentationDTO result = commandeService.getUnavailablePresentations(utilisateur.getEmail());
         AlerteIndisponibilitePresentationDTO expected = new AlerteIndisponibilitePresentationDTO(alertesMap);
@@ -72,7 +86,7 @@ class CommandeServiceTest {
 
     @Test
     void getUnavailablePresentationsNoProductInCart() {
-        Commande commande = TestUtils.getCommandeSimple(1);
+        Commande commande = TestUtils.getCommande(1, StatusCommande.PANIER);
 
         when(commandeComposant.getCart("email")).thenReturn(commande);
         AlerteIndisponibilitePresentationDTO result = commandeService.getUnavailablePresentations("email");

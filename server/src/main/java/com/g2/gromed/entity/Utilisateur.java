@@ -3,7 +3,7 @@ package com.g2.gromed.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -26,8 +26,8 @@ public class Utilisateur {
 	private String motDePasse;
 
 	@Column(name = "date_naissance", columnDefinition = "DATE")
-	@Temporal(TemporalType.DATE)
-	private Date dateNaissance;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Instant dateNaissance;
 
 	private String adresse;
 

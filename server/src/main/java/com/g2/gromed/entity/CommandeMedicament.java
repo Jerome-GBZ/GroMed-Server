@@ -21,7 +21,7 @@ public class CommandeMedicament {
 	@JoinColumn(name = "numero_commande")
 	private Commande commande;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "codeCIP7", referencedColumnName = "codeCIP7")
 	private Presentation presentation;
 }

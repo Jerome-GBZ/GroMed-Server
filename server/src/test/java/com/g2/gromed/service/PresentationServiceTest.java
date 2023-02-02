@@ -4,9 +4,13 @@ import com.g2.gromed.GromedApplication;
 import com.g2.gromed.TestUtils;
 import com.g2.gromed.composant.PresentationComposant;
 import com.g2.gromed.entity.InfoImportante;
+import com.g2.gromed.entity.Medicament;
 import com.g2.gromed.entity.Presentation;
+import com.g2.gromed.mapper.ICompositionMapper;
 import com.g2.gromed.mapper.IInfoImportanteMapper;
 import com.g2.gromed.mapper.IPresentationMapper;
+import com.g2.gromed.model.dto.filtre.FiltreDTO;
+import com.g2.gromed.model.dto.presentation.CompositionDTO;
 import com.g2.gromed.model.dto.presentation.InfoImportanteDTO;
 import com.g2.gromed.model.dto.presentation.PresentationCardDTO;
 import com.g2.gromed.model.dto.presentation.PresentationDetailDTO;
@@ -37,37 +41,46 @@ class PresentationServiceTest {
     @Autowired
     IInfoImportanteMapper infoImportanteMapper;
     @Autowired
+    ICompositionMapper compositionMapper;
+    @Autowired
     PresentationService presentationService;
 
-    @Test
+   @Test
     void getAllPresentations() {
-        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        Medicament medicament = TestUtils.getMedicament(1);
+        Presentation presentation = TestUtils.getPresentation(1);
+        presentation.setMedicament(medicament);
         List<Presentation> presentationList = new ArrayList<>();
         presentationList.add(presentation);
 
+        FiltreDTO filtre = new FiltreDTO();
+
         Page<Presentation> mockPage = new PageImpl<>(presentationList);
         Pageable pagination = PageRequest.of(0, 2);
-        when(presentationComposant.getPresentations(pagination)).thenReturn(mockPage);
+        when(presentationComposant.getPresentations(pagination, filtre)).thenReturn(mockPage);
 
         PresentationCardDTO presentationCardDTO = presentationMapper.toPresentationCardDTO(presentation);
         List<PresentationCardDTO> presentationCardDTOList = new ArrayList<>();
         presentationCardDTOList.add(presentationCardDTO);
         Page<PresentationCardDTO> expectedPagePresentationCardDTO = new PageImpl<>(presentationCardDTOList);
 
-        Page<PresentationCardDTO> resultPagePresentationCardDTO = presentationService.getAllPresentations(pagination);
+        Page<PresentationCardDTO> resultPagePresentationCardDTO = presentationService.getAllPresentations(pagination, filtre);
 
         assertThat(resultPagePresentationCardDTO).usingRecursiveComparison().isEqualTo(expectedPagePresentationCardDTO);
     }
 
     @Test
     void getDetailPresentation() {
-        Presentation presentation = TestUtils.getPresentationMedicamentFull(1, 2, 2, 2, 2);
+        Medicament medicament = TestUtils.getMedicament(1);
+        Presentation presentation = TestUtils.getPresentation(1);
+        presentation.setMedicament(medicament);
         when(presentationComposant.getPresentationByCodeCIP7(presentation.getCodeCIP7())).thenReturn(presentation);
 
         List<InfoImportante> infoImportanteList = presentation.getMedicament().getInfoImportantes();
         List<InfoImportanteDTO> infoImportanteDTOList = infoImportanteList.stream().map(infoImportanteMapper::toInfoImportanteDTO).collect(Collectors.toList());
+        List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions().stream().map(compositionMapper::toCompositionDTO).collect(Collectors.toList());
 
-        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList);
+        PresentationDetailDTO expectedPresentationDetailDTO = presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList, compositionDTOList);
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());
 
         assertThat(resultPresentationDetailDTO).usingRecursiveComparison().isEqualTo(expectedPresentationDetailDTO);
@@ -75,7 +88,7 @@ class PresentationServiceTest {
 
     @Test
     void getDetailPresentationNotFound() {
-        Presentation presentation = TestUtils.getPresentationMedicamentSimple(1);
+        Presentation presentation = TestUtils.getPresentation(1);
         when(presentationComposant.getPresentationByCodeCIP7(presentation.getCodeCIP7())).thenReturn(null);
 
         PresentationDetailDTO resultPresentationDetailDTO = presentationService.getDetailPresentation(presentation.getCodeCIP7());

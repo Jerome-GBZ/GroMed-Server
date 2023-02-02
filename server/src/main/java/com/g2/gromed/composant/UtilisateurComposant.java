@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class UtilisateurComposant {
-	private IUtilisateurRepository utilisateurRepository;
-	
-	public Utilisateur authenticate(String email, String motDePasse){
-		return utilisateurRepository.findFirstByEmailAndMotDePasse(email, motDePasse);
-	}
+    private IUtilisateurRepository utilisateurRepository;
 
-	public Utilisateur getUserByEmail(String email) {
-		return utilisateurRepository.findFirstByEmail(email);
-	}
+    public Utilisateur authenticate(String email, String motDePasse) {
+        return utilisateurRepository.findFirstByEmailAndMotDePasse(email, motDePasse);
+    }
+
+    public Utilisateur getUserByEmail(String email) {
+        return utilisateurRepository.findFirstByEmail(email);
+    }
 
 }

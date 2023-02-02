@@ -20,7 +20,7 @@ public class FiltreComposant {
         return compositionRepository.findAllDenominationsSubstances();
     }
 
-    public List<String> getAllTitulaires(){
+    public List<String> getAllTitulaires() {
         return medicamentRepository.findAllTitulaires();
     }
 }
