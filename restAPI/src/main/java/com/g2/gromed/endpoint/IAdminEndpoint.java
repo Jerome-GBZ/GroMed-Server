@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/admin")
 public interface IAdminEndpoint {
-	
-	@ApiOperation(value = "Ajouter une présentation au panier dans une certaine quantité")
-	@ApiResponse(responseCode = "200", description = "OK")
-	@ApiResponse(responseCode = "500", description = "Erreur serveur")
-	@PostMapping(value = "/refill", produces = "application/json")
-	ResponseEntity<Boolean> refill();
-	
+
+    @ApiOperation(value = "Ajouter une présentation au panier avec une certaine quantité")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Erreur serveur")
+    @PostMapping(value = "/refill", produces = "application/json")
+    ResponseEntity<Boolean> refill();
+
 }

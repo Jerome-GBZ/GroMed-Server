@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin // NOSONAR
 @RestController
 @AllArgsConstructor
-public class AdminController implements IAdminEndpoint{
-	private AdminService adminService;
-	@Override
-	public ResponseEntity<Boolean> refill() {
-		return ResponseEntity.ok(adminService.refill());
-	}
+public class AdminController implements IAdminEndpoint {
+    private AdminService adminService;
+
+    @Override
+    public ResponseEntity<Boolean> refill() {
+        return ResponseEntity.ok(adminService.refill());
+    }
 }

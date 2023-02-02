@@ -16,7 +16,7 @@ public class FiltreController implements IFiltreEndpoint {
     private FiltreService filtreService;
 
     @Override
-    public ResponseEntity<FiltreDTO> getFiltres(){
+    public ResponseEntity<FiltreDTO> getFiltres() {
         FiltreDTO filtre = filtreService.getAllFilters();
         return filtre != null ? ResponseEntity.ok(filtre) : ResponseEntity.notFound().build();
     }

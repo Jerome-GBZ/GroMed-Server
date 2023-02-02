@@ -21,29 +21,29 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class PresentationService {
-	private PresentationComposant presentationComposant;
-	private IPresentationMapper presentationMapper;
-	private IInfoImportanteMapper infoImportanteMapper;
-	private ICompositionMapper compositionMapper;
+    private PresentationComposant presentationComposant;
+    private IPresentationMapper presentationMapper;
+    private IInfoImportanteMapper infoImportanteMapper;
+    private ICompositionMapper compositionMapper;
 
-	public Page<PresentationCardDTO> getAllPresentations(Pageable pagination, FiltreDTO filtreDTO) {
-		Page<Presentation> presentations = presentationComposant.getPresentations(pagination, filtreDTO);
-		return presentations.map(presentationMapper::toPresentationCardDTO);
-	}
+    public Page<PresentationCardDTO> getAllPresentations(Pageable pagination, FiltreDTO filtreDTO) {
+        Page<Presentation> presentations = presentationComposant.getPresentations(pagination, filtreDTO);
+        return presentations.map(presentationMapper::toPresentationCardDTO);
+    }
 
-	public PresentationDetailDTO getDetailPresentation(String codeCIP7) {
-		Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
-		if(null == presentation){
-			return null;
-		}
-		List<InfoImportanteDTO> infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()
-				.stream()
-				.map(infoImportanteMapper::toInfoImportanteDTO)
-				.toList();
-		List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions()
-				.stream()
-				.map(compositionMapper::toCompositionDTO)
-				.toList();
-		return presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList, compositionDTOList);
-	}
+    public PresentationDetailDTO getDetailPresentation(String codeCIP7) {
+        Presentation presentation = presentationComposant.getPresentationByCodeCIP7(codeCIP7);
+        if (null == presentation) {
+            return null;
+        }
+        List<InfoImportanteDTO> infoImportanteDTOList = presentation.getMedicament().getInfoImportantes()
+                .stream()
+                .map(infoImportanteMapper::toInfoImportanteDTO)
+                .toList();
+        List<CompositionDTO> compositionDTOList = presentation.getMedicament().getCompositions()
+                .stream()
+                .map(compositionMapper::toCompositionDTO)
+                .toList();
+        return presentationMapper.toPresentationDetailDTO(presentation, infoImportanteDTOList, compositionDTOList);
+    }
 }

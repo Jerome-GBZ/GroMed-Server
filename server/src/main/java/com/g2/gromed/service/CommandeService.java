@@ -149,7 +149,6 @@ public class CommandeService {
         return livraisonMapper.livraisontoLivraisonDTO(livraison, inOneTime.get());
     }
 
-
     private void saveAsCommandeType(String saveName, Utilisateur utilisateur, Commande commande) {
         CommandeType commandeType = new CommandeType();
         commandeType.setName(saveName);
@@ -250,7 +249,6 @@ public class CommandeService {
                 .map(livraison -> {
                     List<PresentationRecapCommandeDTO> recapLivraisonDTO = livraison.getLivraisonPresentations().stream()
                             .map(livraisonMapper::livraisonPresentationToPresentationRecapCommandeDTO).toList();
-                    log.info("size : " + livraison.getLivraisonPresentations().size());
                     return livraisonMapper.livraisonToLivraisonDetailDTO(livraison, recapLivraisonDTO);
                 }).toList();
         return commandeMapper.commandeToCommandeDetailDTO(commande, commande.getStatus() == StatusCommande.LIVREE, livraisonDetailDTOs, presentationRecapCommandeDTOs);

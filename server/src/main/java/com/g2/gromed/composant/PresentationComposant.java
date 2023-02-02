@@ -31,8 +31,8 @@ public class PresentationComposant {
 		return presentationRepository.findFirstByCodeCIP7(codeCIP7);
 	}
 	
-	public Presentation updatePresentation(Presentation presentation){
-		return presentationRepository.save(presentation);
+	public void updatePresentation(Presentation presentation){
+		presentationRepository.save(presentation);
 	}
 	
 	public List<Presentation> findByCodeCIP7In(List<String> codeCIP7) {

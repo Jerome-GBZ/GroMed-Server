@@ -10,12 +10,13 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class CommandeTypeComposant {
-	private ICommandeTypeRepository commandeTypeRepository;
-	public List<CommandeType> getCommandeTypes(String email, String search) {
-		return commandeTypeRepository.findByUtilisateurEmailAndNameContaining(email,search);
-	}
-	
-	public CommandeType getCommandeType(String email, String name) {
-		return commandeTypeRepository.findFirstByUtilisateurEmailAndName(email, name);
-	}
+    private ICommandeTypeRepository commandeTypeRepository;
+
+    public List<CommandeType> getCommandeTypes(String email, String search) {
+        return commandeTypeRepository.findByUtilisateurEmailAndNameContaining(email, search);
+    }
+
+    public CommandeType getCommandeType(String email, String name) {
+        return commandeTypeRepository.findFirstByUtilisateurEmailAndName(email, name);
+    }
 }

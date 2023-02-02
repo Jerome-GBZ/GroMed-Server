@@ -15,7 +15,7 @@ public class FiltreService {
     private FiltreComposant filtreComposant;
     private IFiltreMapper filtreMapper;
 
-    public FiltreDTO getAllFilters(){
+    public FiltreDTO getAllFilters() {
         return filtreMapper.toFiltreDTO(filtreComposant.getAllTitulaires(), filtreComposant.getAllSubstancesDenomination());
     }
 }

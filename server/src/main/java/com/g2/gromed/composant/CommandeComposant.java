@@ -51,19 +51,19 @@ public class CommandeComposant {
         return commandeRepository.save(commande);
     }
 
-	public List<Commande> getAllByEmail(String email) {
-		List<StatusCommande> statusList = Arrays.asList(StatusCommande.LIVREE, StatusCommande.EN_COURS);
-		return commandeRepository.findByEmailAndStatusIn(email, statusList);
-	}
-
-    public CommandeType saveCommandeType(CommandeType commandeType) {
-        return commandeTypeRepository.save(commandeType);
+    public List<Commande> getAllByEmail(String email) {
+        List<StatusCommande> statusList = Arrays.asList(StatusCommande.LIVREE, StatusCommande.EN_COURS);
+        return commandeRepository.findByEmailAndStatusIn(email, statusList);
     }
-	
-	public List<Commande> getCommandesNotDelivered() {
+
+    public void saveCommandeType(CommandeType commandeType) {
+        commandeTypeRepository.save(commandeType);
+    }
+
+    public List<Commande> getCommandesNotDelivered() {
         return commandeRepository.findByStatus(StatusCommande.EN_COURS);
-	}
-    
+    }
+
     public void saveAll(List<Commande> commandes) {
         commandeRepository.saveAll(commandes);
     }

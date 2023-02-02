@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class PresentationController implements IPresentationEndpoint {
-	
-	private PresentationService presentationService;
-	
-	@Override
-	public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination, FiltreDTO filtreDTO){
-		Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination, filtreDTO);
-		return ResponseEntity.ok(page);
-	}
-	
-	@Override
-	public ResponseEntity<PresentationDetailDTO> getDetailPresentation(String codeCIP7) {
-		PresentationDetailDTO presentation = presentationService.getDetailPresentation(codeCIP7);
-		return presentation != null ? ResponseEntity.ok(presentation) : ResponseEntity.notFound().build();
-	}
-	
-	
+
+    private PresentationService presentationService;
+
+    @Override
+    public ResponseEntity<Page<PresentationCardDTO>> getPresentations(Pageable pagination, FiltreDTO filtreDTO) {
+        Page<PresentationCardDTO> page = presentationService.getAllPresentations(pagination, filtreDTO);
+        return ResponseEntity.ok(page);
+    }
+
+    @Override
+    public ResponseEntity<PresentationDetailDTO> getDetailPresentation(String codeCIP7) {
+        PresentationDetailDTO presentation = presentationService.getDetailPresentation(codeCIP7);
+        return presentation != null ? ResponseEntity.ok(presentation) : ResponseEntity.notFound().build();
+    }
+
+
 }

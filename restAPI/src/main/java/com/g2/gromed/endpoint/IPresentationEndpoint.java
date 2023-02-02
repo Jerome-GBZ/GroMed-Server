@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/presentation")
 public interface IPresentationEndpoint {
 
-	@ApiOperation(value = "Récupère toutes les présentations des différents médicaments")
-	@ApiResponse(responseCode = "200", description = "OK")
-	@ApiResponse(responseCode = "500", description = "Erreur serveur")
-	@GetMapping(value = "/all", produces = "application/json")
-	ResponseEntity<Page<PresentationCardDTO>> getPresentations(@Parameter Pageable pagination, @Parameter FiltreDTO filtreDTO);
+    @ApiOperation(value = "Récupère une page de présentations de médicaments, filtrées selon des critères de recherche")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Erreur serveur")
+    @GetMapping(value = "/all", produces = "application/json")
+    ResponseEntity<Page<PresentationCardDTO>> getPresentations(@Parameter Pageable pagination, @Parameter FiltreDTO filtreDTO);
 
-	@ApiOperation(value = "Récupère les informations détallées d'une présentation d'un médicament")
-	@ApiResponse(responseCode = "200", description = "OK")
-	@ApiResponse(responseCode = "500", description = "Erreur serveur")
-	@ApiResponse(responseCode = "404", description = "Médicament non trouvé")
-	@GetMapping(value = "/detail", produces = "application/json")
-	ResponseEntity<PresentationDetailDTO> getDetailPresentation(@RequestParam() String codeCIP7);
+    @ApiOperation(value = "Récupère les informations détaillées d'une présentation d'un médicament")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Erreur serveur")
+    @ApiResponse(responseCode = "404", description = "Médicament non trouvé")
+    @GetMapping(value = "/detail", produces = "application/json")
+    ResponseEntity<PresentationDetailDTO> getDetailPresentation(@RequestParam() String codeCIP7);
 }

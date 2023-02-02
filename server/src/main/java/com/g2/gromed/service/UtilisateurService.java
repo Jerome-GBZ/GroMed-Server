@@ -14,17 +14,17 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UtilisateurService {
-	
-	private UtilisateurComposant utilisateurComposant;
-	private IUtilisateurMapper utilisateurMapper;
-	private CommandeComposant commandeComposant;
-	private CommandeService commandeService;
-	
-	public UtilisateurDTO authenticate(String email, String motDePasse) {
-		Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
-		Commande commande = commandeService.createCartIfDontExist(utilisateur);
-		return utilisateurMapper.toUtilisateurDTO(utilisateur,commandeComposant.countCartPresentation(commande.getNumeroCommande()));
-	}
+
+    private UtilisateurComposant utilisateurComposant;
+    private IUtilisateurMapper utilisateurMapper;
+    private CommandeComposant commandeComposant;
+    private CommandeService commandeService;
+
+    public UtilisateurDTO authenticate(String email, String motDePasse) {
+        Utilisateur utilisateur = utilisateurComposant.authenticate(email, motDePasse);
+        Commande commande = commandeService.createCartIfDontExist(utilisateur);
+        return utilisateurMapper.toUtilisateurDTO(utilisateur, commandeComposant.countCartPresentation(commande.getNumeroCommande()));
+    }
 
 
 }

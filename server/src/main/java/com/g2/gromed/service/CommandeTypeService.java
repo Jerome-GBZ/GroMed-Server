@@ -20,33 +20,33 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CommandeTypeService {
-	private CommandeTypeComposant commandeTypeComposant;
-	private CommandeComposant commandeComposant;
-	private ICommandeTypeMapper commandeTypeMapper;
-	private CommandeService commandeService;
-	private ICommandeMapper commandeMapper;
-	private UtilisateurComposant utilisateurComposant;
-	private IUtilisateurMapper utilisateurMapper;
-	
-	public List<CommandeTypeInfo> getCommandeTypes(String email, String search) {
-		List<CommandeType> commandeTypes = commandeTypeComposant.getCommandeTypes(email, search);
-		return commandeTypes.stream().map(commandeTypeMapper::toCommandeTypeInfo).toList();
-	}
-	
-	public List<PresentationRecapCommandeDTO> getCommandeTypeDetail(String email, String name) {
-		CommandeType commandeType = commandeTypeComposant.getCommandeType(email, name);
-		return commandeType.getCommande().getCommandeMedicaments().stream().map(commandeMapper::commandeMedicamentToPresentationRecapCommandeDTO).toList();
-	}
-	
-	public UtilisateurDTO addCommandeTypeToUserCart(String email, String name) {
-		Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
-		if(utilisateur == null) {
-			return null;
-		}
-		Commande cart = commandeComposant.getCart(email);
-		CommandeType commandeType = commandeTypeComposant.getCommandeType(email, name);
-		commandeType.getCommande().getCommandeMedicaments().forEach(cm-> commandeService.addPresentationToCart(cm.getQuantite(), cm.getPresentation(),cart));
-		int countCartItem = commandeComposant.getCart(email).getCommandeMedicaments().size();
-		return utilisateurMapper.toUtilisateurDTO(utilisateur,countCartItem);
-	}
+    private CommandeTypeComposant commandeTypeComposant;
+    private CommandeComposant commandeComposant;
+    private ICommandeTypeMapper commandeTypeMapper;
+    private CommandeService commandeService;
+    private ICommandeMapper commandeMapper;
+    private UtilisateurComposant utilisateurComposant;
+    private IUtilisateurMapper utilisateurMapper;
+
+    public List<CommandeTypeInfo> getCommandeTypes(String email, String search) {
+        List<CommandeType> commandeTypes = commandeTypeComposant.getCommandeTypes(email, search);
+        return commandeTypes.stream().map(commandeTypeMapper::toCommandeTypeInfo).toList();
+    }
+
+    public List<PresentationRecapCommandeDTO> getCommandeTypeDetail(String email, String name) {
+        CommandeType commandeType = commandeTypeComposant.getCommandeType(email, name);
+        return commandeType.getCommande().getCommandeMedicaments().stream().map(commandeMapper::commandeMedicamentToPresentationRecapCommandeDTO).toList();
+    }
+
+    public UtilisateurDTO addCommandeTypeToUserCart(String email, String name) {
+        Utilisateur utilisateur = utilisateurComposant.getUserByEmail(email);
+        if (utilisateur == null) {
+            return null;
+        }
+        Commande cart = commandeComposant.getCart(email);
+        CommandeType commandeType = commandeTypeComposant.getCommandeType(email, name);
+        commandeType.getCommande().getCommandeMedicaments().forEach(cm -> commandeService.addPresentationToCart(cm.getQuantite(), cm.getPresentation(), cart));
+        int countCartItem = commandeComposant.getCart(email).getCommandeMedicaments().size();
+        return utilisateurMapper.toUtilisateurDTO(utilisateur, countCartItem);
+    }
 }

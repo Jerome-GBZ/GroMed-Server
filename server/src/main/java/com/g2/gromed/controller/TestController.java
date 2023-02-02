@@ -11,16 +11,16 @@ import java.text.ParseException;
 @CrossOrigin // NOSONAR
 @RestController
 public class TestController {
-	
-	@Autowired
-	private InsertData insertData;
-	
-	@PostMapping("/poeple")
-	public void poeple() {
-		try {
-			insertData.transformData();
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
-		}
-	}
+
+    @Autowired
+    private InsertData insertData;
+
+    @PostMapping("/poeple")
+    public void poeple() {
+        try {
+            insertData.transformData();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

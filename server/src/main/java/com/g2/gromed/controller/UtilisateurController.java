@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class UtilisateurController implements IUtilisateurEndpoint {
-	private UtilisateurService utilisateurService;
-	@Override
-	public ResponseEntity<UtilisateurDTO> authenticate(String email, String motDePasse) {
-		UtilisateurDTO utilisateur = utilisateurService.authenticate(email, motDePasse);
-		return utilisateur ==null ? ResponseEntity.notFound().build() : ResponseEntity.ok(utilisateur) ;
-	}
+    private UtilisateurService utilisateurService;
+
+    @Override
+    public ResponseEntity<UtilisateurDTO> authenticate(String email, String motDePasse) {
+        UtilisateurDTO utilisateur = utilisateurService.authenticate(email, motDePasse);
+        return utilisateur == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(utilisateur);
+    }
 }

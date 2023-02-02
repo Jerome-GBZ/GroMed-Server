@@ -10,13 +10,13 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class LivraisonComposant {
-	private ILivraisonRepository livraisonRepository;
-	
-	public Livraison saveLivraison(Livraison livraison) {
-		return livraisonRepository.save(livraison);
-	}
-	
-	public List<Livraison> getLivraisonsByCommande(long numeroCommande) {
-		return livraisonRepository.findByCommandeNumeroCommande(numeroCommande);
-	}
+    private ILivraisonRepository livraisonRepository;
+
+    public Livraison saveLivraison(Livraison livraison) {
+        return livraisonRepository.save(livraison);
+    }
+
+    public List<Livraison> getLivraisonsByCommande(long numeroCommande) {
+        return livraisonRepository.findByCommandeNumeroCommande(numeroCommande);
+    }
 }
